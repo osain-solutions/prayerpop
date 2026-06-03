@@ -1,0 +1,32 @@
+# Third-Party Notices
+
+This plugin includes or relies on the following third-party components.
+
+## WordPress Dashicons
+
+- Component: Dashicons icon font
+- Source: WordPress core
+- License: GPLv2 or later (as part of WordPress)
+- Notes: Used when "WordPress Dashicon" icon type is selected.
+
+## Tabler Icons Dataset
+
+- Component: Tabler SVG icon node dataset
+- Local file: `assets/data/tabler-nodes-outline.json`
+- Source project: Tabler Icons
+- Upstream repository: https://github.com/tabler/tabler-icons
+- Website: https://tabler.io/icons
+- License: MIT
+- License text: https://github.com/tabler/tabler-icons/blob/main/LICENSE
+- Dataset notes: Generated from the Tabler outline SVG icon set by extracting each icon name and SVG node attributes needed by PrayerPop's local icon search, preview, and rendering tools.
+
+## jQuery
+
+- Component: jQuery
+- Source: Bundled by WordPress core
+- License: MIT
+- Notes: Used by front-end/admin scripts through WordPress script handles.
+
+---
+
+If you need full upstream license texts, see each upstream project website/repository.

@@ -1,0 +1,199 @@
+/* Standalone PrayerPop form styles */
+
+.prayer-pop-form {
+    --pp-form-bg: #ffffff;
+    --pp-form-text: #2f2f2f;
+    --pp-form-muted: #5b5b5b;
+    --pp-form-border: #dcdcdc;
+    --pp-form-radius: 14px;
+    --pp-form-padding: 16px;
+    --pp-form-gap: 16px;
+    --pp-form-badge-bg: #e9f3f8;
+    --pp-form-badge-text: #4a4a4a;
+    --pp-form-success-bg: #dff0d8;
+    --pp-form-success-text: #3c763d;
+    --pp-form-success-border: #d6e9c6;
+    --pp-form-error-bg: #f2dede;
+    --pp-form-error-text: #a94442;
+    --pp-form-error-border: #ebccd1;
+    --pp-form-button-bg: #0b6da8;
+    --pp-form-button-text: #ffffff;
+    --pp-form-button-bg-hover: #0a5f93;
+
+    font-family: var(--global-font-family, system-ui);
+    color: var(--pp-form-text);
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--pp-form-gap);
+    text-align: var(--pp-form-align, left);
+}
+
+.prayer-pop-form__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pp-form-gap);
+}
+
+.prayer-pop-form__heading {
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 700;
+    margin: 0;
+    color: var(--pp-form-text);
+}
+
+.prayer-pop-form__description {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--pp-form-muted);
+}
+
+.prayer-pop-form__last-time {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--pp-form-badge-bg);
+    color: var(--pp-form-badge-text);
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    align-self: var(--pp-form-badge-align, flex-start);
+}
+
+.prayer-pop-form__last-time-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.prayer-pop-form__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pp-form-gap);
+}
+
+.prayer-pop-form__form .prayer-pop-form__textarea,
+.prayer-pop-form__form .prayer-pop-form__input {
+    width: 100%;
+    margin: 0;
+    padding: var(--pp-form-padding);
+    font-family: inherit;
+    font-size: 18px;
+    line-height: 1.4;
+    background: var(--pp-form-bg);
+    color: var(--pp-form-text);
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.prayer-pop-form :where(.prayer-pop-form__textarea, .prayer-pop-form__input) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--pp-form-border);
+    border-radius: var(--pp-form-radius);
+}
+
+.prayer-pop-form__textarea::placeholder,
+.prayer-pop-form__input::placeholder {
+    color: #8a8a8a;
+    opacity: 1;
+}
+
+.prayer-pop-form__textarea {
+    min-height: 160px;
+    resize: vertical;
+}
+
+.prayer-pop-form__checkbox-label {
+    display: block;
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--pp-form-text);
+}
+
+.prayer-pop-form__checkbox-label input[type="checkbox"],
+.prayer-pop-form__checkbox-text {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.prayer-pop-form__checkbox-label input[type="checkbox"] {
+    margin: 0;
+    margin-inline-end: 12px;
+}
+
+
+.prayer-pop-form__submit {
+    width: var(--pp-form-button-width, 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 20px;
+    font-weight: 600;
+    background: var(--pp-form-button-bg);
+    color: var(--pp-form-button-text);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    align-self: var(--pp-form-button-align, stretch);
+}
+
+.prayer-pop-form__submit:hover {
+    background: var(--pp-form-button-bg-hover);
+    transform: translateY(-1px);
+}
+
+.prayer-pop-form__success,
+.prayer-pop-form__error {
+    margin: 0;
+    padding: var(--pp-form-padding);
+    border-radius: var(--pp-form-radius);
+    border: 1px solid transparent;
+    font-size: 16px;
+    line-height: 1.45;
+}
+
+.prayer-pop-form__success {
+    background: var(--pp-form-success-bg);
+    color: var(--pp-form-success-text);
+    border-color: var(--pp-form-success-border);
+}
+
+.prayer-pop-form__error {
+    background: var(--pp-form-error-bg);
+    color: var(--pp-form-error-text);
+    border-color: var(--pp-form-error-border);
+}
+
+.prayer-pop-form__new-request {
+    margin-top: 0;
+}
+
+.prayer-pop-form__honeypot {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .prayer-pop-form__heading {
+        font-size: 28px;
+    }
+
+    .prayer-pop-form__description,
+    .prayer-pop-form__textarea,
+    .prayer-pop-form__input,
+    .prayer-pop-form__checkbox-label {
+        font-size: 16px;
+    }
+
+    .prayer-pop-form__submit {
+        font-size: 18px;
+    }
+}

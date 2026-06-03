@@ -1,0 +1,1287 @@
+/* Admin Styles */
+.nav-tab .dashicons {
+    margin-right: 5px;
+    line-height: 1.4;
+}
+
+.prayer-pop-brand-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #dcdcde;
+}
+
+.prayer-pop-logo-svg {
+    display: block;
+}
+
+.prayer-pop-logo-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+}
+
+.prayer-pop-logo-svg-full {
+    width: 168px;
+    height: auto;
+}
+
+.prayer-pop-brand-logo-full {
+    width: 180px;
+    max-width: 180px;
+}
+
+.prayer-pop-brand-footer {
+    clear: both;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 18px 0 6px;
+    text-align: center;
+}
+
+.prayer-pop-brand-footer .prayer-pop-brand-logo {
+    margin: 0 auto;
+}
+
+.prayer-pop-save-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 12px;
+    max-width: 1240px;
+    padding: 16px 0;
+}
+
+.prayer-pop-save-row .submit {
+    margin: 0;
+    padding: 0;
+}
+
+.prayer-pop-save-row .prayer-pop-brand-footer {
+    flex: 0 0 auto;
+    margin: 0;
+    width: auto;
+    clear: none;
+}
+
+.prayer-pop-logo-svg-icon {
+    width: 28px;
+    height: 28px;
+}
+
+/* Frontend iframe preview */
+.prayer-pop-admin-frontend-preview {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 998;
+    width: 360px;
+    height: 220px;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    pointer-events: none;
+}
+
+.prayer-pop-admin-frontend-preview-title {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.widefat {
+    border-spacing: 0;
+    width: 100%;
+    clear: both;
+    margin: 0;
+}
+
+.prayer-pop-admin-frontend-preview-actions {
+    position: fixed;
+    right: 20px;
+    bottom: 248px;
+    z-index: 999;
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    padding: 6px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    pointer-events: auto;
+}
+
+.prayer-pop-frontend-preview-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    pointer-events: none;
+}
+
+@media screen and (max-width: 1400px) {
+    .prayer-pop-admin-frontend-preview {
+        width: 300px;
+        height: 190px;
+        right: 12px;
+        bottom: 12px;
+    }
+
+    .prayer-pop-admin-frontend-preview-actions {
+        right: 12px;
+        bottom: 210px;
+    }
+}
+
+.settings-error {
+    margin: 5px 0 15px;
+}
+
+/* Color Preview */
+.wp-picker-container {
+    display: inline-block;
+}
+
+.color-preview {
+    width: 30px;
+    height: 30px;
+    border-radius: 3px;
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Toggle Switch */
+.prayer-pop-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.prayer-pop-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.prayer-pop-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    position: absolute;
+}
+
+.prayer-pop-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.prayer-pop-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.prayer-pop-toggle-slider {
+    background-color: #2271b1;
+}
+
+input:focus+.prayer-pop-toggle-slider {
+    box-shadow: 0 0 1px #2271b1;
+}
+
+input:checked+.prayer-pop-toggle-slider:before {
+    transform: translateX(26px);
+}
+
+.toggle-status {
+    margin-left: 10px;
+    font-weight: 500;
+    color: #50575e;
+    min-width: 30px;
+}
+
+/* Description text */
+.prayer-pop-toggle-wrapper .description {
+    margin: 5px 0 0 60px;
+    color: #646970;
+    font-style: italic;
+}
+
+/* Notification Fields */
+.notification-field.disabled {
+    opacity: 0.6;
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
+.notification-field:disabled {
+    opacity: 0.6;
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
+/* Email Template Variables Controls */
+.prayer-pop-email-field-wrapper {
+    margin-bottom: 15px;
+}
+
+.prayer-pop-variables-controls {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.prayer-pop-variables-controls label {
+    font-weight: 500;
+    margin-right: 5px;
+    color: #1d2327;
+}
+
+.prayer-pop-variables-dropdown {
+    min-width: 200px;
+}
+
+.insert-variable-btn {
+    white-space: nowrap;
+}
+
+.prayer-pop-email-template-info {
+    max-width: 920px;
+    margin: 16px 0 18px;
+    padding: 15px;
+    background: #fff;
+    border-left: 4px solid #0073aa;
+}
+
+.prayer-pop-email-template-info p {
+    margin-top: 0;
+}
+
+.prayer-pop-email-template-info code {
+    display: inline-block;
+    padding: 2px 5px;
+    background: #f0f0f1;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+.prayer-pop-placeholder-table {
+    width: 100%;
+    min-width: 620px;
+    margin-top: 12px;
+    margin-bottom: 14px;
+    table-layout: auto;
+}
+
+.prayer-pop-placeholder-table th,
+.prayer-pop-placeholder-table td {
+    padding: 10px 12px;
+    vertical-align: top;
+}
+
+.prayer-pop-placeholder-table th:first-child,
+.prayer-pop-placeholder-table td:first-child {
+    width: 190px;
+    white-space: nowrap;
+}
+
+.prayer-pop-placeholder-insert-row {
+    margin: 8px 0 10px;
+}
+
+.prayer-pop-placeholder-insert-label {
+    display: inline-block;
+    margin-right: 8px;
+    color: #50575e;
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.prayer-pop-placeholder-chips {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    vertical-align: middle;
+}
+
+.prayer-pop-placeholder-chips .button {
+    height: auto;
+    min-height: 28px;
+    padding: 3px 8px;
+    line-height: 1.2;
+}
+
+.prayer-pop-placeholder-chips code {
+    padding: 0;
+    background: transparent;
+    font-size: 12px;
+}
+
+/* Responsive variables controls */
+@media screen and (max-width: 782px) {
+    .prayer-pop-variables-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .prayer-pop-variables-dropdown {
+        min-width: 100%;
+    }
+
+    .insert-variable-btn {
+        width: 100%;
+    }
+
+    .prayer-pop-email-template-info {
+        overflow-x: auto;
+    }
+}
+
+/* Layout Card Styles */
+.prayer-pop-layout-card {
+    background: #ffffff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.layout-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.layout-card-header h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: #1d2327;
+}
+
+.layout-card-header p {
+    flex: 1 1 280px;
+    margin: 0;
+    color: #646970;
+    font-size: 14px;
+}
+
+.prayer-pop-style-reset-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 0 12px;
+}
+
+.prayer-pop-style-reset-wrap .description {
+    margin: 0;
+    flex: 1 1 320px;
+}
+
+.layout-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.layout-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-field label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #1d2327;
+}
+
+.layout-field input {
+    margin-bottom: 5px;
+}
+
+.layout-field .description {
+    margin: 0;
+    font-size: 12px;
+    color: #646970;
+    line-height: 1.4;
+}
+
+/* Responsive layout adjustments */
+@media screen and (max-width: 782px) {
+    .layout-fields-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .prayer-pop-layout-card {
+        padding: 15px;
+    }
+}
+
+/* Bubble Icon Controls */
+.prayer-pop-icon-section-renderer+table.form-table {
+    display: none;
+}
+
+.prayer-pop-dashicon-selector {
+    display: block;
+    max-width: 640px;
+    margin-bottom: 10px;
+}
+
+.dashicon-search-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.dashicon-search-wrapper input {
+    flex: 1;
+    min-width: 220px;
+}
+
+.dashicon-dropdown-wrapper {
+    margin-bottom: 15px;
+}
+
+.dashicon-dropdown-wrapper select {
+    width: 100%;
+    height: 200px;
+    max-width: 100%;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.dashicon-dropdown-wrapper option {
+    padding: 5px;
+    line-height: 1.4;
+}
+
+.dashicon-preview-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.dashicon-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    background: #2755aa;
+    border: 0;
+    border-radius: 8px;
+    flex: 0 0 72px;
+}
+
+.dashicon-preview .dashicons {
+    font-size: 42px;
+    width: 42px;
+    height: 42px;
+    line-height: 42px;
+    color: currentColor;
+}
+
+.prayer-pop-icon-preview-shell .prayer-pop-tabler-icon,
+.prayer-pop-icon-preview-shell .prayer-pop-brand-icon {
+    display: block;
+    width: 42px;
+    height: 42px;
+    margin: 0;
+    color: currentColor;
+}
+
+.prayer-pop-icon-preview-shell .prayer-pop-brand-icon-mask {
+    display: block;
+    width: 42px;
+    height: 42px;
+    background: currentColor;
+    mask: var(--prayer-pop-brand-icon-url) center / contain no-repeat;
+    -webkit-mask: var(--prayer-pop-brand-icon-url) center / contain no-repeat;
+}
+
+.dashicon-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.dashicon-info code {
+    display: inline-block;
+    padding: 2px 6px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.dashicon-dropdown-wrapper option[style*="display: none"] {
+    display: none !important;
+}
+
+/* Size Control Slider */
+.prayer-pop-size-control {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.prayer-pop-range-slider {
+    width: 200px;
+    height: 6px;
+    border-radius: 3px;
+    background: #ddd;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.prayer-pop-range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #2271b1;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.prayer-pop-range-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #2271b1;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.size-display {
+    min-width: 50px;
+    padding: 5px 10px;
+    background: #f0f0f1;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 500;
+    color: #1d2327;
+}
+
+/* Responsive adjustments for icon controls */
+@media screen and (max-width: 782px) {
+    .prayer-pop-dashicon-selector {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .dashicon-search-wrapper,
+    .dashicon-preview-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dashicon-search-wrapper input,
+    .dashicon-dropdown-wrapper select {
+        width: 100%;
+    }
+
+    .prayer-pop-size-control {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .prayer-pop-range-slider {
+        width: 100%;
+    }
+
+}
+
+/* Documentation Styles */
+.prayer-pop-docs {
+    max-width: 800px;
+    margin-top: 20px;
+}
+
+.prayer-pop-doc-section h2 {
+    margin: 14px 0 12px;
+    font-size: 21px;
+    line-height: 1.25;
+    font-weight: 700;
+    color: #1d2327;
+}
+
+.prayer-pop-docs h3 {
+    margin-top: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.prayer-pop-docs hr {
+    margin: 28px 0;
+    border: 0;
+    border-top: 2px solid #c3c4c7;
+}
+
+.prayer-pop-doc-advanced {
+    margin-top: 24px;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.prayer-pop-doc-advanced>summary {
+    padding: 14px 16px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.prayer-pop-doc-advanced[open]>summary {
+    border-bottom: 1px solid #dcdcde;
+    background: #f6f7f7;
+}
+
+.prayer-pop-doc-advanced__content {
+    padding: 16px;
+}
+
+.prayer-pop-docs code {
+    background: #f5f5f5;
+    padding: 3px 5px;
+    border-radius: 3px;
+}
+
+.prayer-pop-export-import-section {
+    margin: 20px 0;
+    padding: 18px 20px;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+}
+
+.prayer-pop-export-import-section h3 {
+    margin: 0 0 10px;
+    color: #1d2327;
+}
+
+.prayer-pop-export-import-section .description {
+    margin: 0 0 15px;
+    color: #50575e;
+}
+
+.prayer-pop-export-import-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 15px;
+}
+
+.prayer-pop-export-section,
+.prayer-pop-import-section {
+    min-width: 0;
+}
+
+.prayer-pop-export-section h4,
+.prayer-pop-import-section h4 {
+    margin: 0 0 10px;
+    color: #1d2327;
+}
+
+.prayer-pop-import-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.prayer-pop-import-form input[type="file"] {
+    flex: 1 1 220px;
+    min-width: 220px;
+}
+
+.prayer-pop-export-section .button,
+.prayer-pop-import-form .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.prayer-pop-export-section .button .dashicons,
+.prayer-pop-import-form .button .dashicons {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    font-size: 18px;
+    line-height: 18px;
+}
+
+.import-note {
+    margin-top: 10px;
+    color: #666;
+}
+
+.import-note small {
+    font-style: italic;
+}
+
+@media screen and (max-width: 782px) {
+    .prayer-pop-export-import-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tab Content */
+.tab-content {
+    margin-top: 20px;
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Style Tab Rhythm (Settings API aligned) */
+#style {
+    --pp-admin-space-1: 4px;
+    --pp-admin-space-2: 8px;
+    --pp-admin-space-3: 12px;
+    --pp-admin-space-4: 16px;
+    --pp-admin-space-5: 24px;
+    --pp-admin-space-6: 32px;
+}
+
+#style>h2,
+#style>h3 {
+    margin: 34px 0 10px;
+    padding-bottom: var(--pp-admin-space-2);
+    border-bottom: 1px solid #dcdcde;
+    line-height: 1.3;
+}
+
+#style>h2:first-of-type,
+#style>h3:first-of-type {
+    margin-top: 0;
+}
+
+#style .form-table {
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+#style .form-table th {
+    width: 200px;
+    /* Keep WordPress settings table baseline */
+    padding: 10px 10px 10px 0;
+    vertical-align: top;
+}
+
+#style .form-table td {
+    padding: 8px 10px;
+    vertical-align: top;
+}
+
+#style .form-table .description {
+    margin-top: 4px;
+}
+
+#style .prayer-pop-color-field-wrapper,
+#style .prayer-pop-size-control,
+#style .prayer-pop-size-field-wrapper,
+#style .prayer-pop-animation-preview,
+#style .prayer-pop-toggle-wrapper,
+#style .dashicon-search-wrapper {
+    gap: var(--pp-admin-space-3);
+}
+
+#style .prayer-pop-size-control {
+    margin-bottom: 0;
+    flex-wrap: wrap;
+}
+
+#style .prayer-pop-size-control .description {
+    flex-basis: 100%;
+    margin-top: var(--pp-admin-space-1);
+}
+
+#style .prayer-pop-layout-card {
+    margin: 0 0 34px;
+    padding: 10px;
+}
+
+#style .layout-fields-grid {
+    gap: 10px;
+}
+
+#style .layout-card-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+}
+
+#style .layout-card-header p {
+    margin: 0;
+}
+
+#style .prayer-pop-layout-reset-row {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #e0e0e0;
+}
+
+#style .prayer-pop-layout-reset-row .prayer-pop-layout-reset-button {
+    margin: 0;
+}
+
+#style tr.prayer-pop-style-reset-row th {
+    display: none;
+}
+
+#style tr.prayer-pop-style-reset-row td {
+    padding-left: 0;
+    padding-top: 14px;
+}
+
+#style .prayer-pop-style-reset-row-actions {
+    display: flex;
+    justify-content: flex-start;
+}
+
+#style .layout-field label {
+    margin-bottom: 4px;
+}
+
+#style .layout-field input {
+    margin-bottom: 4px;
+}
+
+#style .dashicon-preview-wrapper {
+    margin-bottom: var(--pp-admin-space-3);
+}
+
+/* Settings Sections */
+.settings-section {
+    background: #fff;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.settings-section h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Color Picker */
+.wp-picker-container {
+    display: inline-block;
+}
+
+.wp-picker-container .wp-color-result.button {
+    margin: 0 6px 6px 0;
+}
+
+.wp-picker-container .wp-picker-input-wrap {
+    display: inline-block;
+    vertical-align: top;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+
+    #style>h2,
+    #style>h3 {
+        margin: 28px 0 8px;
+    }
+
+    #style .form-table {
+        margin-bottom: 20px;
+    }
+
+    #style .form-table th {
+        padding: 8px 10px 4px 0 !important;
+    }
+
+    #style .form-table td {
+        padding: 8px 10px 10px !important;
+    }
+
+    .prayer-pop-toggle-switch {
+        width: 40px;
+        height: 20px;
+    }
+
+    .prayer-pop-toggle-slider:before {
+        height: 12px;
+        width: 12px;
+    }
+
+    input:checked+.prayer-pop-toggle-slider:before {
+        transform: translateX(20px);
+    }
+
+    .prayer-pop-toggle-wrapper .description {
+        margin-left: 50px;
+    }
+}
+
+/* PrayerPop settings page layout */
+.prayer-pop-tab-intro {
+    background: transparent;
+    border: 0;
+    padding: 4px 0 10px;
+    margin: 0 0 10px;
+}
+
+.prayer-pop-tab-intro h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    font-size: 22px;
+}
+
+.prayer-pop-tab-intro h2 .dashicons {
+    color: #0073aa;
+}
+
+.prayer-pop-tab-intro p {
+    margin: 0;
+    color: #50575e;
+}
+
+.prayer-pop-settings-layout {
+    display: block;
+}
+
+.prayer-pop-settings-layout.has-feature-rail {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 22px;
+    align-items: start;
+}
+
+.prayer-pop-settings-main {
+    min-width: 0;
+}
+
+.prayer-pop-settings-layout .tab-content {
+    margin-top: 12px;
+    max-width: 1240px;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 10px;
+    padding: 18px 22px;
+}
+
+.prayer-pop-feature-rail {
+    position: sticky;
+    top: 64px;
+    align-self: start;
+}
+
+.prayer-pop-feature-card {
+    margin: 12px 0 0;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-left: 4px solid #2271b1;
+    border-radius: 10px;
+    padding: 14px 14px 12px;
+}
+
+.prayer-pop-feature-card:first-child {
+    margin-top: 12px;
+}
+
+.prayer-pop-feature-card h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    line-height: 1.35;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.prayer-pop-feature-card h3 .dashicons {
+    color: #2271b1;
+}
+
+.prayer-pop-feature-card p {
+    margin: 0 0 10px;
+    color: #50575e;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.prayer-pop-feature-card ul {
+    margin: 0 0 10px 18px;
+}
+
+.prayer-pop-feature-card li {
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+.prayer-pop-feature-card .button {
+    width: 100%;
+    text-align: center;
+}
+
+.prayer-pop-subsection-card {
+    margin-top: 18px;
+    background: transparent;
+    border: 0;
+    border-top: 1px solid #e2e5e9;
+    padding: 18px 0 0;
+}
+
+.prayer-pop-subsection-card:first-child {
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 0;
+}
+
+.prayer-pop-subsection-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 6px;
+    font-size: 16px;
+    line-height: 1.3;
+}
+
+.prayer-pop-subsection-title .dashicons {
+    color: #2271b1;
+}
+
+.prayer-pop-subsection-description {
+    margin: 0 0 12px;
+    color: #50575e;
+}
+
+.prayer-pop-settings-layout .tab-content .form-table {
+    margin-top: 0;
+}
+
+.prayer-pop-settings-layout .tab-content .form-table th {
+    width: 220px;
+    padding: 10px 12px 10px 0;
+}
+
+.prayer-pop-settings-layout .tab-content .form-table td {
+    padding: 8px 0 10px;
+}
+
+.prayer-pop-sticky-save-bar {
+    position: fixed;
+    top: 32px;
+    right: 380px;
+    z-index: 1000;
+    display: none;
+    min-width: 200px;
+    padding: 0;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.prayer-pop-sticky-save-bar.show {
+    display: block;
+}
+
+.sticky-save-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+}
+
+.save-indicator {
+    font-size: 12px;
+    font-weight: 500;
+    color: #d63638;
+}
+
+.save-changes-btn {
+    white-space: nowrap;
+}
+
+@media screen and (max-width: 782px) {
+    .prayer-pop-settings-layout.has-feature-rail {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .prayer-pop-feature-rail {
+        position: static;
+    }
+
+    .prayer-pop-sticky-save-bar {
+        top: 46px;
+        right: 10px;
+        min-width: 160px;
+    }
+
+    .sticky-save-content {
+        padding: 8px 12px;
+    }
+
+    .save-indicator {
+        font-size: 11px;
+    }
+}
+
+/* PrayerPop welcome modal */
+.prayer-pop-welcome-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 100000;
+}
+
+.prayer-pop-welcome-modal.is-open {
+    display: block;
+}
+
+.prayer-pop-welcome-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.55);
+}
+
+.prayer-pop-welcome-modal__dialog {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 8vh auto 0;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+    padding: 24px;
+}
+
+.prayer-pop-welcome-step {
+    display: none;
+}
+
+.prayer-pop-welcome-modal__dialog:not([data-welcome-step]) .prayer-pop-welcome-step-onboarding,
+.prayer-pop-welcome-modal__dialog[data-welcome-step="onboarding"] .prayer-pop-welcome-step-onboarding {
+    display: block;
+}
+
+.prayer-pop-welcome-modal__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.prayer-pop-welcome-modal__dialog h2 {
+    margin: 0 0 10px;
+    font-size: 26px;
+    line-height: 1.2;
+}
+
+.prayer-pop-welcome-modal__dialog p {
+    margin: 0 0 12px;
+    color: #2c3338;
+    line-height: 1.55;
+}
+
+.prayer-pop-welcome-modal__quicklist {
+    margin: 0 0 16px 18px;
+    line-height: 1.55;
+}
+
+.prayer-pop-welcome-modal__quicklist li {
+    margin-bottom: 6px;
+}
+
+.prayer-pop-welcome-modal__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.prayer-pop-welcome-modal__action {
+    flex: 1 1 220px;
+    min-width: 220px;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fff;
+}
+
+.prayer-pop-welcome-modal__action .button {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.prayer-pop-welcome-modal__action p {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #4b5563;
+}
+
+@media screen and (max-width: 782px) {
+    .prayer-pop-welcome-modal__dialog {
+        margin: 4vh 16px 0;
+        padding: 18px;
+    }
+
+    .prayer-pop-welcome-modal__action {
+        min-width: 100%;
+    }
+}
