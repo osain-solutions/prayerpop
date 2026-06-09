@@ -3,7 +3,7 @@
  * Plugin Name: PrayerPop
  * Plugin URI: https://prayerpop.eu/
  * Description: Prayer request workflow plugin with a frontend bubble, admin review, and notifications.
- * Version: 1.5.5
+ * Version: 1.5.6
  * Author: Ösain OÜ
  * Author URI: https://www.osain.ee
  * Text Domain: prayerpop
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 
 // Define plugin constants
 if ( ! defined( 'PRAYERPOP_VERSION' ) ) {
-	define( 'PRAYERPOP_VERSION', '1.5.5' );
+	define( 'PRAYERPOP_VERSION', '1.5.6' );
 }
 if ( ! defined( 'PRAYERPOP_PLUGIN_DIR' ) ) {
 	define( 'PRAYERPOP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -177,7 +177,7 @@ function prayer_pop_block_pro_activation_attempt() {
 	wp_safe_redirect(
 		add_query_arg(
 			array(
-				'prayerpop_notice' => 'free_blocks_pro_activation',
+				'prayerpop_notice' => 'standard_blocks_pro_activation',
 			),
 			admin_url( 'plugins.php' )
 		)
@@ -196,7 +196,7 @@ function prayer_pop_activation_blocked_notice() {
 	}
 
 	$notice = isset( $_GET['prayerpop_notice'] ) ? sanitize_key( (string) wp_unslash( $_GET['prayerpop_notice'] ) ) : '';
-	if ( 'free_blocks_pro_activation' !== $notice ) {
+	if ( 'standard_blocks_pro_activation' !== $notice ) {
 		return;
 	}
 

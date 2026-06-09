@@ -198,6 +198,7 @@ class Prayer_Pop_Settings_Text {
 			   id="<?php echo esc_attr( $id ); ?>"
 			   name="prayer_pop_texts[<?php echo esc_attr( $id ); ?>]"
 			   value="<?php echo esc_attr( $value ); ?>"
+			   placeholder="<?php echo esc_attr( $default ); ?>"
 			   class="regular-text prayer-pop-text-field-input"
 			   style="width:60em;max-width:100%;">
 		<?php
@@ -216,6 +217,7 @@ class Prayer_Pop_Settings_Text {
 				  name="prayer_pop_texts[<?php echo esc_attr( $id ); ?>]"
 				  rows="3"
 				  class="large-text"
+				  placeholder="<?php echo esc_attr( $default ); ?>"
 				  style="width:60em;max-width:100%;"><?php echo esc_textarea( $value ); ?></textarea>
 		<?php
 	}
@@ -515,7 +517,7 @@ class Prayer_Pop_Settings_Text {
 		?>
 				<div class="prayer-pop-export-import-section prayer-pop-text-card">
 				<h3><?php esc_html_e( 'Export / Import Text Fields', 'prayerpop' ); ?></h3>
-				<p class="description"><?php esc_html_e( 'These actions are independent of the main settings form and will not affect your ability to save text customizations.', 'prayerpop' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Export/import text fields as JSON for backup or translation updates. These actions are independent of the main settings form and will not affect your ability to save text customizations.', 'prayerpop' ); ?></p>
 
 				<div class="prayer-pop-export-import-row">
 					<div class="prayer-pop-export-section">

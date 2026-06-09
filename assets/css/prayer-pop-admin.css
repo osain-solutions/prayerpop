@@ -50,12 +50,10 @@
 
 .prayer-pop-save-row {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
     max-width: 1240px;
-    padding: 16px 0;
 }
 
 .prayer-pop-save-row .submit {
@@ -64,7 +62,6 @@
 }
 
 .prayer-pop-save-row .prayer-pop-brand-footer {
-    flex: 0 0 auto;
     margin: 0;
     width: auto;
     clear: none;
@@ -160,17 +157,21 @@
 
 /* Toggle Switch */
 .prayer-pop-toggle-wrapper {
-    display: flex;
+    display: grid;
+    grid-template-columns: 90px minmax(0, 1fr);
     align-items: center;
+    column-gap: 10px;
     margin-bottom: 10px;
+    min-width: 0;
 }
 
 .prayer-pop-toggle-switch {
     position: relative;
-    display: inline-block;
-    width: 50px;
+    display: block;
+    width: 90px;
+    min-width: 90px;
     height: 24px;
-    margin-right: 10px;
+    margin: 0;
 }
 
 .prayer-pop-toggle-switch input {
@@ -186,7 +187,7 @@
     cursor: pointer;
     top: 0;
     left: 0;
-    right: 0;
+    width: 50px;
     bottom: 0;
     background-color: #ccc;
     transition: .4s;
@@ -218,17 +219,21 @@ input:checked+.prayer-pop-toggle-slider:before {
 }
 
 .toggle-status {
-    margin-left: 10px;
+    display: block;
+    margin-left: 60px;
     font-weight: 500;
     color: #50575e;
     min-width: 30px;
+    line-height: 24px;
 }
 
 /* Description text */
 .prayer-pop-toggle-wrapper .description {
-    margin: 5px 0 0 60px;
+    min-width: 0;
+    margin: 0;
     color: #646970;
     font-style: italic;
+    overflow-wrap: anywhere;
 }
 
 /* Notification Fields */
@@ -519,6 +524,10 @@ input:checked+.prayer-pop-toggle-slider:before {
     width: 42px;
     height: 42px;
     line-height: 42px;
+    color: currentColor;
+}
+
+#style .prayer-pop-icon-preview-shell .dashicons {
     color: currentColor;
 }
 
@@ -953,8 +962,17 @@ input:checked+.prayer-pop-toggle-slider:before {
     }
 
     .prayer-pop-toggle-switch {
-        width: 40px;
+        width: 80px;
+        min-width: 80px;
         height: 20px;
+    }
+
+    .prayer-pop-toggle-wrapper {
+        grid-template-columns: 80px minmax(0, 1fr);
+    }
+
+    .prayer-pop-toggle-slider {
+        width: 40px;
     }
 
     .prayer-pop-toggle-slider:before {
@@ -966,8 +984,9 @@ input:checked+.prayer-pop-toggle-slider:before {
         transform: translateX(20px);
     }
 
-    .prayer-pop-toggle-wrapper .description {
+    .toggle-status {
         margin-left: 50px;
+        line-height: 20px;
     }
 }
 
@@ -1118,6 +1137,97 @@ input:checked+.prayer-pop-toggle-slider:before {
     padding: 8px 0 10px;
 }
 
+.prayer-pop-save-row {
+    max-width: 1240px;
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.prayer-pop-save-row .submit .button-primary {
+    min-width: 132px;
+}
+
+.prayer-pop-settings-layout .tab-content,
+.prayer-pop-settings-layout .prayer-pop-subsection-card,
+.prayer-pop-settings-layout .prayer-pop-subsection-card .form-table,
+.prayer-pop-settings-layout .prayer-pop-subsection-card .form-table td,
+.prayer-pop-settings-layout .prayer-pop-email-template-info {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.prayer-pop-settings-layout .prayer-pop-email-template-card textarea,
+.prayer-pop-settings-layout .prayer-pop-email-template-card input,
+.prayer-pop-settings-layout .prayer-pop-email-template-card select {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.prayer-pop-settings-layout .prayer-pop-email-template-card textarea.large-text {
+    display: block;
+    width: 100%;
+}
+
+.prayer-pop-settings-layout .prayer-pop-email-template-card .form-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.prayer-pop-settings-layout .prayer-pop-email-template-card .form-table th {
+    width: 180px;
+}
+
+.prayer-pop-settings-layout .prayer-pop-placeholder-insert-row,
+.prayer-pop-settings-layout .prayer-pop-placeholder-chips,
+.prayer-pop-settings-layout .prayer-pop-email-template-card .description {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.prayer-pop-settings-layout .prayer-pop-email-template-info {
+    overflow-x: auto;
+}
+
+#text,
+#text .form-table,
+#text .form-table td {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#text .form-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+#text .form-table th {
+    width: 220px;
+}
+
+#text .prayer-pop-text-field-input,
+#text textarea.large-text,
+#text input.regular-text,
+#text select {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#text .description,
+#text .prayer-pop-text-placeholders-help,
+#text .prayer-pop-text-card {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    box-sizing: border-box;
+}
+
 .prayer-pop-sticky-save-bar {
     position: fixed;
     top: 32px;
@@ -1157,6 +1267,23 @@ input:checked+.prayer-pop-toggle-slider:before {
     .prayer-pop-settings-layout.has-feature-rail {
         grid-template-columns: 1fr;
         gap: 14px;
+    }
+
+    .prayer-pop-save-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .prayer-pop-settings-layout .prayer-pop-email-template-card .form-table th,
+    .prayer-pop-settings-layout .prayer-pop-email-template-card .form-table td {
+        display: block;
+        width: 100%;
+    }
+
+    #text .form-table th,
+    #text .form-table td {
+        display: block;
+        width: 100%;
     }
 
     .prayer-pop-feature-rail {

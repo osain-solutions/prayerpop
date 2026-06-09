@@ -929,23 +929,14 @@ class ListTable {
                         array(
                             'selector' => '.tablenav.top .bulkactions',
                             'title'    => esc_html__( 'Bulk Actions', 'prayerpop' ),
-	                            'body'     => sprintf(
-	                                /* translators: %s: settings link */
-	                                __(
-	                                    '<ul>' .
-										'<li><strong>Print Submissions</strong><br>Create a print view (or save PDF) from selected submissions.</li>' .
-										'<li><strong>Send via Email</strong><br>Send selected submissions to a specific email address. You can update the email template in %s.</li>' .
-										'<li><strong>Approve selected</strong><br>Approve selected prayer requests.</li>' .
-										'<li><strong>Decline selected</strong><br>Decline selected prayer requests.</li>' .
-										'<li><strong>Mark prayer as answered</strong><br>Move selected approved prayer requests to Answered (with optional answer note).</li>' .
-										'<li><strong>Edit selected</strong><br>Edit names and submission text for selected rows in one modal.</li>' .
-										'<li><strong>Archive</strong><br>Remove selected submissions from active workflow while keeping history.</li>' .
-										'<li><strong>Move to Trash</strong><br>Move selected submissions to Trash.</li>' .
-										'</ul>',
-										'prayerpop'
-									),
-	                                '<a href="' . esc_url( admin_url( 'admin.php?page=prayer-pop-settings&tab=notifications' ) ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Notifications > Email Template Settings', 'prayerpop' ) . '</a>'
-	                            ),
+                            'body'     => sprintf(
+                                /* translators: %s: settings link */
+                                __(
+                                    '<ul><li><strong>Send via Email</strong><br>Send selected submissions to a specific email address. You can update the email template in %s.</li><li><strong>Approve selected</strong><br>Approve selected prayer requests.</li><li><strong>Decline selected</strong><br>Decline selected prayer requests.</li><li><strong>Mark prayer as answered</strong><br>Move selected approved prayer requests to Answered (with optional answer note).</li><li><strong>Edit selected</strong><br>Edit names and submission text for selected rows in one modal.</li><li><strong>Archive</strong><br>Remove selected submissions from active workflow while keeping history.</li><li><strong>Move to Trash</strong><br>Move selected submissions to Trash.</li></ul>',
+                                    'prayerpop'
+                                ),
+                                '<a href="' . esc_url( admin_url( 'admin.php?page=prayer-pop-settings&tab=notifications' ) ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Notifications > Email Template Settings', 'prayerpop' ) . '</a>'
+                            ),
                         ),
                         array(
                             'selector' => 'th#pp_name, .pp-tour-demo-row td.column-pp_name',

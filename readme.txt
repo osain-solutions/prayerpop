@@ -2,8 +2,8 @@
 Contributors: osain
 Tags: prayer, church, ministry, notifications
 Requires at least: 5.8
-Tested up to: 6.9
-Stable tag: 1.5.5
+Tested up to: 7.0
+Stable tag: 1.5.6
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -18,7 +18,7 @@ PrayerPop includes a focused prayer-request workflow:
 * Prayer request submission form
 * Admin submissions screen for review and moderation
 * Approve, Decline, Archive, Trash, Restore, and Mark as Answered actions
-* Bulk approve, bulk decline, bulk archive, and trash actions
+* Bulk send via email, approve, decline, mark as answered, edit, archive, and trash actions
 * Basic filters in the admin submissions list
 * Email notifications with immediate, daily, or weekly scheduling
 * Send Test Email
@@ -69,8 +69,11 @@ Available single-item actions include:
 
 Available bulk actions include:
 
+* Send selected submissions via email
 * Approve selected
 * Decline selected
+* Mark selected prayer requests as answered
+* Edit selected submissions
 * Archive
 * Trash
 
@@ -149,6 +152,9 @@ Yes. Open `PrayerPop -> Settings -> Text Customization`.
 Yes. Open `PrayerPop -> Settings -> Style`.
 
 == Changelog ==
+
+= 1.5.6 =
+* Improved admin submission workflows, settings guidance, and plugin compatibility.
 
 = 1.5.5 =
 * Documentation corrected to match the current feature set.

@@ -407,7 +407,7 @@ class Prayer_Pop_Settings {
 						'general'       => __( 'Configure the prayer-request workflow: bubble visibility, anonymous names, required admin review, and retention cleanup.', 'prayerpop' ),
 						'notifications' => __( 'Set who gets prayer request alerts, when alerts are sent, and how those alert emails are written.', 'prayerpop' ),
 						'style'         => __( 'Customize the PrayerPop bubble, including core colors, typography, size, animation, icon, position, and spacing.', 'prayerpop' ),
-						'text'          => __( 'Customize visible prayer request form text, labels, and messages. Export/import text fields as JSON for backup or translation updates.', 'prayerpop' ),
+						'text'          => __( 'Customize visible prayer request form text, labels, and messages.', 'prayerpop' ),
 						'documentation' => __( 'Setup and usage guidance for the PrayerPop bubble, admin submissions, notifications, styling, text customization, and troubleshooting.', 'prayerpop' ),
 					);
 
@@ -476,6 +476,7 @@ class Prayer_Pop_Settings {
 									<?php esc_html_e( 'This is part of Notifications. Set the subject/body placeholders and send a test email to verify delivery and formatting.', 'prayerpop' ); ?>
 								</p>
 								<?php do_settings_sections( 'prayer-pop-settings-email-template' ); ?>
+								<?php $this->email_template_settings->render_section_description(); ?>
 							</div>
 							<div class="prayer-pop-notification-debug-settings">
 								<h3><?php esc_html_e( 'Advanced Troubleshooting (Optional)', 'prayerpop' ); ?></h3>
@@ -949,7 +950,7 @@ class Prayer_Pop_Settings {
 	}
 
 	/**
-	 * Render right-side feature rail for Free settings tabs.
+	 * Render right-side feature rail for settings tabs.
 	 *
 	 * @return void
 	 */
@@ -1407,7 +1408,7 @@ class Prayer_Pop_Settings {
 				<ol>
 					<li><?php esc_html_e( 'Use quick filters for queue views such as All, Approved, Answered, Declined, Archived, and Trash.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Use dropdown filters for status, visibility, type, and date when available.', 'prayerpop' ); ?></li>
-					<li><?php esc_html_e( 'Use bulk actions to approve selected, decline selected, archive, or trash.', 'prayerpop' ); ?></li>
+					<li><?php esc_html_e( 'Use bulk actions to send selected via email, approve selected, decline selected, mark prayer requests as answered, edit selected, archive, or trash.', 'prayerpop' ); ?></li>
 				</ol>
 
 				<h3><?php esc_html_e( 'Status labels (plain meaning)', 'prayerpop' ); ?></h3>

@@ -694,7 +694,7 @@ class Prayer_Pop_Settings_Style {
 		?>
 		<select name="prayer_pop_styles[bubble_icon_type]" id="bubble_icon_type">
 			<option value="none" <?php selected( $display_current, 'none' ); ?>>
-				<?php esc_html_e( 'No Icon/Image', 'prayerpop' ); ?>
+				<?php esc_html_e( 'No icon', 'prayerpop' ); ?>
 			</option>
 			<option value="dashicon" <?php selected( $display_current, 'dashicon' ); ?>>
 				<?php esc_html_e( 'Icon Library (Dashicons + Tabler)', 'prayerpop' ); ?>
@@ -899,9 +899,45 @@ class Prayer_Pop_Settings_Style {
 				const $count = $('#icon_library_results_count');
 				const $globalColor = $('#global_bg_color');
 				const $bubbleColor = $('#bubble_bg_color');
-				const $iconColor = $('#bubble_icon_color');
-				let tablerNodes = {};
-				const iconIndex = [];
+					const $iconColor = $('#bubble_icon_color');
+					let tablerNodes = {};
+					const iconIndex = [];
+					const featuredIconValues = [
+						'dashicon:prayerpop',
+						'tabler:pray',
+						'tabler:heart-handshake',
+						'tabler:message-circle-heart',
+						'tabler:message-heart',
+						'tabler:heart',
+						'tabler:message-question',
+						'tabler:message-circle-question',
+						'tabler:help-circle',
+						'tabler:question-mark',
+						'tabler:message-circle',
+						'tabler:messages',
+						'tabler:bubble-text',
+						'tabler:bubble',
+						'tabler:building-church',
+						'tabler:cross',
+						'tabler:peace',
+						'tabler:sparkles',
+						'tabler:stars',
+						'tabler:book-2',
+						'tabler:book',
+						'tabler:flame',
+						'dashicon:heart',
+						'dashicon:editor-help',
+						'dashicon:format-chat',
+						'dashicon:testimonial',
+						'dashicon:book',
+						'dashicon:groups',
+						'dashicon:sos',
+						'dashicon:lightbulb'
+					];
+					const featuredIconRank = featuredIconValues.reduce(function(ranks, value, index) {
+						ranks[value] = index;
+						return ranks;
+					}, {});
 
 				function escapeAttr(value) {
 					return String(value).replace(/[&<>"']/g, function(chr) {
@@ -995,7 +1031,7 @@ class Prayer_Pop_Settings_Style {
 					});
 				}
 
-				function addTablerEntries() {
+					function addTablerEntries() {
 					for (let i = iconIndex.length - 1; i >= 0; i -= 1) {
 						if (iconIndex[i].source === 'tabler') {
 							iconIndex.splice(i, 1);
@@ -1013,8 +1049,19 @@ class Prayer_Pop_Settings_Style {
 							label: 'Tabler • ' + humanize(iconName) + ' (' + iconName + ')',
 							search: (iconName + ' ' + humanize(iconName) + ' tabler svg').toLowerCase()
 						});
-					});
-				}
+						});
+					}
+
+					function sortIconIndex() {
+						iconIndex.sort(function(a, b) {
+							const aRank = Object.prototype.hasOwnProperty.call(featuredIconRank, a.value) ? featuredIconRank[a.value] : Number.MAX_SAFE_INTEGER;
+							const bRank = Object.prototype.hasOwnProperty.call(featuredIconRank, b.value) ? featuredIconRank[b.value] : Number.MAX_SAFE_INTEGER;
+							if (aRank !== bRank) {
+								return aRank - bRank;
+							}
+							return a.label.localeCompare(b.label);
+						});
+					}
 
 				function getSelectedValue() {
 					const selected = $select.val();
@@ -1108,8 +1155,9 @@ class Prayer_Pop_Settings_Style {
 						$preview.html('<span class="dashicons dashicons-' + key.replace(/"/g, '') + '"></span>');
 					}
 				}
-				
-				addInitialEntries();
+
+					addInitialEntries();
+					sortIconIndex();
 
 				$search.on('input', function() {
 					renderOptions($(this).val());
@@ -1130,15 +1178,17 @@ class Prayer_Pop_Settings_Style {
 						}
 						return response.json();
 					})
-					.then(function(data) {
-						tablerNodes = data && typeof data === 'object' ? data : {};
-						addTablerEntries();
-						renderOptions($search.val());
-						updateSelection();
-					})
-					.catch(function() {
-						renderOptions($search.val());
-						$count.append(' <?php echo esc_js( __( 'Tabler dataset could not be loaded.', 'prayerpop' ) ); ?>');
+						.then(function(data) {
+							tablerNodes = data && typeof data === 'object' ? data : {};
+							addTablerEntries();
+							sortIconIndex();
+							renderOptions($search.val());
+							updateSelection();
+						})
+						.catch(function() {
+							sortIconIndex();
+							renderOptions($search.val());
+							$count.append(' <?php echo esc_js( __( 'Tabler dataset could not be loaded.', 'prayerpop' ) ); ?>');
 					});
 
 				$preview.css('--prayer-pop-brand-icon-url', 'url("' + prayerPopIconUrl.replace(/"/g, '\\"') + '")');

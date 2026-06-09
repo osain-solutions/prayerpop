@@ -1186,7 +1186,7 @@ class Prayer_Pop_Run {
 		}
 
 		$page = isset( $_REQUEST['page'] ) ? sanitize_key( wp_unslash( $_REQUEST['page'] ) ) : '';
-		return in_array( $page, array( 'prayer-pop', 'prayer-pop-settings', 'prayer-pop-print' ), true );
+		return in_array( $page, array( 'prayer-pop', 'prayer-pop-settings' ), true );
 	}
 
     /**
@@ -1247,6 +1247,7 @@ class Prayer_Pop_Run {
 	        }
 
 		$ordered_actions = array(
+			'send_via_email'   => __( 'Send via Email', 'prayerpop' ),
 			'approve_selected' => __( 'Approve selected', 'prayerpop' ),
 			'decline_selected' => __( 'Decline selected', 'prayerpop' ),
 			'mark_as_answered' => __( 'Mark prayer as answered', 'prayerpop' ),
@@ -1261,9 +1262,9 @@ class Prayer_Pop_Run {
 
 	        // Preserve any other actions that may be added by WordPress/plugins.
 	        foreach ( $bulk_actions as $action_key => $action_label ) {
-	            if ( 'edit' === $action_key ) {
-	                continue;
-	            }
+		            if ( in_array( $action_key, array( 'edit', 'print_submissions' ), true ) ) {
+		                continue;
+		            }
 	            if ( ! isset( $ordered_actions[ $action_key ] ) ) {
 	                $ordered_actions[ $action_key ] = $action_label;
 	            }
@@ -1421,7 +1422,7 @@ class Prayer_Pop_Run {
     public function handle_bulk_actions( $redirect_to, $doaction, $post_ids ) {
 	        $redirect_to = $this->clean_submission_redirect_url( $redirect_to );
 	        $doaction = sanitize_key( (string) $doaction );
-		$privileged_actions = array( 'approve_selected', 'decline_selected', 'mark_as_archived', 'mark_as_answered', 'bulk_edit' );
+		$privileged_actions = array( 'approve_selected', 'decline_selected', 'mark_as_archived', 'mark_as_answered', 'bulk_edit', 'send_via_email' );
 	        if ( in_array( $doaction, $privileged_actions, true ) && ! self::current_user_can_manage_submissions() ) {
 	            return $redirect_to;
 	        }
@@ -1615,31 +1616,6 @@ class Prayer_Pop_Run {
             return $redirect_to;
         }
 
-        if ( $doaction === 'print_submissions' ) {
-            // Handle printing - redirect to print page
-            if ( $this->is_all_posts_selected() ) {
-                $post_ids = $this->get_all_submission_ids_for_print();
-            }
-
-            if ( empty( $post_ids ) ) {
-                $redirect_to = add_query_arg( 'prayer_pop_notice', 'print_none', $redirect_to );
-                return $redirect_to;
-            }
-
-            $print_nonce = wp_create_nonce( 'prayer_pop_print_submissions' );
-            $this->store_print_ids( $post_ids, $print_nonce );
-            $print_url = add_query_arg(
-                array(
-                    'page'           => 'prayerpop-print',
-                    'prayer_pop_ids' => implode( ',', $post_ids ),
-                    '_wpnonce'       => $print_nonce,
-                ),
-                admin_url( 'admin.php' )
-            );
-            wp_safe_redirect( $print_url );
-            exit;
-        }
-
         return $redirect_to;
     }
 
@@ -1703,135 +1679,6 @@ class Prayer_Pop_Run {
         $mail_sent = wp_mail( $recipient_email, $subject, $message );
 
         return $mail_sent ? $processed_count : 0;
-    }
-
-    /**
-     * Add print page to admin menu
-     */
-    public function add_print_page() {
-        add_submenu_page(
-            null, // No parent menu - hidden page
-            __( 'Print Submissions', 'prayerpop' ),
-            __( 'Print Submissions', 'prayerpop' ),
-            self::get_manage_submissions_capability(),
-            'prayerpop-print',
-            array( $this, 'display_print_page' )
-        );
-    }
-
-    /**
-     * Display print page
-     */
-    public function display_print_page() {
-        if ( ! self::current_user_can_manage_submissions() ) {
-            wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'prayerpop' ) );
-        }
-
-        $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
-        if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'prayer_pop_print_submissions' ) ) {
-            wp_die( esc_html__( 'Security check failed.', 'prayerpop' ) );
-        }
-
-        $post_ids = $this->parse_print_post_ids_from_request( $nonce );
-        if ( empty( $post_ids ) ) {
-            wp_die( esc_html__( 'No submissions selected for printing.', 'prayerpop' ) );
-        }
-
-        $this->render_print_submissions_document( $post_ids, $nonce );
-    }
-
-    /**
-     * Handle printing submissions (legacy support)
-     */
-    public function handle_print_submissions() {
-        $page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
-        if ( 'prayerpop-print' === $page ) {
-            if ( ! self::current_user_can_manage_submissions() ) {
-                wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'prayerpop' ) );
-            }
-
-            $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
-            if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'prayer_pop_print_submissions' ) ) {
-                wp_die( esc_html__( 'Security check failed.', 'prayerpop' ) );
-            }
-
-            $post_ids = $this->parse_print_post_ids_from_request( $nonce );
-            if ( empty( $post_ids ) ) {
-                wp_die( esc_html__( 'No submissions selected for printing.', 'prayerpop' ) );
-            }
-
-            $this->render_print_submissions_document( $post_ids, $nonce );
-        }
-
-        $do_print = isset( $_GET['prayer_pop_do_print'] ) ? sanitize_text_field( wp_unslash( $_GET['prayer_pop_do_print'] ) ) : '';
-        if ( '1' === $do_print && isset( $_GET['prayer_pop_print_ids'] ) ) {
-            if ( ! self::current_user_can_manage_submissions() ) {
-                wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'prayerpop' ) );
-            }
-
-            $nonce = isset( $_GET['_prayer_pop_nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_prayer_pop_nonce'] ) ) : '';
-            if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'prayer_pop_print_submissions' ) ) {
-                wp_die( esc_html__( 'Security check failed.', 'prayerpop' ) );
-            }
-
-            $post_ids = explode( ',', sanitize_text_field( wp_unslash( $_GET['prayer_pop_print_ids'] ) ) );
-            $post_ids = array_map( 'absint', $post_ids );
-            $post_ids = array_values( array_filter( $post_ids ) );
-            $post_ids = $this->get_authorized_bulk_post_ids( $post_ids );
-
-            if ( empty( $post_ids ) ) {
-                $redirect_back = $this->clean_submission_redirect_url(
-                    remove_query_arg(
-                        array( 'prayer_pop_do_print', 'prayer_pop_print_ids', '_prayer_pop_nonce' ),
-                        wp_get_referer()
-                    )
-                );
-                $redirect_back = add_query_arg( 'prayer_pop_notice', 'print_none', $redirect_back );
-                wp_safe_redirect( $redirect_back );
-                exit;
-            }
-
-            $redirect_to = add_query_arg(
-                array(
-                    'page'           => 'prayerpop-print',
-                    'prayer_pop_ids' => implode( ',', $post_ids ),
-                    '_wpnonce'       => wp_create_nonce( 'prayer_pop_print_submissions' ),
-                ),
-                admin_url( 'admin.php' )
-            );
-
-            // Store IDs keyed by the final nonce for robust fallback if URL args are stripped.
-            parse_str( (string) wp_parse_url( $redirect_to, PHP_URL_QUERY ), $redirect_query );
-            if ( ! empty( $redirect_query['_wpnonce'] ) ) {
-                $this->store_print_ids( $post_ids, sanitize_text_field( $redirect_query['_wpnonce'] ) );
-            }
-            wp_safe_redirect( $redirect_to );
-            exit;
-        }
-
-        $action = isset( $_GET['action'] ) ? sanitize_key( wp_unslash( $_GET['action'] ) ) : '';
-        if ( 'print_submissions' === $action && isset( $_GET['post_ids'] ) ) {
-            // Security check: Ensure the user has permission.
-            if ( ! self::current_user_can_manage_submissions() ) {
-                wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'prayerpop' ) );
-            }
-
-            $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
-            if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'prayer_pop_print_submissions' ) ) {
-                wp_die( esc_html__( 'Security check failed.', 'prayerpop' ) );
-            }
-    
-            $post_ids = explode( ',', sanitize_text_field( wp_unslash( $_GET['post_ids'] ) ) );
-            $post_ids = array_map( 'absint', $post_ids );
-            $post_ids = array_values( array_filter( $post_ids ) );
-            $post_ids = $this->get_authorized_bulk_post_ids( $post_ids );
-
-            if ( empty( $post_ids ) ) {
-                wp_die( esc_html__( 'No submissions selected for printing.', 'prayerpop' ) );
-            }
-
-            $this->render_print_submissions_document( $post_ids, $nonce );
-        }
     }
 
     /**
@@ -2296,10 +2143,7 @@ class Prayer_Pop_Run {
 			} elseif ( 'private_no_approval' === $notice ) {
 				$action_notice_class = 'notice-warning';
 				$action_notice_text  = esc_html__( 'Private submissions cannot be approved or declined.', 'prayerpop' );
-			} elseif ( 'print_none' === $notice ) {
-				$action_notice_class = 'notice-success';
-				$action_notice_text  = esc_html__( 'No submissions selected for printing.', 'prayerpop' );
-			} elseif ( 'bulk_email_invalid' === $notice ) {
+				} elseif ( 'bulk_email_invalid' === $notice ) {
 				$action_notice_class = 'notice-error';
 				$action_notice_text  = esc_html__( 'Please enter a valid recipient email before sending.', 'prayerpop' );
 			} elseif ( 'bulk_email_none' === $notice ) {
@@ -2741,90 +2585,81 @@ class Prayer_Pop_Run {
             ob_end_clean();
         }
 
-        header( 'Content-Type: text/html; charset=utf-8' );
-        ?><!DOCTYPE html>
+	        header( 'Content-Type: text/html; charset=utf-8' );
+	        $site_name        = wp_strip_all_tags( get_bloginfo( 'name' ) );
+	        $submission_count = count( $submissions );
+	        $printed_at       = wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) );
+	        ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo esc_html__( 'Print Submissions', 'prayerpop' ); ?></title>
-    <?php ob_start(); ?>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.5;
-            background: white;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-        }
-        .submission {
-            margin-bottom: 30px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: #fafafa;
-        }
-        .submission h2 {
-            font-size: 1.2em;
-            color: #333;
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-        .submission p {
-            font-size: 1em;
-            color: #555;
-            margin: 5px 0;
-        }
-        .message {
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-left: 4px solid #2271b1;
-            margin-top: 10px;
-        }
-        @media print {
-            body { margin: 0; }
-            .submission {
-                page-break-inside: avoid;
-                background: white !important;
-                border: 1px solid #ccc !important;
-            }
-        }
-    <?php wp_add_inline_style( 'prayer-pop-admin-list', ob_get_clean() ); ?>
-</head>
-<body>
-    <h1><?php echo esc_html__( 'Selected Submissions', 'prayerpop' ); ?></h1>
-    <?php foreach ( $submissions as $post ) : ?>
-        <?php
-        $type = get_post_meta( $post->ID, 'prayer_pop_type', true );
-        $name = \Prayer_Pop_Defaults::get_submission_display_name( $post->ID );
-        $date = get_the_date( 'F j, Y g:i A', $post->ID );
-        ?>
-        <div class="submission">
-            <h2><?php
-			/* translators: %s: submission type. */
-			echo sprintf( esc_html__( 'Type: %s', 'prayerpop' ), esc_html( ucfirst( sanitize_key( (string) $type ) ) ) );
-			?></h2>
-            <p><strong><?php echo esc_html__( 'Name:', 'prayerpop' ); ?></strong> <?php echo esc_html( $name ); ?></p>
-            <p><strong><?php echo esc_html__( 'Date:', 'prayerpop' ); ?></strong> <?php echo esc_html( $date ); ?></p>
-            <div class="message">
-                <strong><?php echo esc_html__( 'Message:', 'prayerpop' ); ?></strong><br>
-                <?php echo nl2br( esc_html( $post->post_content ) ); ?>
-            </div>
-        </div>
-    <?php endforeach; ?>
-    <?php ob_start(); ?>
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                window.print();
-            }, 100);
-        });
-    <?php wp_add_inline_script( 'prayer-pop-admin-list', ob_get_clean() ); ?>
-</body>
+	</head>
+	<body>
+	    <main class="pp-print-shell">
+	        <div class="pp-print-actions pp-print-no-print">
+	            <a class="pp-print-button" href="<?php echo esc_url( admin_url( 'edit.php?post_type=prayer_request' ) ); ?>"><?php echo esc_html__( 'Back to Submissions', 'prayerpop' ); ?></a>
+	            <button class="pp-print-button pp-print-button-primary" type="button" onclick="window.print()"><?php echo esc_html__( 'Print', 'prayerpop' ); ?></button>
+	        </div>
+	        <header class="pp-print-header">
+	            <p class="pp-print-kicker"><?php echo esc_html( $site_name ); ?></p>
+	            <h1><?php echo esc_html__( 'Selected Submissions', 'prayerpop' ); ?></h1>
+	            <p class="pp-print-summary">
+	                <?php
+	                printf(
+	                    /* translators: 1: number of submissions, 2: print date. */
+	                    esc_html( _n( '%1$s submission · Prepared %2$s', '%1$s submissions · Prepared %2$s', $submission_count, 'prayerpop' ) ),
+	                    esc_html( number_format_i18n( $submission_count ) ),
+	                    esc_html( $printed_at )
+	                );
+	                ?>
+	            </p>
+	        </header>
+	        <?php foreach ( $submissions as $index => $post ) : ?>
+	            <?php
+	            $type_key       = sanitize_key( (string) get_post_meta( $post->ID, 'prayer_pop_type', true ) );
+	            $type_label     = 'testimony' === $type_key ? __( 'Testimony', 'prayerpop' ) : __( 'Prayer Request', 'prayerpop' );
+	            $status_key     = sanitize_key( (string) $post->post_status );
+	            $status_object  = get_post_status_object( $status_key );
+	            $status_label   = $status_object ? $status_object->label : ucwords( str_replace( '_', ' ', $status_key ) );
+	            $name           = \Prayer_Pop_Defaults::get_submission_display_name( $post->ID );
+	            $date           = get_the_date( get_option( 'date_format' ) . ' · ' . get_option( 'time_format' ), $post->ID );
+	            $answer_message = get_post_meta( $post->ID, self::ANSWERED_MESSAGE_META_KEY, true );
+	            ?>
+	            <article class="pp-print-submission">
+	                <header class="pp-print-submission-header">
+	                    <div class="pp-print-heading">
+	                        <span class="pp-print-number"><?php echo esc_html( number_format_i18n( $index + 1 ) ); ?></span>
+	                        <div>
+	                            <h2><?php echo esc_html( $name ); ?></h2>
+	                            <p class="pp-print-reference">
+	                                <?php
+	                                /* translators: 1: submission ID, 2: submission date. */
+	                                printf( esc_html__( 'Submission #%1$s · %2$s', 'prayerpop' ), esc_html( $post->ID ), esc_html( $date ) );
+	                                ?>
+	                            </p>
+	                        </div>
+	                    </div>
+	                    <div class="pp-print-badges">
+	                        <span class="pp-print-badge pp-print-type-<?php echo esc_attr( $type_key ); ?>"><?php echo esc_html( $type_label ); ?></span>
+	                        <span class="pp-print-badge pp-print-status-<?php echo esc_attr( $status_key ); ?>"><?php echo esc_html( $status_label ); ?></span>
+	                    </div>
+	                </header>
+	                <div class="pp-print-body">
+	                    <p class="pp-print-label"><?php echo esc_html__( 'Message', 'prayerpop' ); ?></p>
+	                    <p class="pp-print-message"><?php echo nl2br( esc_html( $post->post_content ) ); ?></p>
+	                    <?php if ( '' !== trim( (string) $answer_message ) ) : ?>
+	                        <div class="pp-print-answer">
+	                            <p class="pp-print-label"><?php echo esc_html__( 'Answer Note', 'prayerpop' ); ?></p>
+	                            <p class="pp-print-message"><?php echo nl2br( esc_html( $answer_message ) ); ?></p>
+	                        </div>
+	                    <?php endif; ?>
+	                </div>
+	            </article>
+	        <?php endforeach; ?>
+	    </main>
+	</body>
 </html><?php
         $this->delete_stored_print_ids( $nonce );
         exit;

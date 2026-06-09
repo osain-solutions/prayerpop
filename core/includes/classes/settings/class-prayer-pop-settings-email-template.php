@@ -91,13 +91,6 @@ class Prayer_Pop_Settings_Email_Template {
 			'prayer_pop_email_template_section'
 		);
 
-		add_settings_field(
-			'email_template_help',
-			'',
-			array( $this, 'render_section_description' ),
-			'prayer-pop-settings-email-template',
-			'prayer_pop_email_template_section'
-		);
 	}
 
 	/**
