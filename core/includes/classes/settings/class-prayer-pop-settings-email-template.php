@@ -139,55 +139,58 @@ class Prayer_Pop_Settings_Email_Template {
 				</tbody>
 			</table>
 		</div>
-		<?php ob_start(); ?>
-		.prayer-pop-email-template-info {
-			background: #fff;
-			padding: 15px;
-			border-left: 4px solid #0073aa;
-			margin: 20px 0;
-		}
-		.prayer-pop-email-template-info code {
-			background: #f0f0f1;
-			padding: 2px 5px;
-			border-radius: 3px;
-		}
-		.prayer-pop-placeholder-table {
-			margin-top: 12px;
-			margin-bottom: 14px;
-		}
-		.prayer-pop-placeholder-table th,
-		.prayer-pop-placeholder-table td {
-			padding: 10px 12px;
-			vertical-align: top;
-		}
-		.prayer-pop-placeholder-insert-row {
-			margin: 8px 0 10px;
-		}
-		.prayer-pop-placeholder-insert-label {
-			display: inline-block;
-			margin-right: 8px;
-			color: #50575e;
-			font-size: 12px;
-			vertical-align: middle;
-		}
-		.prayer-pop-placeholder-chips {
-			display: inline-flex;
-			flex-wrap: wrap;
-			gap: 6px;
-			vertical-align: middle;
-		}
-		.prayer-pop-placeholder-chips .button {
-			height: auto;
-			min-height: 28px;
-			padding: 3px 8px;
-			line-height: 1.2;
-		}
-		.prayer-pop-placeholder-chips code {
-			font-size: 12px;
-			background: transparent;
-			padding: 0;
-		}
-		<?php wp_add_inline_style( 'prayer-pop-admin', ob_get_clean() ); ?>
+		<?php
+		$prayer_pop_inline_css = implode( "\n", array(
+			'		.prayer-pop-email-template-info {',
+			'			background: #fff;',
+			'			padding: 15px;',
+			'			border-left: 4px solid #0073aa;',
+			'			margin: 20px 0;',
+			'		}',
+			'		.prayer-pop-email-template-info code {',
+			'			background: #f0f0f1;',
+			'			padding: 2px 5px;',
+			'			border-radius: 3px;',
+			'		}',
+			'		.prayer-pop-placeholder-table {',
+			'			margin-top: 12px;',
+			'			margin-bottom: 14px;',
+			'		}',
+			'		.prayer-pop-placeholder-table th,',
+			'		.prayer-pop-placeholder-table td {',
+			'			padding: 10px 12px;',
+			'			vertical-align: top;',
+			'		}',
+			'		.prayer-pop-placeholder-insert-row {',
+			'			margin: 8px 0 10px;',
+			'		}',
+			'		.prayer-pop-placeholder-insert-label {',
+			'			display: inline-block;',
+			'			margin-right: 8px;',
+			'			color: #50575e;',
+			'			font-size: 12px;',
+			'			vertical-align: middle;',
+			'		}',
+			'		.prayer-pop-placeholder-chips {',
+			'			display: inline-flex;',
+			'			flex-wrap: wrap;',
+			'			gap: 6px;',
+			'			vertical-align: middle;',
+			'		}',
+			'		.prayer-pop-placeholder-chips .button {',
+			'			height: auto;',
+			'			min-height: 28px;',
+			'			padding: 3px 8px;',
+			'			line-height: 1.2;',
+			'		}',
+			'		.prayer-pop-placeholder-chips code {',
+			'			font-size: 12px;',
+			'			background: transparent;',
+			'			padding: 0;',
+			'		}',
+		) );
+		wp_add_inline_style( 'prayer-pop-admin', $prayer_pop_inline_css );
+		?>
 		<?php
 	}
 
@@ -197,64 +200,67 @@ class Prayer_Pop_Settings_Email_Template {
 	public function email_test_button_callback() {
 		?>
 		<p><button type="button" class="button" id="prayer-pop-send-test-email">Send Test Email</button></p>
-		<?php ob_start(); ?>
-		jQuery(document).ready(function($){
-		  function insertTextAtCursor($field, text) {
-			if (!$field || !$field.length) {
-			  return;
-			}
-			var field = $field.get(0);
-			field.focus();
-
-			if (typeof field.selectionStart === 'number' && typeof field.selectionEnd === 'number') {
-			  var start = field.selectionStart;
-			  var end = field.selectionEnd;
-			  var current = $field.val() || '';
-			  $field.val(current.substring(0, start) + text + current.substring(end));
-			  var caret = start + text.length;
-			  field.setSelectionRange(caret, caret);
-			} else if (document.selection) {
-			  field.focus();
-			  var range = document.selection.createRange();
-			  range.text = text;
-			} else {
-			  $field.val(($field.val() || '') + text);
-			}
-
-			$field.trigger('input').trigger('change');
-		  }
-
-		  $(document).on('click', '.prayer-pop-insert-placeholder', function(e){
-			e.preventDefault();
-			var $button = $(this);
-			var selector = $button.attr('data-target');
-			var placeholder = $button.attr('data-placeholder') || '';
-			if (!selector || !placeholder) {
-			  return;
-			}
-			insertTextAtCursor($(selector), placeholder);
-		  });
-
-		  $('#prayer-pop-send-test-email').on('click', function(){
-			var $btn = $(this);
-			$btn.prop('disabled', true).text('Sending...');
-			$.post(ajaxurl, {
-			  action: 'prayer_pop_send_test_email',
-			  _wpnonce: (window.prayerPopAdmin && prayerPopAdmin.nonce) ? prayerPopAdmin.nonce : '',
-			}, function(response){
-			  var message = 'Failed to send test email.';
-			  if (response && response.data) {
-				message = response.data;
-			  }
-			  alert(message);
-			  $btn.prop('disabled', false).text('Send Test Email');
-			}).fail(function(){
-			  alert('Failed to send test email.');
-			  $btn.prop('disabled', false).text('Send Test Email');
-			});
-		  });
-		});
-		<?php wp_add_inline_script( 'prayer-pop-admin', ob_get_clean() ); ?>
+		<?php
+		$prayer_pop_inline_js = implode( "\n", array(
+			'		jQuery(document).ready(function($){',
+			'		  function insertTextAtCursor($field, text) {',
+			'			if (!$field || !$field.length) {',
+			'			  return;',
+			'			}',
+			'			var field = $field.get(0);',
+			'			field.focus();',
+			'',
+			'			if (typeof field.selectionStart === \'number\' && typeof field.selectionEnd === \'number\') {',
+			'			  var start = field.selectionStart;',
+			'			  var end = field.selectionEnd;',
+			'			  var current = $field.val() || \'\';',
+			'			  $field.val(current.substring(0, start) + text + current.substring(end));',
+			'			  var caret = start + text.length;',
+			'			  field.setSelectionRange(caret, caret);',
+			'			} else if (document.selection) {',
+			'			  field.focus();',
+			'			  var range = document.selection.createRange();',
+			'			  range.text = text;',
+			'			} else {',
+			'			  $field.val(($field.val() || \'\') + text);',
+			'			}',
+			'',
+			'			$field.trigger(\'input\').trigger(\'change\');',
+			'		  }',
+			'',
+			'		  $(document).on(\'click\', \'.prayer-pop-insert-placeholder\', function(e){',
+			'			e.preventDefault();',
+			'			var $button = $(this);',
+			'			var selector = $button.attr(\'data-target\');',
+			'			var placeholder = $button.attr(\'data-placeholder\') || \'\';',
+			'			if (!selector || !placeholder) {',
+			'			  return;',
+			'			}',
+			'			insertTextAtCursor($(selector), placeholder);',
+			'		  });',
+			'',
+			'		  $(\'#prayer-pop-send-test-email\').on(\'click\', function(){',
+			'			var $btn = $(this);',
+			'			$btn.prop(\'disabled\', true).text(\'Sending...\');',
+			'			$.post(ajaxurl, {',
+			'			  action: \'prayer_pop_send_test_email\',',
+			'			  _wpnonce: (window.prayerPopAdmin && prayerPopAdmin.nonce) ? prayerPopAdmin.nonce : \'\',',
+			'			}, function(response){',
+			'			  var message = \'Failed to send test email.\';',
+			'			  if (response && response.data) {',
+			'				message = response.data;',
+			'			  }',
+			'			  alert(message);',
+			'			  $btn.prop(\'disabled\', false).text(\'Send Test Email\');',
+			'			}).fail(function(){',
+			'			  alert(\'Failed to send test email.\');',
+			'			  $btn.prop(\'disabled\', false).text(\'Send Test Email\');',
+			'			});',
+			'		  });',
+			'		});',
+		) );
+		wp_add_inline_script( 'prayer-pop-admin', $prayer_pop_inline_js );
+		?>
 		<?php
 	}
 

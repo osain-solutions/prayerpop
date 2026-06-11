@@ -97,47 +97,7 @@ class ListTable {
 	 * @return string
 	 */
 	private function get_submission_list_redirect_url() {
-		$args = array(
-			'post_type' => 'prayer_request',
-		);
-
-		$key_filters = array(
-			'post_status',
-			'prayer_request_status',
-			'prayer_pop_visibility',
-			'prayer_pop_type',
-			'prayer_pop_stage_ready',
-			'orderby',
-			'order',
-		);
-
-		foreach ( $key_filters as $key ) {
-			if ( isset( $_GET[ $key ] ) ) {
-				$value = sanitize_key( wp_unslash( $_GET[ $key ] ) );
-				if ( '' !== $value ) {
-					$args[ $key ] = $value;
-				}
-			}
-		}
-
-		$int_filters = array( 'm', 'paged' );
-		foreach ( $int_filters as $key ) {
-			if ( isset( $_GET[ $key ] ) ) {
-				$value = absint( wp_unslash( $_GET[ $key ] ) );
-				if ( $value > 0 ) {
-					$args[ $key ] = $value;
-				}
-			}
-		}
-
-		if ( isset( $_GET['s'] ) ) {
-			$search = sanitize_text_field( wp_unslash( $_GET['s'] ) );
-			if ( '' !== $search ) {
-				$args['s'] = $search;
-			}
-		}
-
-		return add_query_arg( $args, admin_url( 'edit.php' ) );
+		return add_query_arg( 'post_type', 'prayer_request', admin_url( 'edit.php' ) );
 	}
 
     /**

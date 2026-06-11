@@ -352,10 +352,13 @@ final class Prayer_Pop {
 				<meta charset="<?php bloginfo( 'charset' ); ?>">
 				<meta name="viewport" content="width=device-width, initial-scale=1">
 				<?php wp_head(); ?>
-				<?php ob_start(); ?>
-					html, body { height: 100%; margin: 0; overflow: hidden; background: transparent !important; }
-					#wpadminbar { display: none !important; }
-				<?php wp_add_inline_style( 'prayer-pop-style', ob_get_clean() ); ?>
+				<?php
+				$preview_inline_css = implode( "\n", array(
+					'					html, body { height: 100%; margin: 0; overflow: hidden; background: transparent !important; }',
+					'					#wpadminbar { display: none !important; }',
+				) );
+				wp_add_inline_style( 'prayer-pop-style', $preview_inline_css );
+				?>
 			</head>
 			<body class="prayer-pop-preview-page">
 				<?php if ( function_exists( 'wp_body_open' ) ) { wp_body_open(); } ?>

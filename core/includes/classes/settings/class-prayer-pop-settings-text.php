@@ -106,46 +106,49 @@ class Prayer_Pop_Settings_Text {
 			<p class="description"><?php esc_html_e( 'Resets all text customization fields back to the plugin default English text.', 'prayerpop' ); ?></p>
 		</div>
 			
-		<?php ob_start(); ?>
-		.prayer-pop-text-card {
-			background: #fff;
-			padding: 20px;
-			border: 1px solid #dcdcde;
-			border-left: 4px solid #0073aa;
-			border-radius: 6px;
-			margin: 20px 0;
-		}
-		.prayer-pop-text-placeholders-help {
-			margin-top: 20px;
-		}
-		.prayer-pop-text-placeholders-help code {
-			background: #f0f0f1;
-			padding: 2px 5px;
-			border-radius: 3px;
-		}
-		.prayer-pop-text-placeholders-help ul {
-			list-style: disc;
-			margin-left: 20px;
-		}
-		.prayer-pop-text-reset-block {
-			margin: 10px 0 18px;
-		}
-		.prayer-pop-text-reset-block .description {
-			margin: 6px 0 0;
-			color: #646970;
-		}
-		.prayer-pop-reset-wrap {
-			margin: 0;
-		}
-		#text .prayer-pop-text-field-input {
-			width: 60em;
-			max-width: 100%;
-		}
-		#text textarea.large-text {
-			width: 60em;
-			max-width: 100%;
-		}
-		<?php wp_add_inline_style( 'prayer-pop-admin', ob_get_clean() ); ?>
+		<?php
+		$prayer_pop_inline_css = implode( "\n", array(
+			'		.prayer-pop-text-card {',
+			'			background: #fff;',
+			'			padding: 20px;',
+			'			border: 1px solid #dcdcde;',
+			'			border-left: 4px solid #0073aa;',
+			'			border-radius: 6px;',
+			'			margin: 20px 0;',
+			'		}',
+			'		.prayer-pop-text-placeholders-help {',
+			'			margin-top: 20px;',
+			'		}',
+			'		.prayer-pop-text-placeholders-help code {',
+			'			background: #f0f0f1;',
+			'			padding: 2px 5px;',
+			'			border-radius: 3px;',
+			'		}',
+			'		.prayer-pop-text-placeholders-help ul {',
+			'			list-style: disc;',
+			'			margin-left: 20px;',
+			'		}',
+			'		.prayer-pop-text-reset-block {',
+			'			margin: 10px 0 18px;',
+			'		}',
+			'		.prayer-pop-text-reset-block .description {',
+			'			margin: 6px 0 0;',
+			'			color: #646970;',
+			'		}',
+			'		.prayer-pop-reset-wrap {',
+			'			margin: 0;',
+			'		}',
+			'		#text .prayer-pop-text-field-input {',
+			'			width: 60em;',
+			'			max-width: 100%;',
+			'		}',
+			'		#text textarea.large-text {',
+			'			width: 60em;',
+			'			max-width: 100%;',
+			'		}',
+		) );
+		wp_add_inline_style( 'prayer-pop-admin', $prayer_pop_inline_css );
+		?>
 		<?php
 	}
 
@@ -544,125 +547,144 @@ class Prayer_Pop_Settings_Text {
 				</div>
 			</div>
 
-		<?php ob_start(); ?>
-			.prayer-pop-export-import-section {
-				margin: 20px 0;
-			}
-		.prayer-pop-export-import-section h3 {
-			margin-top: 0;
-			color: #0073aa;
-		}
-		.prayer-pop-export-import-section .description {
-			color: #666;
-			font-style: italic;
-			margin-bottom: 15px;
-		}
-		.prayer-pop-export-import-row {
-			display: flex;
-			gap: 30px;
-			margin-top: 15px;
-		}
-		.prayer-pop-export-section,
-		.prayer-pop-import-section {
-			flex: 1;
-		}
-		.prayer-pop-export-section h4,
-		.prayer-pop-import-section h4 {
-			margin-top: 0;
-			color: #1d2327;
-		}
-		.prayer-pop-import-form {
-			display: flex;
-			gap: 10px;
-			align-items: center;
-			flex-wrap: wrap;
-		}
-			.prayer-pop-import-form input[type="file"] {
-				flex: 1;
-				min-width: 200px;
-			}
-			.prayer-pop-export-section .button,
-			.prayer-pop-import-form .button {
-				display: inline-flex;
-				align-items: center;
-				justify-content: center;
-				gap: 8px;
-			}
-			.prayer-pop-export-section .button .dashicons,
-			.prayer-pop-import-form .button .dashicons {
-				margin: 0;
-				display: inline-flex;
-				align-items: center;
-				justify-content: center;
-				width: 18px;
-				height: 18px;
-				line-height: 18px;
-				font-size: 18px;
-				vertical-align: middle;
-			}
-			.import-note {
-				margin-top: 10px;
-				color: #666;
-		}
-		.import-note small {
-			font-style: italic;
-		}
-		<?php wp_add_inline_style( 'prayer-pop-admin', ob_get_clean() ); ?>
+		<?php
+		$prayer_pop_inline_css = implode( "\n", array(
+			'			.prayer-pop-export-import-section {',
+			'				margin: 20px 0;',
+			'			}',
+			'		.prayer-pop-export-import-section h3 {',
+			'			margin-top: 0;',
+			'			color: #0073aa;',
+			'		}',
+			'		.prayer-pop-export-import-section .description {',
+			'			color: #666;',
+			'			font-style: italic;',
+			'			margin-bottom: 15px;',
+			'		}',
+			'		.prayer-pop-export-import-row {',
+			'			display: flex;',
+			'			gap: 30px;',
+			'			margin-top: 15px;',
+			'		}',
+			'		.prayer-pop-export-section,',
+			'		.prayer-pop-import-section {',
+			'			flex: 1;',
+			'		}',
+			'		.prayer-pop-export-section h4,',
+			'		.prayer-pop-import-section h4 {',
+			'			margin-top: 0;',
+			'			color: #1d2327;',
+			'		}',
+			'		.prayer-pop-import-form {',
+			'			display: flex;',
+			'			gap: 10px;',
+			'			align-items: center;',
+			'			flex-wrap: wrap;',
+			'		}',
+			'			.prayer-pop-import-form input[type="file"] {',
+			'				flex: 1;',
+			'				min-width: 200px;',
+			'			}',
+			'			.prayer-pop-export-section .button,',
+			'			.prayer-pop-import-form .button {',
+			'				display: inline-flex;',
+			'				align-items: center;',
+			'				justify-content: center;',
+			'				gap: 8px;',
+			'			}',
+			'			.prayer-pop-export-section .button .dashicons,',
+			'			.prayer-pop-import-form .button .dashicons {',
+			'				margin: 0;',
+			'				display: inline-flex;',
+			'				align-items: center;',
+			'				justify-content: center;',
+			'				width: 18px;',
+			'				height: 18px;',
+			'				line-height: 18px;',
+			'				font-size: 18px;',
+			'				vertical-align: middle;',
+			'			}',
+			'			.import-note {',
+			'				margin-top: 10px;',
+			'				color: #666;',
+			'		}',
+			'		.import-note small {',
+			'			font-style: italic;',
+			'		}',
+		) );
+		wp_add_inline_style( 'prayer-pop-admin', $prayer_pop_inline_css );
+		?>
 		
-		<?php ob_start(); ?>
-		jQuery(document).ready(function($) {
-				// Handle import text fields
-				$('#import_translations_btn').on('click', function() {
-				var fileInput = $('#translation_file')[0];
-				var file = fileInput.files[0];
-				
-				if (!file) {
-					alert('<?php esc_html_e( 'Please select a file to import.', 'prayerpop' ); ?>');
-					return;
-				}
-				
-				if (!file.name.toLowerCase().endsWith('.json')) {
-					alert('<?php esc_html_e( 'Please select a valid JSON file.', 'prayerpop' ); ?>');
-					return;
-				}
-				
-				var formData = new FormData();
-				formData.append('translation_file', file);
-				formData.append('action', 'prayer_pop_import_translations');
-				formData.append('_wpnonce', '<?php echo esc_js( wp_create_nonce( 'prayer_pop_import_texts' ) ); ?>');
-				
-				var $button = $(this);
-				var originalText = $button.text();
-				$button.prop('disabled', true).text('<?php esc_html_e( 'Importing...', 'prayerpop' ); ?>');
-				
-				$.ajax({
-					url: ajaxurl,
-					type: 'POST',
-					data: formData,
-					processData: false,
-					contentType: false,
-					success: function(response) {
-						if (response.success) {
-							alert(response.data || '<?php esc_html_e( 'Text fields imported successfully!', 'prayerpop' ); ?>');
-							// Refresh page to show updated text fields
-							window.location.reload();
-						} else {
-							alert('<?php esc_html_e( 'Import failed: ', 'prayerpop' ); ?>' + (response.data || '<?php esc_html_e( 'Unknown error.', 'prayerpop' ); ?>'));
-							$button.prop('disabled', false).text(originalText);
-							fileInput.value = ''; // Clear file input
-						}
-					},
-					error: function(xhr, status, error) {
-						alert('<?php esc_html_e( 'Import failed. Please try again.', 'prayerpop' ); ?>' + '\n' + error);
-						$button.prop('disabled', false).text(originalText);
-						fileInput.value = ''; // Clear file input
-					}
-				});
-			});
-			
-
-		});
-		<?php wp_add_inline_script( 'prayer-pop-admin', ob_get_clean() ); ?>
+		<?php
+		$prayer_pop_inline_js = implode( "\n", array(
+			'		jQuery(document).ready(function($) {',
+			'				// Handle import text fields',
+			'				$(\'#import_translations_btn\').on(\'click\', function() {',
+			'				var fileInput = $(\'#translation_file\')[0];',
+			'				var file = fileInput.files[0];',
+			'				',
+			'				if (!file) {',
+			'					alert(__SELECT_FILE__);',
+			'					return;',
+			'				}',
+			'				',
+			'				if (!file.name.toLowerCase().endsWith(\'.json\')) {',
+			'					alert(__SELECT_VALID_JSON__);',
+			'					return;',
+			'				}',
+			'				',
+			'				var formData = new FormData();',
+			'				formData.append(\'translation_file\', file);',
+			'				formData.append(\'action\', \'prayer_pop_import_translations\');',
+			'				formData.append(\'_wpnonce\', __IMPORT_NONCE__);',
+			'				',
+			'				var $button = $(this);',
+			'				var originalText = $button.text();',
+			'				$button.prop(\'disabled\', true).text(__IMPORTING__);',
+			'				',
+			'				$.ajax({',
+			'					url: ajaxurl,',
+			'					type: \'POST\',',
+			'					data: formData,',
+			'					processData: false,',
+			'					contentType: false,',
+			'					success: function(response) {',
+			'						if (response.success) {',
+			'							alert(response.data || __IMPORT_SUCCESS__);',
+			'							// Refresh page to show updated text fields',
+			'							window.location.reload();',
+			'						} else {',
+			'							alert(__IMPORT_FAILED_PREFIX__ + (response.data || __UNKNOWN_ERROR__));',
+			'							$button.prop(\'disabled\', false).text(originalText);',
+			'							fileInput.value = \'\'; // Clear file input',
+			'						}',
+			'					},',
+			'					error: function(xhr, status, error) {',
+			'						alert(__IMPORT_FAILED_RETRY__ + \'\\n\' + error);',
+			'						$button.prop(\'disabled\', false).text(originalText);',
+			'						fileInput.value = \'\'; // Clear file input',
+			'					}',
+			'				});',
+			'			});',
+			'			',
+			'',
+			'		});',
+		) );
+		$prayer_pop_inline_js = strtr(
+			$prayer_pop_inline_js,
+			array(
+				'__SELECT_FILE__' => wp_json_encode( __( 'Please select a file to import.', 'prayerpop' ) ),
+				'__SELECT_VALID_JSON__' => wp_json_encode( __( 'Please select a valid JSON file.', 'prayerpop' ) ),
+				'__IMPORT_NONCE__' => wp_json_encode( wp_create_nonce( 'prayer_pop_import_texts' ) ),
+				'__IMPORTING__' => wp_json_encode( __( 'Importing...', 'prayerpop' ) ),
+				'__IMPORT_SUCCESS__' => wp_json_encode( __( 'Text fields imported successfully!', 'prayerpop' ) ),
+				'__IMPORT_FAILED_PREFIX__' => wp_json_encode( __( 'Import failed: ', 'prayerpop' ) ),
+				'__UNKNOWN_ERROR__' => wp_json_encode( __( 'Unknown error.', 'prayerpop' ) ),
+				'__IMPORT_FAILED_RETRY__' => wp_json_encode( __( 'Import failed. Please try again.', 'prayerpop' ) ),
+			)
+		);
+		wp_add_inline_script( 'prayer-pop-admin', $prayer_pop_inline_js );
+		?>
 		<?php
 	}
 }

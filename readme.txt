@@ -3,7 +3,7 @@ Contributors: osain
 Tags: prayer, church, ministry, notifications
 Requires at least: 5.8
 Tested up to: 7.0
-Stable tag: 1.5.6
+Stable tag: 1.5.7
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -153,7 +153,7 @@ Yes. Open `PrayerPop -> Settings -> Style`.
 
 == Changelog ==
 
-= 1.5.6 =
+= 1.5.7 =
 * Improved admin submission workflows, settings guidance, and plugin compatibility.
 
 = 1.5.5 =

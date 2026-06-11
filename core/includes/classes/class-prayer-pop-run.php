@@ -711,95 +711,102 @@ class Prayer_Pop_Run {
 			return;
 		}
 		?>
-		<?php ob_start(); ?>
-			.prayer-pop-edit-back-link {
-				margin: 0 0 6px;
-			}
-			#titlediv,
-			#postdivrich,
-			#edit-slug-box {
-				display: none !important;
-			}
-			#prayer_pop_submission_content .inside,
-			#prayer_pop_answered_note .inside {
-				padding: 10px 12px 12px;
-			}
-			#prayer_pop_submission_content .prayer-pop-submission-edit-fields p {
-				margin: 0 0 12px;
-			}
-			#prayer_pop_submission_content .prayer-pop-submission-edit-fields p:first-child {
-				margin-top: 0;
-			}
-			#prayer_pop_submission_content input[type="text"],
-			#prayer_pop_submission_content textarea,
-			#prayer_pop_answered_message {
-				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-				font-size: 14px;
-				line-height: 1.45;
-			}
-			#post-body-content {
-				display: none !important;
-			}
-			#poststuff #post-body.columns-2 {
-				margin-right: 320px;
-			}
-			#post-body.columns-2 #postbox-container-1 {
-				width: 300px;
-				margin-right: -320px;
-				margin-top: 0;
-			}
-			#post-body.columns-2 #postbox-container-2 {
-				margin-right: 0;
-			}
-			#postdivrich #wp-content-media-buttons,
-			#postdivrich .wp-editor-tabs,
-			#postdivrich .quicktags-toolbar,
-			#postdivrich .mce-toolbar-grp,
-			#postdivrich .mce-statusbar {
-				display: none !important;
-			}
-			#content,
-			#prayer_pop_submission_content textarea,
-			#prayer_pop_answered_message {
-				min-height: 180px;
-			}
-			#submitdiv,
-			#prayer_pop_submission_details .handle-actions,
-			#prayer_pop_submission_details .hndle .toggle-indicator {
-				display: none !important;
-			}
-			#prayer_pop_submission_details #major-publishing-actions {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				gap: 8px;
-				flex-wrap: nowrap;
-			}
-			#prayer_pop_submission_details #delete-action,
-			#prayer_pop_submission_details #publishing-action {
-				float: none;
-				margin: 0;
-				padding: 0;
-				display: flex;
-				align-items: center;
-			}
-			#prayer_pop_submission_details #publishing-action .spinner {
-				float: none;
-				margin: 0 6px 0 0;
-			}
-			#prayer_pop_submission_details #delete-action .submitdelete,
-			#prayer_pop_submission_details #publishing-action .button {
-				white-space: nowrap;
-			}
-		<?php wp_add_inline_style( 'prayer-pop-admin-list', ob_get_clean() ); ?>
-		<?php ob_start(); ?>
-			document.addEventListener('DOMContentLoaded', function() {
-				var messageNode = document.querySelector('#message.updated p');
-				if (messageNode) {
-					messageNode.textContent = '<?php echo esc_js( __( 'Changes saved.', 'prayerpop' ) ); ?>';
-				}
-			});
-		<?php wp_add_inline_script( 'prayer-pop-admin-list', ob_get_clean() ); ?>
+		<?php
+		$submission_edit_css = implode( "\n", array(
+			'			.prayer-pop-edit-back-link {',
+			'				margin: 0 0 6px;',
+			'			}',
+			'			#titlediv,',
+			'			#postdivrich,',
+			'			#edit-slug-box {',
+			'				display: none !important;',
+			'			}',
+			'			#prayer_pop_submission_content .inside,',
+			'			#prayer_pop_answered_note .inside {',
+			'				padding: 10px 12px 12px;',
+			'			}',
+			'			#prayer_pop_submission_content .prayer-pop-submission-edit-fields p {',
+			'				margin: 0 0 12px;',
+			'			}',
+			'			#prayer_pop_submission_content .prayer-pop-submission-edit-fields p:first-child {',
+			'				margin-top: 0;',
+			'			}',
+			'			#prayer_pop_submission_content input[type="text"],',
+			'			#prayer_pop_submission_content textarea,',
+			'			#prayer_pop_answered_message {',
+			'				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;',
+			'				font-size: 14px;',
+			'				line-height: 1.45;',
+			'			}',
+			'			#post-body-content {',
+			'				display: none !important;',
+			'			}',
+			'			#poststuff #post-body.columns-2 {',
+			'				margin-right: 320px;',
+			'			}',
+			'			#post-body.columns-2 #postbox-container-1 {',
+			'				width: 300px;',
+			'				margin-right: -320px;',
+			'				margin-top: 0;',
+			'			}',
+			'			#post-body.columns-2 #postbox-container-2 {',
+			'				margin-right: 0;',
+			'			}',
+			'			#postdivrich #wp-content-media-buttons,',
+			'			#postdivrich .wp-editor-tabs,',
+			'			#postdivrich .quicktags-toolbar,',
+			'			#postdivrich .mce-toolbar-grp,',
+			'			#postdivrich .mce-statusbar {',
+			'				display: none !important;',
+			'			}',
+			'			#content,',
+			'			#prayer_pop_submission_content textarea,',
+			'			#prayer_pop_answered_message {',
+			'				min-height: 180px;',
+			'			}',
+			'			#submitdiv,',
+			'			#prayer_pop_submission_details .handle-actions,',
+			'			#prayer_pop_submission_details .hndle .toggle-indicator {',
+			'				display: none !important;',
+			'			}',
+			'			#prayer_pop_submission_details #major-publishing-actions {',
+			'				display: flex;',
+			'				align-items: center;',
+			'				justify-content: space-between;',
+			'				gap: 8px;',
+			'				flex-wrap: nowrap;',
+			'			}',
+			'			#prayer_pop_submission_details #delete-action,',
+			'			#prayer_pop_submission_details #publishing-action {',
+			'				float: none;',
+			'				margin: 0;',
+			'				padding: 0;',
+			'				display: flex;',
+			'				align-items: center;',
+			'			}',
+			'			#prayer_pop_submission_details #publishing-action .spinner {',
+			'				float: none;',
+			'				margin: 0 6px 0 0;',
+			'			}',
+			'			#prayer_pop_submission_details #delete-action .submitdelete,',
+			'			#prayer_pop_submission_details #publishing-action .button {',
+			'				white-space: nowrap;',
+			'			}',
+		) );
+		wp_add_inline_style( 'prayer-pop-admin-list', $submission_edit_css );
+
+		$changes_saved_label = esc_js( __( 'Changes saved.', 'prayerpop' ) );
+		$submission_edit_js = implode( "\n", array(
+			'			document.addEventListener(\'DOMContentLoaded\', function() {',
+			'				var messageNode = document.querySelector(\'#message.updated p\');',
+			'				if (messageNode) {',
+			'					messageNode.textContent = __CHANGES_SAVED_LABEL__;',
+			'				}',
+			'			});',
+		) );
+		$submission_edit_js = str_replace( '__CHANGES_SAVED_LABEL__', wp_json_encode( $changes_saved_label ), $submission_edit_js );
+		wp_add_inline_script( 'prayer-pop-admin-list', $submission_edit_js );
+		?>
 		<?php
 	}
 
@@ -1426,6 +1433,12 @@ class Prayer_Pop_Run {
 	        if ( in_array( $doaction, $privileged_actions, true ) && ! self::current_user_can_manage_submissions() ) {
 	            return $redirect_to;
 	        }
+		if ( in_array( $doaction, $privileged_actions, true ) ) {
+			$bulk_nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : '';
+			if ( ! wp_verify_nonce( $bulk_nonce, 'bulk-posts' ) ) {
+				return add_query_arg( 'prayer_pop_notice', 'security_failed', $redirect_to );
+			}
+		}
 	        $post_ids = $this->get_authorized_bulk_post_ids( $post_ids );
 
 	        if ( $doaction === 'approve_selected' ) {
@@ -2542,6 +2555,10 @@ class Prayer_Pop_Run {
      */
     private function parse_print_post_ids_from_request( $nonce ) {
         $post_ids = array();
+
+        if ( ! wp_verify_nonce( $nonce, 'prayer_pop_print_submissions' ) ) {
+            return $post_ids;
+        }
 
         if ( isset( $_GET['prayer_pop_ids'] ) ) {
             $post_ids = explode( ',', sanitize_text_field( wp_unslash( $_GET['prayer_pop_ids'] ) ) );

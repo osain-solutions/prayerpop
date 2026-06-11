@@ -803,404 +803,423 @@ class Prayer_Pop_Settings_Style {
 			<p class="description"><?php esc_html_e( 'Search and select an icon from both WordPress Dashicons and Tabler SVG icons.', 'prayerpop' ); ?></p>
 		</div>
 		
-		<?php ob_start(); ?>
-		.prayer-pop-dashicon-selector {
-			max-width: 600px;
-		}
-		.dashicon-search-wrapper {
-			display: flex;
-			gap: 10px;
-			margin-bottom: 10px;
-			align-items: center;
-		}
-		.dashicon-search-wrapper input {
-			flex: 1;
-		}
-		.dashicon-dropdown-wrapper {
-			margin-bottom: 15px;
-		}
-		.dashicon-dropdown-wrapper select {
-			width: 100%;
-			height: 200px;
-			font-family: monospace;
-			font-size: 13px;
-		}
-		.dashicon-dropdown-wrapper option {
-			padding: 5px;
-			line-height: 1.4;
-		}
-		.dashicon-preview-wrapper {
-			display: flex;
-			align-items: center;
-			gap: 15px;
-			padding: 10px;
-			background: #f9f9f9;
-			border-radius: 4px;
-			margin-bottom: 10px;
-		}
-		.dashicon-preview {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 72px;
-			height: 72px;
-			background: #2755AA;
-			border-radius: 8px;
-		}
-		.prayer-pop-icon-preview-shell .dashicons {
-			font-size: 42px;
-			width: 42px;
-			height: 42px;
-			line-height: 42px;
-			color: currentColor;
-		}
-		.prayer-pop-icon-preview-shell .prayer-pop-tabler-icon {
-			width: 42px;
-			height: 42px;
-			display: block;
-			margin: 0;
-			color: currentColor;
-		}
-		.prayer-pop-icon-preview-shell .prayer-pop-brand-icon {
-			width: 42px;
-			height: 42px;
-			display: block;
-			margin: 0;
-		}
-		.dashicon-info {
-			flex: 1;
-		}
-		.dashicon-info code {
-			background: #f0f0f0;
-			padding: 2px 6px;
-			border-radius: 3px;
-			font-size: 12px;
-		}
-		.dashicon-dropdown-wrapper option[style*="display: none"] {
-			display: none !important;
-		}
-		<?php wp_add_inline_style( 'prayer-pop-admin', ob_get_clean() ); ?>
+		<?php
+		$prayer_pop_inline_css = implode( "\n", array(
+			'		.prayer-pop-dashicon-selector {',
+			'			max-width: 600px;',
+			'		}',
+			'		.dashicon-search-wrapper {',
+			'			display: flex;',
+			'			gap: 10px;',
+			'			margin-bottom: 10px;',
+			'			align-items: center;',
+			'		}',
+			'		.dashicon-search-wrapper input {',
+			'			flex: 1;',
+			'		}',
+			'		.dashicon-dropdown-wrapper {',
+			'			margin-bottom: 15px;',
+			'		}',
+			'		.dashicon-dropdown-wrapper select {',
+			'			width: 100%;',
+			'			height: 200px;',
+			'			font-family: monospace;',
+			'			font-size: 13px;',
+			'		}',
+			'		.dashicon-dropdown-wrapper option {',
+			'			padding: 5px;',
+			'			line-height: 1.4;',
+			'		}',
+			'		.dashicon-preview-wrapper {',
+			'			display: flex;',
+			'			align-items: center;',
+			'			gap: 15px;',
+			'			padding: 10px;',
+			'			background: #f9f9f9;',
+			'			border-radius: 4px;',
+			'			margin-bottom: 10px;',
+			'		}',
+			'		.dashicon-preview {',
+			'			display: flex;',
+			'			align-items: center;',
+			'			justify-content: center;',
+			'			width: 72px;',
+			'			height: 72px;',
+			'			background: #2755AA;',
+			'			border-radius: 8px;',
+			'		}',
+			'		.prayer-pop-icon-preview-shell .dashicons {',
+			'			font-size: 42px;',
+			'			width: 42px;',
+			'			height: 42px;',
+			'			line-height: 42px;',
+			'			color: currentColor;',
+			'		}',
+			'		.prayer-pop-icon-preview-shell .prayer-pop-tabler-icon {',
+			'			width: 42px;',
+			'			height: 42px;',
+			'			display: block;',
+			'			margin: 0;',
+			'			color: currentColor;',
+			'		}',
+			'		.prayer-pop-icon-preview-shell .prayer-pop-brand-icon {',
+			'			width: 42px;',
+			'			height: 42px;',
+			'			display: block;',
+			'			margin: 0;',
+			'		}',
+			'		.dashicon-info {',
+			'			flex: 1;',
+			'		}',
+			'		.dashicon-info code {',
+			'			background: #f0f0f0;',
+			'			padding: 2px 6px;',
+			'			border-radius: 3px;',
+			'			font-size: 12px;',
+			'		}',
+			'		.dashicon-dropdown-wrapper option[style*="display: none"] {',
+			'			display: none !important;',
+			'		}',
+		) );
+		wp_add_inline_style( 'prayer-pop-admin', $prayer_pop_inline_css );
+		?>
 		
-		<?php ob_start(); ?>
-		(function($) {
-			$(document).ready(function() {
-				const datasetUrl = <?php echo wp_json_encode( $dataset_url ); ?>;
-				const prayerPopIconUrl = <?php echo wp_json_encode( $prayerpop_icon_url ); ?>;
-				const resultLimit = 400;
-				const $iconType = $('#bubble_icon_type');
-				const $dashicon = $('#bubble_dashicon');
-				const $tabler = $('#bubble_tabler_icon');
-				const $select = $('#bubble_icon_library_select');
-				const $search = $('#dashicon_search');
-				const $clear = $('#dashicon_clear_search');
-				const $preview = $('#dashicon_preview');
-				const $name = $('#dashicon_name');
-				const $class = $('#dashicon_class');
-				const $count = $('#icon_library_results_count');
-				const $globalColor = $('#global_bg_color');
-				const $bubbleColor = $('#bubble_bg_color');
-					const $iconColor = $('#bubble_icon_color');
-					let tablerNodes = {};
-					const iconIndex = [];
-					const featuredIconValues = [
-						'dashicon:prayerpop',
-						'tabler:pray',
-						'tabler:heart-handshake',
-						'tabler:message-circle-heart',
-						'tabler:message-heart',
-						'tabler:heart',
-						'tabler:message-question',
-						'tabler:message-circle-question',
-						'tabler:help-circle',
-						'tabler:question-mark',
-						'tabler:message-circle',
-						'tabler:messages',
-						'tabler:bubble-text',
-						'tabler:bubble',
-						'tabler:building-church',
-						'tabler:cross',
-						'tabler:peace',
-						'tabler:sparkles',
-						'tabler:stars',
-						'tabler:book-2',
-						'tabler:book',
-						'tabler:flame',
-						'dashicon:heart',
-						'dashicon:editor-help',
-						'dashicon:format-chat',
-						'dashicon:testimonial',
-						'dashicon:book',
-						'dashicon:groups',
-						'dashicon:sos',
-						'dashicon:lightbulb'
-					];
-					const featuredIconRank = featuredIconValues.reduce(function(ranks, value, index) {
-						ranks[value] = index;
-						return ranks;
-					}, {});
-
-				function escapeAttr(value) {
-					return String(value).replace(/[&<>"']/g, function(chr) {
-						return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[chr];
-					});
-				}
-
-				function humanize(iconName) {
-					return String(iconName || '').replace(/-/g, ' ').replace(/\b\w/g, function(chr) {
-						return chr.toUpperCase();
-					});
-				}
-
-				function getPreviewBackgroundColor() {
-					const bubble = $bubbleColor.val();
-					if (bubble && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(bubble)) {
-						return bubble;
-					}
-					const global = $globalColor.val();
-					if (global && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(global)) {
-						return global;
-					}
-					return '#2755AA';
-				}
-
-				function updatePreviewBackgroundColor() {
-					$preview.css('background-color', getPreviewBackgroundColor());
-				}
-
-				function getPreviewIconColor() {
-					const iconColor = $iconColor.val();
-					if (iconColor && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(iconColor)) {
-						return iconColor;
-					}
-					return '#ffffff';
-				}
-
-				function updatePreviewIconColor() {
-					$preview.css('color', getPreviewIconColor());
-				}
-
-				function tablerMarkup(iconName) {
-					const nodes = tablerNodes[iconName];
-					if (!Array.isArray(nodes)) {
-						return '';
-					}
-					let markup = '<svg class="prayer-pop-tabler-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">';
-					nodes.forEach(function(node) {
-						if (!Array.isArray(node) || node.length !== 2) {
-							return;
-						}
-						const tag = String(node[0] || '');
-						const attrs = node[1] || {};
-						if (tag !== 'path' && tag !== 'g') {
-							return;
-						}
-						let attrString = '';
-						Object.keys(attrs).forEach(function(attrKey) {
-							const attrValue = attrs[attrKey];
-							if (['d', 'fill', 'opacity', 'stroke', 'transform', 'stroke-width'].indexOf(attrKey) === -1) {
-								return;
-							}
-							attrString += ' ' + attrKey + '="' + escapeAttr(attrValue) + '"';
-						});
-						markup += '<' + tag + attrString + '></' + tag + '>';
-					});
-					markup += '</svg>';
-					return markup;
-				}
-
-				function prayerPopMarkup() {
-					return '<span class="prayer-pop-brand-icon-mask" aria-hidden="true"></span>';
-				}
-
-				function addInitialEntries() {
-					$select.find('option[data-source]').each(function() {
-						const $option = $(this);
-						const source = String($option.data('source') || '');
-						const key = String($option.data('key') || '');
-						const label = $option.text();
-						if (!source || !key) {
-							return;
-						}
-						iconIndex.push({
-							value: source + ':' + key,
-							source: source,
-							key: key,
-							label: label,
-							search: String($option.data('search') || label).toLowerCase()
-						});
-					});
-				}
-
-					function addTablerEntries() {
-					for (let i = iconIndex.length - 1; i >= 0; i -= 1) {
-						if (iconIndex[i].source === 'tabler') {
-							iconIndex.splice(i, 1);
-						}
-					}
-					Object.keys(tablerNodes).sort().forEach(function(iconName) {
-						const nodes = tablerNodes[iconName];
-						if (!Array.isArray(nodes)) {
-							return;
-						}
-						iconIndex.push({
-							value: 'tabler:' + iconName,
-							source: 'tabler',
-							key: iconName,
-							label: 'Tabler • ' + humanize(iconName) + ' (' + iconName + ')',
-							search: (iconName + ' ' + humanize(iconName) + ' tabler svg').toLowerCase()
-						});
-						});
-					}
-
-					function sortIconIndex() {
-						iconIndex.sort(function(a, b) {
-							const aRank = Object.prototype.hasOwnProperty.call(featuredIconRank, a.value) ? featuredIconRank[a.value] : Number.MAX_SAFE_INTEGER;
-							const bRank = Object.prototype.hasOwnProperty.call(featuredIconRank, b.value) ? featuredIconRank[b.value] : Number.MAX_SAFE_INTEGER;
-							if (aRank !== bRank) {
-								return aRank - bRank;
-							}
-							return a.label.localeCompare(b.label);
-						});
-					}
-
-				function getSelectedValue() {
-					const selected = $select.val();
-					if (selected) {
-						return String(selected);
-					}
-					const currentType = String($iconType.val() || 'dashicon');
-					if (currentType === 'tabler' && $tabler.val()) {
-						return 'tabler:' + $tabler.val();
-					}
-					return 'dashicon:' + ($dashicon.val() || 'prayerpop');
-				}
-
-				function renderOptions(searchTerm) {
-					const term = String(searchTerm || '').toLowerCase().trim();
-					const matches = iconIndex.filter(function(icon) {
-						return term === '' || icon.search.indexOf(term) !== -1;
-					});
-					const selectedValue = getSelectedValue();
-					const shown = matches.slice(0, resultLimit);
-					const selectedMatch = matches.find(function(icon) {
-						return icon.value === selectedValue;
-					});
-					if (selectedMatch && !shown.some(function(icon) { return icon.value === selectedValue; })) {
-						shown.unshift(selectedMatch);
-						if (shown.length > resultLimit) {
-							shown.pop();
-						}
-					}
-
-					$select.empty();
-					shown.forEach(function(icon) {
-						const option = document.createElement('option');
-						option.value = icon.value;
-						option.textContent = icon.label;
-						option.selected = icon.value === selectedValue;
-						option.setAttribute('data-source', icon.source);
-						option.setAttribute('data-key', icon.key);
-						$select.append(option);
-					});
-
-					if (shown.length === 0) {
-						const option = document.createElement('option');
-						option.value = '';
-						option.textContent = '<?php echo esc_js( __( 'No icons found', 'prayerpop' ) ); ?>';
-						option.disabled = true;
-						$select.append(option);
-					}
-
-					if (matches.length > resultLimit) {
-						$count.text('<?php echo esc_js( __( 'Showing first', 'prayerpop' ) ); ?> ' + resultLimit + ' <?php echo esc_js( __( 'of', 'prayerpop' ) ); ?> ' + matches.length + ' <?php echo esc_js( __( 'results. Keep typing to narrow down.', 'prayerpop' ) ); ?>');
-					} else {
-						$count.text(matches.length + ' <?php echo esc_js( __( 'icon(s)', 'prayerpop' ) ); ?>');
-					}
-				}
-
-				function updateSelection() {
-					const selectedValue = String($select.val() || '');
-					if (!selectedValue || selectedValue.indexOf(':') === -1) {
-						return;
-					}
-					const parts = selectedValue.split(':');
-					const source = parts[0];
-					const key = parts.slice(1).join(':');
-					if (!key) {
-						return;
-					}
-
-					if (source === 'tabler') {
-						$iconType.val('tabler');
-						$tabler.val(key);
-						$name.text('Tabler • ' + humanize(key));
-						$class.text('tabler:' + key);
-						const markup = tablerMarkup(key);
-						if (markup) {
-							$preview.html(markup);
-						}
-						return;
-					}
-
-					$iconType.val('dashicon');
-					$dashicon.val(key);
-					const selectedText = $select.find('option:selected').text();
-					const name = selectedText.indexOf('(') > -1 ? selectedText.split(' (')[0] : selectedText;
-					$name.text(name);
-					if (key === 'prayerpop') {
-						$class.text('dashicon:prayerpop');
-						$preview.html(prayerPopMarkup());
-					} else {
-						$class.text('dashicons-' + key);
-						$preview.html('<span class="dashicons dashicons-' + key.replace(/"/g, '') + '"></span>');
-					}
-				}
-
-					addInitialEntries();
-					sortIconIndex();
-
-				$search.on('input', function() {
-					renderOptions($(this).val());
-				});
-
-				$clear.on('click', function() {
-					$search.val('');
-					renderOptions('');
-					$search.focus();
-				});
-
-				$select.on('change', updateSelection);
-
-				fetch(datasetUrl, { cache: 'force-cache' })
-					.then(function(response) {
-						if (!response.ok) {
-							throw new Error('Dataset load failed');
-						}
-						return response.json();
-					})
-						.then(function(data) {
-							tablerNodes = data && typeof data === 'object' ? data : {};
-							addTablerEntries();
-							sortIconIndex();
-							renderOptions($search.val());
-							updateSelection();
-						})
-						.catch(function() {
-							sortIconIndex();
-							renderOptions($search.val());
-							$count.append(' <?php echo esc_js( __( 'Tabler dataset could not be loaded.', 'prayerpop' ) ); ?>');
-					});
-
-				$preview.css('--prayer-pop-brand-icon-url', 'url("' + prayerPopIconUrl.replace(/"/g, '\\"') + '")');
-				$(document).on('input change', '#global_bg_color, #bubble_bg_color', updatePreviewBackgroundColor);
-				$(document).on('input change', '#bubble_icon_color', updatePreviewIconColor);
-
-				renderOptions('');
-				updatePreviewBackgroundColor();
-				updatePreviewIconColor();
-			});
-		})(jQuery);
-		<?php wp_add_inline_script( 'prayer-pop-admin', ob_get_clean() ); ?>
+		<?php
+		$prayer_pop_inline_js = implode( "\n", array(
+			'		(function($) {',
+			'			$(document).ready(function() {',
+			'				const datasetUrl = __DATASET_URL__;',
+			'				const prayerPopIconUrl = __PRAYERPOP_ICON_URL__;',
+			'				const resultLimit = 400;',
+			'				const $iconType = $(\'#bubble_icon_type\');',
+			'				const $dashicon = $(\'#bubble_dashicon\');',
+			'				const $tabler = $(\'#bubble_tabler_icon\');',
+			'				const $select = $(\'#bubble_icon_library_select\');',
+			'				const $search = $(\'#dashicon_search\');',
+			'				const $clear = $(\'#dashicon_clear_search\');',
+			'				const $preview = $(\'#dashicon_preview\');',
+			'				const $name = $(\'#dashicon_name\');',
+			'				const $class = $(\'#dashicon_class\');',
+			'				const $count = $(\'#icon_library_results_count\');',
+			'				const $globalColor = $(\'#global_bg_color\');',
+			'				const $bubbleColor = $(\'#bubble_bg_color\');',
+			'					const $iconColor = $(\'#bubble_icon_color\');',
+			'					let tablerNodes = {};',
+			'					const iconIndex = [];',
+			'					const featuredIconValues = [',
+			'						\'dashicon:prayerpop\',',
+			'						\'tabler:pray\',',
+			'						\'tabler:heart-handshake\',',
+			'						\'tabler:message-circle-heart\',',
+			'						\'tabler:message-heart\',',
+			'						\'tabler:heart\',',
+			'						\'tabler:message-question\',',
+			'						\'tabler:message-circle-question\',',
+			'						\'tabler:help-circle\',',
+			'						\'tabler:question-mark\',',
+			'						\'tabler:message-circle\',',
+			'						\'tabler:messages\',',
+			'						\'tabler:bubble-text\',',
+			'						\'tabler:bubble\',',
+			'						\'tabler:building-church\',',
+			'						\'tabler:cross\',',
+			'						\'tabler:peace\',',
+			'						\'tabler:sparkles\',',
+			'						\'tabler:stars\',',
+			'						\'tabler:book-2\',',
+			'						\'tabler:book\',',
+			'						\'tabler:flame\',',
+			'						\'dashicon:heart\',',
+			'						\'dashicon:editor-help\',',
+			'						\'dashicon:format-chat\',',
+			'						\'dashicon:testimonial\',',
+			'						\'dashicon:book\',',
+			'						\'dashicon:groups\',',
+			'						\'dashicon:sos\',',
+			'						\'dashicon:lightbulb\'',
+			'					];',
+			'					const featuredIconRank = featuredIconValues.reduce(function(ranks, value, index) {',
+			'						ranks[value] = index;',
+			'						return ranks;',
+			'					}, {});',
+			'',
+			'				function escapeAttr(value) {',
+			'					return String(value).replace(/[&<>"\']/g, function(chr) {',
+			'						return {\'&\':\'&amp;\',\'<\':\'&lt;\',\'>\':\'&gt;\',\'"\':\'&quot;\',"\'":\'&#39;\'}[chr];',
+			'					});',
+			'				}',
+			'',
+			'				function humanize(iconName) {',
+			'					return String(iconName || \'\').replace(/-/g, \' \').replace(/\\b\\w/g, function(chr) {',
+			'						return chr.toUpperCase();',
+			'					});',
+			'				}',
+			'',
+			'				function getPreviewBackgroundColor() {',
+			'					const bubble = $bubbleColor.val();',
+			'					if (bubble && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(bubble)) {',
+			'						return bubble;',
+			'					}',
+			'					const global = $globalColor.val();',
+			'					if (global && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(global)) {',
+			'						return global;',
+			'					}',
+			'					return \'#2755AA\';',
+			'				}',
+			'',
+			'				function updatePreviewBackgroundColor() {',
+			'					$preview.css(\'background-color\', getPreviewBackgroundColor());',
+			'				}',
+			'',
+			'				function getPreviewIconColor() {',
+			'					const iconColor = $iconColor.val();',
+			'					if (iconColor && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(iconColor)) {',
+			'						return iconColor;',
+			'					}',
+			'					return \'#ffffff\';',
+			'				}',
+			'',
+			'				function updatePreviewIconColor() {',
+			'					$preview.css(\'color\', getPreviewIconColor());',
+			'				}',
+			'',
+			'				function tablerMarkup(iconName) {',
+			'					const nodes = tablerNodes[iconName];',
+			'					if (!Array.isArray(nodes)) {',
+			'						return \'\';',
+			'					}',
+			'					let markup = \'<svg class="prayer-pop-tabler-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">\';',
+			'					nodes.forEach(function(node) {',
+			'						if (!Array.isArray(node) || node.length !== 2) {',
+			'							return;',
+			'						}',
+			'						const tag = String(node[0] || \'\');',
+			'						const attrs = node[1] || {};',
+			'						if (tag !== \'path\' && tag !== \'g\') {',
+			'							return;',
+			'						}',
+			'						let attrString = \'\';',
+			'						Object.keys(attrs).forEach(function(attrKey) {',
+			'							const attrValue = attrs[attrKey];',
+			'							if ([\'d\', \'fill\', \'opacity\', \'stroke\', \'transform\', \'stroke-width\'].indexOf(attrKey) === -1) {',
+			'								return;',
+			'							}',
+			'							attrString += \' \' + attrKey + \'="\' + escapeAttr(attrValue) + \'"\';',
+			'						});',
+			'						markup += \'<\' + tag + attrString + \'></\' + tag + \'>\';',
+			'					});',
+			'					markup += \'</svg>\';',
+			'					return markup;',
+			'				}',
+			'',
+			'				function prayerPopMarkup() {',
+			'					return \'<span class="prayer-pop-brand-icon-mask" aria-hidden="true"></span>\';',
+			'				}',
+			'',
+			'				function addInitialEntries() {',
+			'					$select.find(\'option[data-source]\').each(function() {',
+			'						const $option = $(this);',
+			'						const source = String($option.data(\'source\') || \'\');',
+			'						const key = String($option.data(\'key\') || \'\');',
+			'						const label = $option.text();',
+			'						if (!source || !key) {',
+			'							return;',
+			'						}',
+			'						iconIndex.push({',
+			'							value: source + \':\' + key,',
+			'							source: source,',
+			'							key: key,',
+			'							label: label,',
+			'							search: String($option.data(\'search\') || label).toLowerCase()',
+			'						});',
+			'					});',
+			'				}',
+			'',
+			'					function addTablerEntries() {',
+			'					for (let i = iconIndex.length - 1; i >= 0; i -= 1) {',
+			'						if (iconIndex[i].source === \'tabler\') {',
+			'							iconIndex.splice(i, 1);',
+			'						}',
+			'					}',
+			'					Object.keys(tablerNodes).sort().forEach(function(iconName) {',
+			'						const nodes = tablerNodes[iconName];',
+			'						if (!Array.isArray(nodes)) {',
+			'							return;',
+			'						}',
+			'						iconIndex.push({',
+			'							value: \'tabler:\' + iconName,',
+			'							source: \'tabler\',',
+			'							key: iconName,',
+			'							label: \'Tabler • \' + humanize(iconName) + \' (\' + iconName + \')\',',
+			'							search: (iconName + \' \' + humanize(iconName) + \' tabler svg\').toLowerCase()',
+			'						});',
+			'						});',
+			'					}',
+			'',
+			'					function sortIconIndex() {',
+			'						iconIndex.sort(function(a, b) {',
+			'							const aRank = Object.prototype.hasOwnProperty.call(featuredIconRank, a.value) ? featuredIconRank[a.value] : Number.MAX_SAFE_INTEGER;',
+			'							const bRank = Object.prototype.hasOwnProperty.call(featuredIconRank, b.value) ? featuredIconRank[b.value] : Number.MAX_SAFE_INTEGER;',
+			'							if (aRank !== bRank) {',
+			'								return aRank - bRank;',
+			'							}',
+			'							return a.label.localeCompare(b.label);',
+			'						});',
+			'					}',
+			'',
+			'				function getSelectedValue() {',
+			'					const selected = $select.val();',
+			'					if (selected) {',
+			'						return String(selected);',
+			'					}',
+			'					const currentType = String($iconType.val() || \'dashicon\');',
+			'					if (currentType === \'tabler\' && $tabler.val()) {',
+			'						return \'tabler:\' + $tabler.val();',
+			'					}',
+			'					return \'dashicon:\' + ($dashicon.val() || \'prayerpop\');',
+			'				}',
+			'',
+			'				function renderOptions(searchTerm) {',
+			'					const term = String(searchTerm || \'\').toLowerCase().trim();',
+			'					const matches = iconIndex.filter(function(icon) {',
+			'						return term === \'\' || icon.search.indexOf(term) !== -1;',
+			'					});',
+			'					const selectedValue = getSelectedValue();',
+			'					const shown = matches.slice(0, resultLimit);',
+			'					const selectedMatch = matches.find(function(icon) {',
+			'						return icon.value === selectedValue;',
+			'					});',
+			'					if (selectedMatch && !shown.some(function(icon) { return icon.value === selectedValue; })) {',
+			'						shown.unshift(selectedMatch);',
+			'						if (shown.length > resultLimit) {',
+			'							shown.pop();',
+			'						}',
+			'					}',
+			'',
+			'					$select.empty();',
+			'					shown.forEach(function(icon) {',
+			'						const option = document.createElement(\'option\');',
+			'						option.value = icon.value;',
+			'						option.textContent = icon.label;',
+			'						option.selected = icon.value === selectedValue;',
+			'						option.setAttribute(\'data-source\', icon.source);',
+			'						option.setAttribute(\'data-key\', icon.key);',
+			'						$select.append(option);',
+			'					});',
+			'',
+			'					if (shown.length === 0) {',
+			'						const option = document.createElement(\'option\');',
+			'						option.value = \'\';',
+			'						option.textContent = __NO_ICONS_FOUND__;',
+			'						option.disabled = true;',
+			'						$select.append(option);',
+			'					}',
+			'',
+			'					if (matches.length > resultLimit) {',
+			'						$count.text(__SHOWING_FIRST__ + \' \' + resultLimit + \' \' + __OF_LABEL__ + \' \' + matches.length + \' \' + __RESULTS_NARROW__);',
+			'					} else {',
+			'						$count.text(matches.length + \' \' + __ICON_COUNT_LABEL__);',
+			'					}',
+			'				}',
+			'',
+			'				function updateSelection() {',
+			'					const selectedValue = String($select.val() || \'\');',
+			'					if (!selectedValue || selectedValue.indexOf(\':\') === -1) {',
+			'						return;',
+			'					}',
+			'					const parts = selectedValue.split(\':\');',
+			'					const source = parts[0];',
+			'					const key = parts.slice(1).join(\':\');',
+			'					if (!key) {',
+			'						return;',
+			'					}',
+			'',
+			'					if (source === \'tabler\') {',
+			'						$iconType.val(\'tabler\');',
+			'						$tabler.val(key);',
+			'						$name.text(\'Tabler • \' + humanize(key));',
+			'						$class.text(\'tabler:\' + key);',
+			'						const markup = tablerMarkup(key);',
+			'						if (markup) {',
+			'							$preview.html(markup);',
+			'						}',
+			'						return;',
+			'					}',
+			'',
+			'					$iconType.val(\'dashicon\');',
+			'					$dashicon.val(key);',
+			'					const selectedText = $select.find(\'option:selected\').text();',
+			'					const name = selectedText.indexOf(\'(\') > -1 ? selectedText.split(\' (\')[0] : selectedText;',
+			'					$name.text(name);',
+			'					if (key === \'prayerpop\') {',
+			'						$class.text(\'dashicon:prayerpop\');',
+			'						$preview.html(prayerPopMarkup());',
+			'					} else {',
+			'						$class.text(\'dashicons-\' + key);',
+			'						$preview.html(\'<span class="dashicons dashicons-\' + key.replace(/"/g, \'\') + \'"></span>\');',
+			'					}',
+			'				}',
+			'',
+			'					addInitialEntries();',
+			'					sortIconIndex();',
+			'',
+			'				$search.on(\'input\', function() {',
+			'					renderOptions($(this).val());',
+			'				});',
+			'',
+			'				$clear.on(\'click\', function() {',
+			'					$search.val(\'\');',
+			'					renderOptions(\'\');',
+			'					$search.focus();',
+			'				});',
+			'',
+			'				$select.on(\'change\', updateSelection);',
+			'',
+			'				fetch(datasetUrl, { cache: \'force-cache\' })',
+			'					.then(function(response) {',
+			'						if (!response.ok) {',
+			'							throw new Error(\'Dataset load failed\');',
+			'						}',
+			'						return response.json();',
+			'					})',
+			'						.then(function(data) {',
+			'							tablerNodes = data && typeof data === \'object\' ? data : {};',
+			'							addTablerEntries();',
+			'							sortIconIndex();',
+			'							renderOptions($search.val());',
+			'							updateSelection();',
+			'						})',
+			'						.catch(function() {',
+			'							sortIconIndex();',
+			'							renderOptions($search.val());',
+			'							$count.append(\' \' + __TABLER_LOAD_FAILED__);',
+			'					});',
+			'',
+			'				$preview.css(\'--prayer-pop-brand-icon-url\', \'url("\' + prayerPopIconUrl.replace(/"/g, \'\\\\"\') + \'")\');',
+			'				$(document).on(\'input change\', \'#global_bg_color, #bubble_bg_color\', updatePreviewBackgroundColor);',
+			'				$(document).on(\'input change\', \'#bubble_icon_color\', updatePreviewIconColor);',
+			'',
+			'				renderOptions(\'\');',
+			'				updatePreviewBackgroundColor();',
+			'				updatePreviewIconColor();',
+			'			});',
+			'		})(jQuery);',
+		) );
+		$prayer_pop_inline_js = strtr(
+			$prayer_pop_inline_js,
+			array(
+				'__DATASET_URL__' => wp_json_encode( $dataset_url ),
+				'__PRAYERPOP_ICON_URL__' => wp_json_encode( $prayerpop_icon_url ),
+				'__NO_ICONS_FOUND__' => wp_json_encode( __( 'No icons found', 'prayerpop' ) ),
+				'__SHOWING_FIRST__' => wp_json_encode( __( 'Showing first', 'prayerpop' ) ),
+				'__OF_LABEL__' => wp_json_encode( __( 'of', 'prayerpop' ) ),
+				'__RESULTS_NARROW__' => wp_json_encode( __( 'results. Keep typing to narrow down.', 'prayerpop' ) ),
+				'__ICON_COUNT_LABEL__' => wp_json_encode( __( 'icon(s)', 'prayerpop' ) ),
+				'__TABLER_LOAD_FAILED__' => wp_json_encode( __( 'Tabler dataset could not be loaded.', 'prayerpop' ) ),
+			)
+		);
+		wp_add_inline_script( 'prayer-pop-admin', $prayer_pop_inline_js );
+		?>
 		<?php
 	}
 
@@ -1249,278 +1268,297 @@ class Prayer_Pop_Settings_Style {
 			</p>
 		</div>
 
-		<?php ob_start(); ?>
-		.prayer-pop-tabler-selector {
-			max-width: 600px;
-		}
-		.prayer-pop-tabler-selector .dashicon-search-wrapper {
-			display: flex;
-			gap: 10px;
-			margin-bottom: 10px;
-			align-items: center;
-		}
-		.prayer-pop-tabler-selector .dashicon-search-wrapper input {
-			flex: 1;
-		}
-		.prayer-pop-tabler-selector .dashicon-dropdown-wrapper {
-			margin-bottom: 15px;
-		}
-		.prayer-pop-tabler-selector .dashicon-dropdown-wrapper select {
-			width: 100%;
-			height: 200px;
-			font-family: monospace;
-			font-size: 13px;
-		}
-		.prayer-pop-tabler-selector .dashicon-dropdown-wrapper option {
-			padding: 5px;
-			line-height: 1.4;
-		}
-		.prayer-pop-tabler-selector .dashicon-preview-wrapper {
-			display: flex;
-			align-items: center;
-			gap: 15px;
-			padding: 10px;
-			border-radius: 4px;
-			margin-bottom: 10px;
-		}
-		.prayer-pop-tabler-selector .dashicon-info {
-			flex: 1;
-		}
-		.prayer-pop-tabler-selector .dashicon-info code {
-			background: #f0f0f0;
-			padding: 2px 6px;
-			border-radius: 3px;
-			font-size: 12px;
-		}
-		.prayer-pop-tabler-preview-shell {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 64px;
-			height: 64px;
-			min-width: 64px;
-			border-radius: 8px;
-			background: #2755AA;
-			transition: background-color 0.2s ease;
-		}
-		.prayer-pop-tabler-preview-shell .prayer-pop-tabler-icon {
-			width: 36px;
-			height: 36px;
-			display: block;
-			margin: 0;
-			color: currentColor;
-		}
-		<?php wp_add_inline_style( 'prayer-pop-admin', ob_get_clean() ); ?>
+		<?php
+		$prayer_pop_inline_css = implode( "\n", array(
+			'		.prayer-pop-tabler-selector {',
+			'			max-width: 600px;',
+			'		}',
+			'		.prayer-pop-tabler-selector .dashicon-search-wrapper {',
+			'			display: flex;',
+			'			gap: 10px;',
+			'			margin-bottom: 10px;',
+			'			align-items: center;',
+			'		}',
+			'		.prayer-pop-tabler-selector .dashicon-search-wrapper input {',
+			'			flex: 1;',
+			'		}',
+			'		.prayer-pop-tabler-selector .dashicon-dropdown-wrapper {',
+			'			margin-bottom: 15px;',
+			'		}',
+			'		.prayer-pop-tabler-selector .dashicon-dropdown-wrapper select {',
+			'			width: 100%;',
+			'			height: 200px;',
+			'			font-family: monospace;',
+			'			font-size: 13px;',
+			'		}',
+			'		.prayer-pop-tabler-selector .dashicon-dropdown-wrapper option {',
+			'			padding: 5px;',
+			'			line-height: 1.4;',
+			'		}',
+			'		.prayer-pop-tabler-selector .dashicon-preview-wrapper {',
+			'			display: flex;',
+			'			align-items: center;',
+			'			gap: 15px;',
+			'			padding: 10px;',
+			'			border-radius: 4px;',
+			'			margin-bottom: 10px;',
+			'		}',
+			'		.prayer-pop-tabler-selector .dashicon-info {',
+			'			flex: 1;',
+			'		}',
+			'		.prayer-pop-tabler-selector .dashicon-info code {',
+			'			background: #f0f0f0;',
+			'			padding: 2px 6px;',
+			'			border-radius: 3px;',
+			'			font-size: 12px;',
+			'		}',
+			'		.prayer-pop-tabler-preview-shell {',
+			'			display: flex;',
+			'			align-items: center;',
+			'			justify-content: center;',
+			'			width: 64px;',
+			'			height: 64px;',
+			'			min-width: 64px;',
+			'			border-radius: 8px;',
+			'			background: #2755AA;',
+			'			transition: background-color 0.2s ease;',
+			'		}',
+			'		.prayer-pop-tabler-preview-shell .prayer-pop-tabler-icon {',
+			'			width: 36px;',
+			'			height: 36px;',
+			'			display: block;',
+			'			margin: 0;',
+			'			color: currentColor;',
+			'		}',
+		) );
+		wp_add_inline_style( 'prayer-pop-admin', $prayer_pop_inline_css );
+		?>
 
-		<?php ob_start(); ?>
-		(function($) {
-			$(document).ready(function() {
-				const datasetUrl = <?php echo wp_json_encode( $dataset_url ); ?>;
-				const initialIcon = <?php echo wp_json_encode( $current_icon ); ?>;
-				const resultLimit = 300;
-				const $hidden = $('#bubble_tabler_icon');
-				const $search = $('#tabler_icon_search');
-				const $clear = $('#tabler_icon_clear_search');
-				const $select = $('#bubble_tabler_icon_select');
-				const $preview = $('#tabler_icon_preview');
-				const $name = $('#tabler_icon_name');
-				const $key = $('#tabler_icon_key');
-				const $count = $('#tabler_icon_results_count');
-				const $globalColor = $('#global_bg_color');
-				const $bubbleColor = $('#bubble_bg_color');
-				const $iconColor = $('#bubble_icon_color');
-				let iconNodes = {};
-				let iconIndex = [];
-
-				function humanize(iconName) {
-					return iconName.replace(/-/g, ' ').replace(/\b\w/g, function(chr) {
-						return chr.toUpperCase();
-					});
-				}
-
-				function escapeAttr(value) {
-					return String(value).replace(/[&<>"']/g, function(chr) {
-						return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[chr];
-					});
-				}
-
-				function iconMarkup(iconName) {
-					const nodes = iconNodes[iconName];
-					if (!Array.isArray(nodes)) {
-						return '';
-					}
-
-					let markup = '<svg class="prayer-pop-tabler-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">';
-					nodes.forEach(function(node) {
-						if (!Array.isArray(node) || node.length !== 2) {
-							return;
-						}
-						const tag = String(node[0] || '');
-						const attrs = node[1] || {};
-						if (tag !== 'path' && tag !== 'g') {
-							return;
-						}
-
-						let attrString = '';
-						Object.keys(attrs).forEach(function(attrKey) {
-							const attrValue = attrs[attrKey];
-							if (['d', 'fill', 'opacity', 'stroke', 'transform', 'stroke-width'].indexOf(attrKey) === -1) {
-								return;
-							}
-							attrString += ' ' + attrKey + '="' + escapeAttr(attrValue) + '"';
-						});
-						markup += '<' + tag + attrString + '></' + tag + '>';
-					});
-					markup += '</svg>';
-					return markup;
-				}
-
-				function updateSelection(iconName) {
-					if (!iconName || !iconNodes[iconName]) {
-						return;
-					}
-					$hidden.val(iconName);
-					$name.text(humanize(iconName));
-					$key.text(iconName);
-					$preview.html(iconMarkup(iconName));
-				}
-
-				function getPreviewBackgroundColor() {
-					const bubble = $bubbleColor.val();
-					if (bubble && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(bubble)) {
-						return bubble;
-					}
-					const global = $globalColor.val();
-					if (global && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(global)) {
-						return global;
-					}
-					return '#2755AA';
-				}
-
-				function updatePreviewBackgroundColor() {
-					$preview.css('background-color', getPreviewBackgroundColor());
-				}
-
-				function getPreviewIconColor() {
-					const iconColor = $iconColor.val();
-					if (iconColor && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(iconColor)) {
-						return iconColor;
-					}
-					return '#ffffff';
-				}
-
-				function updatePreviewIconColor() {
-					$preview.css('color', getPreviewIconColor());
-				}
-
-				function renderOptions(searchTerm) {
-					const term = String(searchTerm || '').toLowerCase().trim();
-					const matches = iconIndex.filter(function(icon) {
-						return term === '' || icon.search.indexOf(term) !== -1;
-					});
-					const selectedValue = $hidden.val();
-					const shown = matches.slice(0, resultLimit);
-					const selectedMatch = matches.find(function(icon) {
-						return icon.name === selectedValue;
-					});
-					if (selectedMatch && !shown.some(function(icon) { return icon.name === selectedValue; })) {
-						shown.unshift(selectedMatch);
-						if (shown.length > resultLimit) {
-							shown.pop();
-						}
-					}
-
-					$select.empty();
-					shown.forEach(function(icon) {
-						const option = document.createElement('option');
-						option.value = icon.name;
-						option.textContent = icon.label + ' (' + icon.name + ')';
-						option.selected = icon.name === selectedValue;
-						$select.append(option);
-					});
-
-					if (shown.length === 0) {
-						const option = document.createElement('option');
-						option.value = '';
-						option.textContent = '<?php echo esc_js( __( 'No icons found', 'prayerpop' ) ); ?>';
-						option.disabled = true;
-						$select.append(option);
-					}
-
-					if (matches.length > resultLimit) {
-						$count.text('<?php echo esc_js( __( 'Showing first', 'prayerpop' ) ); ?> ' + resultLimit + ' <?php echo esc_js( __( 'of', 'prayerpop' ) ); ?> ' + matches.length + ' <?php echo esc_js( __( 'results. Keep typing to narrow down.', 'prayerpop' ) ); ?>');
-					} else {
-						$count.text(matches.length + ' <?php echo esc_js( __( 'icon(s)', 'prayerpop' ) ); ?>');
-					}
-				}
-
-				fetch(datasetUrl, { cache: 'force-cache' })
-					.then(function(response) {
-						if (!response.ok) {
-							throw new Error('Dataset load failed');
-						}
-						return response.json();
-					})
-					.then(function(data) {
-						iconNodes = data && typeof data === 'object' ? data : {};
-						iconIndex = Object.keys(iconNodes).sort().filter(function(iconName) {
-							const nodes = iconNodes[iconName];
-							return Array.isArray(nodes) && nodes.some(function(node) {
-								return Array.isArray(node) && node[0] === 'path';
-							});
-						}).map(function(iconName) {
-							const label = humanize(iconName);
-							return {
-								name: iconName,
-								label: label,
-								search: (iconName + ' ' + label).toLowerCase()
-							};
-						});
-
-						let selected = initialIcon;
-						if (!iconNodes[selected]) {
-							selected = iconNodes.pray ? 'pray' : (iconIndex.length ? iconIndex[0].name : '');
-						}
-
-						if (selected) {
-							$hidden.val(selected);
-							updateSelection(selected);
-						}
-
-						renderOptions('');
-						updatePreviewBackgroundColor();
-						updatePreviewIconColor();
-					})
-					.catch(function() {
-						$count.text('<?php echo esc_js( __( 'Could not load Tabler icon data. Re-save or refresh the page.', 'prayerpop' ) ); ?>');
-					});
-
-				$search.on('input', function() {
-					renderOptions($(this).val());
-				});
-
-				$clear.on('click', function() {
-					$search.val('');
-					renderOptions('');
-					$search.focus();
-				});
-
-				$select.on('change', function() {
-					updateSelection($(this).val());
-				});
-
-				$(document).on('input change', '#global_bg_color, #bubble_bg_color', function() {
-					updatePreviewBackgroundColor();
-				});
-				$(document).on('input change', '#bubble_icon_color', function() {
-					updatePreviewIconColor();
-				});
-
-				updatePreviewBackgroundColor();
-				updatePreviewIconColor();
-			});
-		})(jQuery);
-		<?php wp_add_inline_script( 'prayer-pop-admin', ob_get_clean() ); ?>
+		<?php
+		$prayer_pop_inline_js = implode( "\n", array(
+			'		(function($) {',
+			'			$(document).ready(function() {',
+			'				const datasetUrl = __DATASET_URL__;',
+			'				const initialIcon = __INITIAL_ICON__;',
+			'				const resultLimit = 300;',
+			'				const $hidden = $(\'#bubble_tabler_icon\');',
+			'				const $search = $(\'#tabler_icon_search\');',
+			'				const $clear = $(\'#tabler_icon_clear_search\');',
+			'				const $select = $(\'#bubble_tabler_icon_select\');',
+			'				const $preview = $(\'#tabler_icon_preview\');',
+			'				const $name = $(\'#tabler_icon_name\');',
+			'				const $key = $(\'#tabler_icon_key\');',
+			'				const $count = $(\'#tabler_icon_results_count\');',
+			'				const $globalColor = $(\'#global_bg_color\');',
+			'				const $bubbleColor = $(\'#bubble_bg_color\');',
+			'				const $iconColor = $(\'#bubble_icon_color\');',
+			'				let iconNodes = {};',
+			'				let iconIndex = [];',
+			'',
+			'				function humanize(iconName) {',
+			'					return iconName.replace(/-/g, \' \').replace(/\\b\\w/g, function(chr) {',
+			'						return chr.toUpperCase();',
+			'					});',
+			'				}',
+			'',
+			'				function escapeAttr(value) {',
+			'					return String(value).replace(/[&<>"\']/g, function(chr) {',
+			'						return {\'&\':\'&amp;\',\'<\':\'&lt;\',\'>\':\'&gt;\',\'"\':\'&quot;\',"\'":\'&#39;\'}[chr];',
+			'					});',
+			'				}',
+			'',
+			'				function iconMarkup(iconName) {',
+			'					const nodes = iconNodes[iconName];',
+			'					if (!Array.isArray(nodes)) {',
+			'						return \'\';',
+			'					}',
+			'',
+			'					let markup = \'<svg class="prayer-pop-tabler-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">\';',
+			'					nodes.forEach(function(node) {',
+			'						if (!Array.isArray(node) || node.length !== 2) {',
+			'							return;',
+			'						}',
+			'						const tag = String(node[0] || \'\');',
+			'						const attrs = node[1] || {};',
+			'						if (tag !== \'path\' && tag !== \'g\') {',
+			'							return;',
+			'						}',
+			'',
+			'						let attrString = \'\';',
+			'						Object.keys(attrs).forEach(function(attrKey) {',
+			'							const attrValue = attrs[attrKey];',
+			'							if ([\'d\', \'fill\', \'opacity\', \'stroke\', \'transform\', \'stroke-width\'].indexOf(attrKey) === -1) {',
+			'								return;',
+			'							}',
+			'							attrString += \' \' + attrKey + \'="\' + escapeAttr(attrValue) + \'"\';',
+			'						});',
+			'						markup += \'<\' + tag + attrString + \'></\' + tag + \'>\';',
+			'					});',
+			'					markup += \'</svg>\';',
+			'					return markup;',
+			'				}',
+			'',
+			'				function updateSelection(iconName) {',
+			'					if (!iconName || !iconNodes[iconName]) {',
+			'						return;',
+			'					}',
+			'					$hidden.val(iconName);',
+			'					$name.text(humanize(iconName));',
+			'					$key.text(iconName);',
+			'					$preview.html(iconMarkup(iconName));',
+			'				}',
+			'',
+			'				function getPreviewBackgroundColor() {',
+			'					const bubble = $bubbleColor.val();',
+			'					if (bubble && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(bubble)) {',
+			'						return bubble;',
+			'					}',
+			'					const global = $globalColor.val();',
+			'					if (global && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(global)) {',
+			'						return global;',
+			'					}',
+			'					return \'#2755AA\';',
+			'				}',
+			'',
+			'				function updatePreviewBackgroundColor() {',
+			'					$preview.css(\'background-color\', getPreviewBackgroundColor());',
+			'				}',
+			'',
+			'				function getPreviewIconColor() {',
+			'					const iconColor = $iconColor.val();',
+			'					if (iconColor && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(iconColor)) {',
+			'						return iconColor;',
+			'					}',
+			'					return \'#ffffff\';',
+			'				}',
+			'',
+			'				function updatePreviewIconColor() {',
+			'					$preview.css(\'color\', getPreviewIconColor());',
+			'				}',
+			'',
+			'				function renderOptions(searchTerm) {',
+			'					const term = String(searchTerm || \'\').toLowerCase().trim();',
+			'					const matches = iconIndex.filter(function(icon) {',
+			'						return term === \'\' || icon.search.indexOf(term) !== -1;',
+			'					});',
+			'					const selectedValue = $hidden.val();',
+			'					const shown = matches.slice(0, resultLimit);',
+			'					const selectedMatch = matches.find(function(icon) {',
+			'						return icon.name === selectedValue;',
+			'					});',
+			'					if (selectedMatch && !shown.some(function(icon) { return icon.name === selectedValue; })) {',
+			'						shown.unshift(selectedMatch);',
+			'						if (shown.length > resultLimit) {',
+			'							shown.pop();',
+			'						}',
+			'					}',
+			'',
+			'					$select.empty();',
+			'					shown.forEach(function(icon) {',
+			'						const option = document.createElement(\'option\');',
+			'						option.value = icon.name;',
+			'						option.textContent = icon.label + \' (\' + icon.name + \')\';',
+			'						option.selected = icon.name === selectedValue;',
+			'						$select.append(option);',
+			'					});',
+			'',
+			'					if (shown.length === 0) {',
+			'						const option = document.createElement(\'option\');',
+			'						option.value = \'\';',
+			'						option.textContent = __NO_ICONS_FOUND__;',
+			'						option.disabled = true;',
+			'						$select.append(option);',
+			'					}',
+			'',
+			'					if (matches.length > resultLimit) {',
+			'						$count.text(__SHOWING_FIRST__ + \' \' + resultLimit + \' \' + __OF_LABEL__ + \' \' + matches.length + \' \' + __RESULTS_NARROW__);',
+			'					} else {',
+			'						$count.text(matches.length + \' \' + __ICON_COUNT_LABEL__);',
+			'					}',
+			'				}',
+			'',
+			'				fetch(datasetUrl, { cache: \'force-cache\' })',
+			'					.then(function(response) {',
+			'						if (!response.ok) {',
+			'							throw new Error(\'Dataset load failed\');',
+			'						}',
+			'						return response.json();',
+			'					})',
+			'					.then(function(data) {',
+			'						iconNodes = data && typeof data === \'object\' ? data : {};',
+			'						iconIndex = Object.keys(iconNodes).sort().filter(function(iconName) {',
+			'							const nodes = iconNodes[iconName];',
+			'							return Array.isArray(nodes) && nodes.some(function(node) {',
+			'								return Array.isArray(node) && node[0] === \'path\';',
+			'							});',
+			'						}).map(function(iconName) {',
+			'							const label = humanize(iconName);',
+			'							return {',
+			'								name: iconName,',
+			'								label: label,',
+			'								search: (iconName + \' \' + label).toLowerCase()',
+			'							};',
+			'						});',
+			'',
+			'						let selected = initialIcon;',
+			'						if (!iconNodes[selected]) {',
+			'							selected = iconNodes.pray ? \'pray\' : (iconIndex.length ? iconIndex[0].name : \'\');',
+			'						}',
+			'',
+			'						if (selected) {',
+			'							$hidden.val(selected);',
+			'							updateSelection(selected);',
+			'						}',
+			'',
+			'						renderOptions(\'\');',
+			'						updatePreviewBackgroundColor();',
+			'						updatePreviewIconColor();',
+			'					})',
+			'					.catch(function() {',
+			'						$count.text(__TABLER_LOAD_FAILED_RESAVE__);',
+			'					});',
+			'',
+			'				$search.on(\'input\', function() {',
+			'					renderOptions($(this).val());',
+			'				});',
+			'',
+			'				$clear.on(\'click\', function() {',
+			'					$search.val(\'\');',
+			'					renderOptions(\'\');',
+			'					$search.focus();',
+			'				});',
+			'',
+			'				$select.on(\'change\', function() {',
+			'					updateSelection($(this).val());',
+			'				});',
+			'',
+			'				$(document).on(\'input change\', \'#global_bg_color, #bubble_bg_color\', function() {',
+			'					updatePreviewBackgroundColor();',
+			'				});',
+			'				$(document).on(\'input change\', \'#bubble_icon_color\', function() {',
+			'					updatePreviewIconColor();',
+			'				});',
+			'',
+			'				updatePreviewBackgroundColor();',
+			'				updatePreviewIconColor();',
+			'			});',
+			'		})(jQuery);',
+		) );
+		$prayer_pop_inline_js = strtr(
+			$prayer_pop_inline_js,
+			array(
+				'__DATASET_URL__' => wp_json_encode( $dataset_url ),
+				'__INITIAL_ICON__' => wp_json_encode( $current_icon ),
+				'__NO_ICONS_FOUND__' => wp_json_encode( __( 'No icons found', 'prayerpop' ) ),
+				'__SHOWING_FIRST__' => wp_json_encode( __( 'Showing first', 'prayerpop' ) ),
+				'__OF_LABEL__' => wp_json_encode( __( 'of', 'prayerpop' ) ),
+				'__RESULTS_NARROW__' => wp_json_encode( __( 'results. Keep typing to narrow down.', 'prayerpop' ) ),
+				'__ICON_COUNT_LABEL__' => wp_json_encode( __( 'icon(s)', 'prayerpop' ) ),
+				'__TABLER_LOAD_FAILED_RESAVE__' => wp_json_encode( __( 'Could not load Tabler icon data. Re-save or refresh the page.', 'prayerpop' ) ),
+			)
+		);
+		wp_add_inline_script( 'prayer-pop-admin', $prayer_pop_inline_js );
+		?>
 		<?php
 	}
 
