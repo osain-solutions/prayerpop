@@ -63,6 +63,7 @@ class Prayer_Pop_Defaults {
 		return array(
 			// Bubble and Main Menu
 			'text_bubble_label'               => __( 'PrayerPop', 'prayerpop' ),
+			'text_bubble_icon_alt'            => __( 'PrayerPop icon', 'prayerpop' ),
 			'text_prayer_request_label'       => __( 'Prayer Request', 'prayerpop' ),
 			'text_back_button'                => __( 'Back', 'prayerpop' ),
 
@@ -79,6 +80,7 @@ class Prayer_Pop_Defaults {
 			'text_public_checkbox_label'      => __( 'Make this public', 'prayerpop' ),
 			'text_ready_to_share_label'       => __( 'Ready to share this from the stage', 'prayerpop' ),
 			'text_anonymous'                  => __( 'Anonymous', 'prayerpop' ),
+			'text_honeypot_label'             => __( 'Leave this field empty', 'prayerpop' ),
 
 			// Messages
 			'text_success_message'            => __( 'Thank you for your submission!', 'prayerpop' ),
@@ -87,6 +89,8 @@ class Prayer_Pop_Defaults {
 			'text_error_invalid_name'         => __( 'Please use only a real person name in the name field.', 'prayerpop' ),
 			'text_new_request_button'         => __( 'Send One More', 'prayerpop' ),
 			'text_required_field'             => __( 'Please fill out this field', 'prayerpop' ),
+			'text_preview_permission_error'   => __( 'You do not have permission to view this preview.', 'prayerpop' ),
+			'text_preview_invalid_token'      => __( 'Invalid preview token.', 'prayerpop' ),
 
 			// Last Time Messages
 			'text_last_prayer_time_message'   => __( 'Last prayer request was submitted {time_ago} ago', 'prayerpop' ),
@@ -281,6 +285,7 @@ class Prayer_Pop_Defaults {
 	public static function get_default_texts_raw() {
 		return array(
 			'text_bubble_label'               => 'PrayerPop',
+			'text_bubble_icon_alt'            => 'PrayerPop icon',
 			'text_prayer_request_label'       => 'Prayer Request',
 			'text_back_button'                => 'Back',
 			'text_prayer_request_header'      => 'Submit a Prayer Request',
@@ -293,12 +298,15 @@ class Prayer_Pop_Defaults {
 			'text_public_checkbox_label'      => 'Make this public',
 			'text_ready_to_share_label'       => 'Ready to share this from the stage',
 			'text_anonymous'                  => 'Anonymous',
+			'text_honeypot_label'             => 'Leave this field empty',
 			'text_success_message'            => 'Thank you for your submission!',
 			'text_error_message'              => 'There was an error processing your request.',
 			'text_error_rate_limit'           => 'Too many submissions right now. Please wait a few minutes and try again.',
 			'text_error_invalid_name'         => 'Please use only a real person name in the name field.',
 			'text_new_request_button'         => 'Send One More',
 			'text_required_field'             => 'Please fill out this field',
+			'text_preview_permission_error'   => 'You do not have permission to view this preview.',
+			'text_preview_invalid_token'      => 'Invalid preview token.',
 			'text_last_prayer_time_message'   => 'Last prayer request was submitted {time_ago} ago',
 			'text_time_unit_second_singular'  => 'second',
 			'text_time_unit_second_plural'    => 'seconds',

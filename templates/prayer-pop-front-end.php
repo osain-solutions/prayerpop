@@ -120,7 +120,7 @@ $bubble_style_attr = sprintf(
 	        <?php if ( $icon_type === 'dashicon' ): ?>
 				<?php if ( 'prayerpop' === $dashicon ) : ?>
 					<span class="prayer-pop-visual-icon prayer-pop-brand-icon-wrap">
-						<img src="<?php echo esc_url( $prayerpop_icon_url ); ?>" alt="<?php esc_attr_e( 'PrayerPop icon', 'prayerpop' ); ?>" class="prayer-pop-brand-icon">
+						<img src="<?php echo esc_url( $prayerpop_icon_url ); ?>" alt="<?php echo esc_attr( $texts['text_bubble_icon_alt'] ); ?>" class="prayer-pop-brand-icon">
 					</span>
 				<?php else : ?>
 	            	<span class="prayer-pop-visual-icon dashicons dashicons-<?php echo esc_attr( $dashicon ); ?> prayer-pop-dashicon"<?php echo '' !== $icon_inline_style ? ' style="' . esc_attr( $icon_inline_style ) . '"' : ''; ?>></span>
@@ -178,7 +178,7 @@ $bubble_style_attr = sprintf(
             <form id="prayer-pop-form">
                 <!-- Honeypot field for spam protection (hidden from real users) -->
                 <div style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
-                    <label for="prayer-pop-honeypot"><?php esc_html_e( 'Leave this field empty', 'prayerpop' ); ?></label>
+                    <label for="prayer-pop-honeypot"><?php echo esc_html( $texts['text_honeypot_label'] ); ?></label>
                     <input 
                         type="text" 
                         name="prayer_pop_honeypot" 

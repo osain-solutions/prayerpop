@@ -1,7 +1,6 @@
 <?php
 /**
  * Plugin Name: PrayerPop
- * Plugin URI: https://prayerpop.eu/
  * Description: Prayer request workflow plugin with a frontend bubble, admin review, and notifications.
  * Version: 1.5.7
  * Author: Ösain OÜ

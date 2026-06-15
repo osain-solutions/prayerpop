@@ -35,6 +35,8 @@ class Prayer_Pop_Settings_Text {
 		);
 
 		// Bubble and Main Menu
+		$this->add_text_field( 'text_bubble_label', esc_html__( 'Bubble Label', 'prayerpop' ), 'PrayerPop' );
+		$this->add_text_field( 'text_bubble_icon_alt', esc_html__( 'Bubble Icon Alt Text', 'prayerpop' ), 'PrayerPop icon' );
 		$this->add_text_field( 'text_prayer_request_label', esc_html__( 'Prayer Request Button', 'prayerpop' ), 'Prayer Request' );
 		$this->add_text_field( 'text_back_button', esc_html__( 'Back Button', 'prayerpop' ), 'Back' );
 
@@ -49,6 +51,7 @@ class Prayer_Pop_Settings_Text {
 		$this->add_text_field( 'text_submit_button', esc_html__( 'Submit Button', 'prayerpop' ), 'Submit' );
 		$this->add_text_field( 'text_submitting_button', esc_html__( 'Submitting Button', 'prayerpop' ), 'Sending...' );
 		$this->add_text_field( 'text_anonymous', esc_html__( 'Anonymous Text', 'prayerpop' ), 'Anonymous' );
+		$this->add_text_field( 'text_honeypot_label', esc_html__( 'Honeypot Accessibility Label', 'prayerpop' ), 'Leave this field empty' );
 
 		// Messages
 		$this->add_text_field( 'text_success_message', esc_html__( 'Success Message', 'prayerpop' ), 'Thank you for your submission!' );
@@ -57,6 +60,8 @@ class Prayer_Pop_Settings_Text {
 		$this->add_text_field( 'text_error_invalid_name', esc_html__( 'Invalid Name Message', 'prayerpop' ), 'Please use only a real person name in the name field.' );
 		$this->add_text_field( 'text_new_request_button', esc_html__( 'New Request Button', 'prayerpop' ), 'Send One More' );
 		$this->add_text_field( 'text_required_field', esc_html__( 'Required Field Message', 'prayerpop' ), esc_html__( 'Please fill out this field', 'prayerpop' ) );
+		$this->add_text_field( 'text_preview_permission_error', esc_html__( 'Preview Permission Error', 'prayerpop' ), 'You do not have permission to view this preview.' );
+		$this->add_text_field( 'text_preview_invalid_token', esc_html__( 'Preview Invalid Token Error', 'prayerpop' ), 'Invalid preview token.' );
 
 		// Last Time Messages
 		$this->add_text_field( 'text_last_prayer_time_message', esc_html__( 'Last Prayer Time Message', 'prayerpop' ), 'Last prayer request was submitted {time_ago} ago' );

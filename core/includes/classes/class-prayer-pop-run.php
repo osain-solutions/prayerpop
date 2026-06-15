@@ -2597,11 +2597,6 @@ class Prayer_Pop_Run {
             )
         );
 
-        // Clean output buffers to avoid rendering admin chrome in print output.
-        while ( ob_get_level() ) {
-            ob_end_clean();
-        }
-
 	        header( 'Content-Type: text/html; charset=utf-8' );
 	        $site_name        = wp_strip_all_tags( get_bloginfo( 'name' ) );
 	        $submission_count = count( $submissions );

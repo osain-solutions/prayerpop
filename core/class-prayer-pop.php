@@ -151,7 +151,7 @@ final class Prayer_Pop {
 				'ajax_url'                => admin_url( 'admin-ajax.php' ),
 				'nonce'                   => wp_create_nonce( 'prayer_pop_nonce' ),
 				'selected_animation'      => esc_js( $selected_animation ),
-				'error_message'           => esc_html__( 'An error occurred. Please try again later.', 'prayerpop' ),
+				'error_message'           => esc_html( $texts['text_error_message'] ),
 				'new_request_button'      => esc_html( $new_request_button_text ),
 				'success_message'         => esc_html( $success_message ),
 				'anonymous_name'          => esc_html( $anonymous_text ),
@@ -332,13 +332,13 @@ final class Prayer_Pop {
 
 			if ( ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
 				status_header( 403 );
-				wp_die( esc_html__( 'You do not have permission to view this preview.', 'prayerpop' ) );
+				wp_die( esc_html( Prayer_Pop_Defaults::get_text( 'text_preview_permission_error', esc_html__( 'You do not have permission to view this preview.', 'prayerpop' ) ) ) );
 			}
 
 			$nonce = isset( $_GET['_pp_preview_nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_pp_preview_nonce'] ) ) : '';
 			if ( ! wp_verify_nonce( $nonce, 'prayer_pop_frontend_preview' ) ) {
 				status_header( 403 );
-				wp_die( esc_html__( 'Invalid preview token.', 'prayerpop' ) );
+				wp_die( esc_html( Prayer_Pop_Defaults::get_text( 'text_preview_invalid_token', esc_html__( 'Invalid preview token.', 'prayerpop' ) ) ) );
 			}
 
 			if ( ! defined( 'PRAYERPOP_FORCE_BUBBLE' ) ) {
