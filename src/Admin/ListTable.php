@@ -32,7 +32,7 @@ class ListTable {
 
         // Load admin styles for the list table.
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-		add_action( 'manage_posts_extra_tablenav', array( $this, 'render_submissions_footer_logo' ) );
+		add_action( 'in_admin_footer', array( $this, 'render_submissions_footer_logo' ) );
 
         // Override status filter labels
         add_filter( 'views_edit-prayer_request', array( $this, 'customize_status_filters' ) );
@@ -780,6 +780,12 @@ class ListTable {
 
         $screen = get_current_screen();
         if ( isset( $screen->post_type ) && 'prayer_request' === $screen->post_type ) {
+            wp_enqueue_style(
+                'prayer-pop-admin',
+                PRAYERPOP_PLUGIN_URL . 'assets/css/prayer-pop-admin.css',
+                array(),
+                file_exists( PRAYERPOP_PLUGIN_DIR . 'assets/css/prayer-pop-admin.css' ) ? (string) filemtime( PRAYERPOP_PLUGIN_DIR . 'assets/css/prayer-pop-admin.css' ) : PRAYERPOP_VERSION
+            );
             wp_enqueue_style( 'prayer-pop-admin-list', PRAYERPOP_PLUGIN_URL . 'assets/css/prayer-pop-admin-list.css', array(), PRAYERPOP_VERSION );
             wp_enqueue_script(
                 'prayer-pop-admin-bulk-email',
@@ -834,6 +840,7 @@ class ListTable {
 	                        'compactViewOffLabel' => esc_html__( 'Compact Off', 'prayerpop' ),
 	                        'compactViewOnTitle' => esc_html__( 'Switch to full submission text', 'prayerpop' ),
 	                        'compactViewOffTitle' => esc_html__( 'Switch to compact submission text', 'prayerpop' ),
+	                        'changesSaved' => esc_html__( 'Changes saved.', 'prayerpop' ),
 		                )
 		            );
             wp_localize_script(
@@ -960,23 +967,26 @@ class ListTable {
 	 *
 	 * @return void
 	 */
-	public function render_submissions_footer_logo( $which = '' ) {
+	public function render_submissions_footer_logo() {
 		$screen = get_current_screen();
-		if ( ! $screen || 'edit-prayer_request' !== $screen->id || 'bottom' !== $which ) {
+		if ( ! $screen || 'edit-prayer_request' !== $screen->id ) {
 			return;
 		}
 		?>
-		<div class="prayer-pop-submissions-logo-row" aria-hidden="true">
-			<a class="prayer-pop-brand-logo prayer-pop-brand-logo-full" href="<?php echo esc_url( 'https://prayerpop.eu/' ); ?>" target="_blank" rel="noopener noreferrer">
-				<img
-					class="prayer-pop-logo-img prayer-pop-logo-img-full"
-					src="<?php echo esc_url( PRAYERPOP_PLUGIN_URL . 'assets/images/prayer-pop-logo-full.svg' ); ?>"
-					width="180"
-					height="46"
-					style="width:180px;max-width:180px;height:auto;display:block;"
-					alt=""
-				/>
-			</a>
+		<div class="prayer-pop-save-row prayer-pop-submissions-footer-row prayer-pop-save-row--logo-only">
+			<div class="prayer-pop-save-row__actions"></div>
+			<div class="prayer-pop-brand-footer" aria-hidden="true">
+				<a class="prayer-pop-brand-logo prayer-pop-brand-logo-full" href="<?php echo esc_url( 'https://prayerpop.eu/' ); ?>" target="_blank" rel="noopener noreferrer">
+					<img
+						class="prayer-pop-logo-img prayer-pop-logo-img-full"
+						src="<?php echo esc_url( PRAYERPOP_PLUGIN_URL . 'assets/images/prayer-pop-logo-full.svg' ); ?>"
+						width="180"
+						height="46"
+						style="width:180px;max-width:180px;height:auto;display:block;"
+						alt=""
+					/>
+				</a>
+			</div>
 		</div>
 		<?php
 	}

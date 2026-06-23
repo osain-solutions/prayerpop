@@ -1361,3 +1361,98 @@ tr.prayerpop-new {
     justify-content: center;
     padding: 8px;
 }
+
+.prayer-pop-submissions-footer-row {
+    margin: 18px 0 10px;
+}
+
+/* Streamlined single-submission edit screen. */
+.prayer-pop-edit-back-link {
+    margin: 0 0 6px;
+}
+
+.post-type-prayer_request #titlediv,
+.post-type-prayer_request #postdivrich,
+.post-type-prayer_request #edit-slug-box,
+.post-type-prayer_request #post-body-content,
+.post-type-prayer_request #submitdiv,
+.post-type-prayer_request #prayer_pop_submission_details .handle-actions,
+.post-type-prayer_request #prayer_pop_submission_details .hndle .toggle-indicator {
+    display: none !important;
+}
+
+#prayer_pop_submission_content .inside,
+#prayer_pop_answered_note .inside {
+    padding: 10px 12px 12px;
+}
+
+#prayer_pop_submission_content .prayer-pop-submission-edit-fields p {
+    margin: 0 0 12px;
+}
+
+#prayer_pop_submission_content .prayer-pop-submission-edit-fields p:first-child {
+    margin-top: 0;
+}
+
+#prayer_pop_submission_content input[type="text"],
+#prayer_pop_submission_content textarea,
+#prayer_pop_answered_message {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.post-type-prayer_request #poststuff #post-body.columns-2 {
+    margin-right: 320px;
+}
+
+.post-type-prayer_request #post-body.columns-2 #postbox-container-1 {
+    width: 300px;
+    margin-top: 0;
+    margin-right: -320px;
+}
+
+.post-type-prayer_request #post-body.columns-2 #postbox-container-2 {
+    margin-right: 0;
+}
+
+.post-type-prayer_request #postdivrich #wp-content-media-buttons,
+.post-type-prayer_request #postdivrich .wp-editor-tabs,
+.post-type-prayer_request #postdivrich .quicktags-toolbar,
+.post-type-prayer_request #postdivrich .mce-toolbar-grp,
+.post-type-prayer_request #postdivrich .mce-statusbar {
+    display: none !important;
+}
+
+.post-type-prayer_request #content,
+#prayer_pop_submission_content textarea,
+#prayer_pop_answered_message {
+    min-height: 180px;
+}
+
+#prayer_pop_submission_details #major-publishing-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 8px;
+}
+
+#prayer_pop_submission_details #delete-action,
+#prayer_pop_submission_details #publishing-action {
+    display: flex;
+    float: none;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+#prayer_pop_submission_details #publishing-action .spinner {
+    float: none;
+    margin: 0 6px 0 0;
+}
+
+#prayer_pop_submission_details #delete-action .submitdelete,
+#prayer_pop_submission_details #publishing-action .button {
+    white-space: nowrap;
+}

@@ -578,3 +578,35 @@
     cursor: pointer;
     flex: 0 0 auto;
 }
+/* Isolated settings preview document. */
+.prayer-pop-preview-document,
+.prayer-pop-preview-page {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: transparent !important;
+}
+
+.prayer-pop-preview-page #wpadminbar {
+    display: none !important;
+}
+/* Dynamic option values are supplied as validated custom properties. */
+.prayer-pop-heading,
+#prayer-pop-header h2 {
+    margin: 0;
+    padding: 0;
+    color: var(--global-label-color);
+    font-family: var(--heading-font-family);
+    font-size: var(--heading-font-size);
+    font-weight: var(--heading-font-weight);
+}
+
+#prayer-pop-bubble {
+    background-color: var(--bubble-bg-color, var(--global-bg-color));
+    border-radius: var(--bubble-border-radius, var(--global-border-radius));
+    transform: scale(var(--prayerpop-bubble-scale, 1)) !important;
+}
+
+#prayer-pop-bubble:hover {
+    transform: scale(var(--prayerpop-bubble-hover-scale, 1.03)) !important;
+}

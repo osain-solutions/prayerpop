@@ -76,7 +76,7 @@ class Prayer_Pop_Ajax {
 
 		// Parse the serialized form payload.
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce already verified by check_ajax_referer() above.
-		$raw_data = isset( $_POST['data'] ) ? wp_unslash( $_POST['data'] ) : '';
+		$raw_data = isset( $_POST['data'] ) ? sanitize_textarea_field( wp_unslash( $_POST['data'] ) ) : '';
 		$data     = is_string( $raw_data ) ? $raw_data : '';
 		if ( '' === $data ) {
 			wp_send_json_error( esc_html__( 'Invalid form data.', 'prayerpop' ) );

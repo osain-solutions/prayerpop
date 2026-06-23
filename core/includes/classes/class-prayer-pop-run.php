@@ -193,7 +193,6 @@ class Prayer_Pop_Run {
 
 	        // Streamline the classic edit screen for submissions.
 	        add_action( 'edit_form_top', array( $this, 'render_submission_edit_back_button' ) );
-	        add_action( 'admin_head-post.php', array( $this, 'render_submission_edit_screen_assets' ) );
 	        add_filter( 'wp_editor_settings', array( $this, 'filter_submission_editor_settings' ), 10, 2 );
 	        add_filter( 'wp_insert_post_data', array( $this, 'preserve_submission_status_on_save' ), 10, 2 );
 	        add_filter( 'post_updated_messages', array( $this, 'filter_submission_updated_messages' ) );
@@ -702,115 +701,6 @@ class Prayer_Pop_Run {
 	}
 
 	/**
-	 * Inject scoped CSS/JS tweaks for submission edit screen UX.
-	 *
-	 * @return void
-	 */
-	public function render_submission_edit_screen_assets() {
-		if ( ! $this->is_prayer_submission_edit_screen() ) {
-			return;
-		}
-		?>
-		<?php
-		$submission_edit_css = implode( "\n", array(
-			'			.prayer-pop-edit-back-link {',
-			'				margin: 0 0 6px;',
-			'			}',
-			'			#titlediv,',
-			'			#postdivrich,',
-			'			#edit-slug-box {',
-			'				display: none !important;',
-			'			}',
-			'			#prayer_pop_submission_content .inside,',
-			'			#prayer_pop_answered_note .inside {',
-			'				padding: 10px 12px 12px;',
-			'			}',
-			'			#prayer_pop_submission_content .prayer-pop-submission-edit-fields p {',
-			'				margin: 0 0 12px;',
-			'			}',
-			'			#prayer_pop_submission_content .prayer-pop-submission-edit-fields p:first-child {',
-			'				margin-top: 0;',
-			'			}',
-			'			#prayer_pop_submission_content input[type="text"],',
-			'			#prayer_pop_submission_content textarea,',
-			'			#prayer_pop_answered_message {',
-			'				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;',
-			'				font-size: 14px;',
-			'				line-height: 1.45;',
-			'			}',
-			'			#post-body-content {',
-			'				display: none !important;',
-			'			}',
-			'			#poststuff #post-body.columns-2 {',
-			'				margin-right: 320px;',
-			'			}',
-			'			#post-body.columns-2 #postbox-container-1 {',
-			'				width: 300px;',
-			'				margin-right: -320px;',
-			'				margin-top: 0;',
-			'			}',
-			'			#post-body.columns-2 #postbox-container-2 {',
-			'				margin-right: 0;',
-			'			}',
-			'			#postdivrich #wp-content-media-buttons,',
-			'			#postdivrich .wp-editor-tabs,',
-			'			#postdivrich .quicktags-toolbar,',
-			'			#postdivrich .mce-toolbar-grp,',
-			'			#postdivrich .mce-statusbar {',
-			'				display: none !important;',
-			'			}',
-			'			#content,',
-			'			#prayer_pop_submission_content textarea,',
-			'			#prayer_pop_answered_message {',
-			'				min-height: 180px;',
-			'			}',
-			'			#submitdiv,',
-			'			#prayer_pop_submission_details .handle-actions,',
-			'			#prayer_pop_submission_details .hndle .toggle-indicator {',
-			'				display: none !important;',
-			'			}',
-			'			#prayer_pop_submission_details #major-publishing-actions {',
-			'				display: flex;',
-			'				align-items: center;',
-			'				justify-content: space-between;',
-			'				gap: 8px;',
-			'				flex-wrap: nowrap;',
-			'			}',
-			'			#prayer_pop_submission_details #delete-action,',
-			'			#prayer_pop_submission_details #publishing-action {',
-			'				float: none;',
-			'				margin: 0;',
-			'				padding: 0;',
-			'				display: flex;',
-			'				align-items: center;',
-			'			}',
-			'			#prayer_pop_submission_details #publishing-action .spinner {',
-			'				float: none;',
-			'				margin: 0 6px 0 0;',
-			'			}',
-			'			#prayer_pop_submission_details #delete-action .submitdelete,',
-			'			#prayer_pop_submission_details #publishing-action .button {',
-			'				white-space: nowrap;',
-			'			}',
-		) );
-		wp_add_inline_style( 'prayer-pop-admin-list', $submission_edit_css );
-
-		$changes_saved_label = esc_js( __( 'Changes saved.', 'prayerpop' ) );
-		$submission_edit_js = implode( "\n", array(
-			'			document.addEventListener(\'DOMContentLoaded\', function() {',
-			'				var messageNode = document.querySelector(\'#message.updated p\');',
-			'				if (messageNode) {',
-			'					messageNode.textContent = __CHANGES_SAVED_LABEL__;',
-			'				}',
-			'			});',
-		) );
-		$submission_edit_js = str_replace( '__CHANGES_SAVED_LABEL__', wp_json_encode( $changes_saved_label ), $submission_edit_js );
-		wp_add_inline_script( 'prayer-pop-admin-list', $submission_edit_js );
-		?>
-		<?php
-	}
-
-	/**
 	 * Mark bubble module as rendered for current request.
 	 *
 	 * @return void
@@ -838,70 +728,32 @@ class Prayer_Pop_Run {
 		}
 		$styles_printed = true;
 
-        $options = Prayer_Pop_Defaults::get_styles();
-        $custom_css = ':root {';
+		$options      = Prayer_Pop_Defaults::get_styles();
+		$declarations = array();
 
-	        if ( $options && is_array( $options ) ) {
-	            foreach ( $options as $key => $value ) {
-	                $value = $this->sanitize_css_custom_property_value( $key, $value );
-	                if ( '' !== $value && $key !== 'bubble_animation' ) { // Exclude bubble_animation
-	                    // Special handling for heading styles
-	                    if (strpos($key, 'heading_') === 0) {
-	                        $css_variable = '--heading-' . str_replace('heading_', '', str_replace('_', '-', $key));
-	                    } else {
-	                        $css_variable = '--' . str_replace('_', '-', $key);
-                    }
-                    
-                    // Handle percentage values for sliders (they come as integers from the slider)
-                    if ( $key === 'bubble_size' || $key === 'bubble_icon_size' ) {
-                        // Keep as number for calc() functions - don't add %
-                        $value = intval( $value );
-                    }
-                    
-	                    $custom_css .= $css_variable . ': ' . $value . ';';
-	                }
-	            }
-	        }
+		if ( is_array( $options ) ) {
+			foreach ( $options as $key => $value ) {
+				$value = $this->sanitize_css_custom_property_value( $key, $value );
+				if ( '' === $value ) {
+					continue;
+				}
 
-        $custom_css .= '}';
+				$css_variable  = '--' . str_replace( '_', '-', sanitize_key( $key ) );
+				$declarations[] = $css_variable . ':' . $value;
+			}
+		}
 
-        // Add specific heading styles
-        $custom_css .= '
-        .prayer-pop-heading,
-        #prayer-pop-header h2 {
-            font-size: var(--heading-font-size);
-            font-family: var(--heading-font-family);
-            font-weight: var(--heading-font-weight);
-            color: var(--global-label-color);
-            margin: 0;
-            padding: 0;
-        }';
-        
-        // Add bubble-specific styles
-        $custom_css .= '
-        #prayer-pop-bubble {
-            background-color: var(--bubble-bg-color, var(--global-bg-color));
-            border-radius: var(--bubble-border-radius, var(--global-border-radius));
-        }';
-        
-        // Only add bubble size scaling if bubble_size is actually set
-        if ( isset( $options['bubble_size'] ) && ! empty( $options['bubble_size'] ) ) {
-            $bubble_size = intval( $options['bubble_size'] );
-            $custom_css .= '
-        /* Bubble size scaling */
-        #prayer-pop-bubble {
-            transform: scale(' . ( $bubble_size / 100 ) . ') !important;
-        }
-        
-        /* Maintain hover effects while preserving bubble scaling */
-        #prayer-pop-bubble:hover {
-            transform: scale(' . ( $bubble_size / 100 * 1.03 ) . ') !important;
-        }';
-        }
-        
-        if ( ! empty( $custom_css ) ) {
-            wp_add_inline_style( 'prayer-pop-style', $custom_css );
-        }
+		$bubble_size = isset( $options['bubble_size'] ) ? max( 50, min( 150, absint( $options['bubble_size'] ) ) ) : 100;
+		$declarations[] = '--prayerpop-bubble-scale:' . number_format( $bubble_size / 100, 2, '.', '' );
+		$declarations[] = '--prayerpop-bubble-hover-scale:' . number_format( ( $bubble_size / 100 ) * 1.03, 4, '.', '' );
+
+		$declarations_safe = safecss_filter_attr( implode( ';', $declarations ) );
+		$custom_css_safe   = ':root{' . $declarations_safe . '}';
+
+		if ( ':root{}' !== $custom_css_safe ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Values are type-validated above and the completed declaration list is filtered by safecss_filter_attr().
+			wp_add_inline_style( 'prayer-pop-style', $custom_css_safe );
+		}
     }
 
     /**
@@ -1496,10 +1348,11 @@ class Prayer_Pop_Run {
 	                $bulk_answered_message = sanitize_textarea_field( wp_unslash( $_REQUEST['prayer_pop_bulk_answered_message'] ) );
 	                $bulk_answered_message = trim( $bulk_answered_message );
 	            }
-	            $bulk_answered_messages_map = array();
-	            if ( isset( $_REQUEST['prayer_pop_bulk_answered_messages'] ) ) {
-	                $decoded_map = json_decode( wp_unslash( (string) $_REQUEST['prayer_pop_bulk_answered_messages'] ), true );
-	                if ( is_array( $decoded_map ) ) {
+		            $bulk_answered_messages_map = array();
+		            if ( isset( $_REQUEST['prayer_pop_bulk_answered_messages'] ) ) {
+		                $raw_answered_messages = sanitize_textarea_field( wp_unslash( $_REQUEST['prayer_pop_bulk_answered_messages'] ) );
+		                $decoded_map           = json_decode( $raw_answered_messages, true );
+		                if ( is_array( $decoded_map ) ) {
 	                    foreach ( $decoded_map as $raw_post_id => $raw_message ) {
 	                        $map_post_id = absint( $raw_post_id );
 	                        if ( $map_post_id <= 0 ) {
@@ -1550,11 +1403,12 @@ class Prayer_Pop_Run {
 	            return $redirect_to;
 	        }
 
-	        if ( 'bulk_edit' === $doaction ) {
-	            $bulk_edit_payload = array();
-	            if ( isset( $_REQUEST['prayer_pop_bulk_edit_payload'] ) ) {
-	                $decoded_payload = json_decode( wp_unslash( (string) $_REQUEST['prayer_pop_bulk_edit_payload'] ), true );
-	                if ( is_array( $decoded_payload ) ) {
+		        if ( 'bulk_edit' === $doaction ) {
+		            $bulk_edit_payload = array();
+		            if ( isset( $_REQUEST['prayer_pop_bulk_edit_payload'] ) ) {
+		                $raw_bulk_edit_payload = sanitize_textarea_field( wp_unslash( $_REQUEST['prayer_pop_bulk_edit_payload'] ) );
+		                $decoded_payload       = json_decode( $raw_bulk_edit_payload, true );
+		                if ( is_array( $decoded_payload ) ) {
 	                    $bulk_edit_payload = $decoded_payload;
 	                }
 	            }
@@ -2378,9 +2232,9 @@ class Prayer_Pop_Run {
             $args['s'] = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
         }
 
-        if ( ! empty( $_REQUEST['m'] ) ) {
-            $args['m'] = preg_replace( '/[^0-9]/', '', wp_unslash( $_REQUEST['m'] ) );
-        }
+	        if ( ! empty( $_REQUEST['m'] ) ) {
+	            $args['m'] = preg_replace( '/[^0-9]/', '', sanitize_text_field( wp_unslash( $_REQUEST['m'] ) ) );
+	        }
 
         $type = isset( $_REQUEST['prayer_pop_type'] ) ? sanitize_key( wp_unslash( $_REQUEST['prayer_pop_type'] ) ) : '';
         if ( 'prayer_request' === $type ) {
@@ -2987,86 +2841,41 @@ class Prayer_Pop_Run {
         // Send email with error handling
         $mail_sent = wp_mail( $admin_email, $subject, $body );
         
-        // Log failed emails for debugging (optional)
-        if ( ! $mail_sent && defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-            error_log( 'PrayerPop: Failed to send immediate notification email for post ID ' . $post_id );
-        }
-    }
+	    }
 
     /**
      * Send daily notifications
      */
-    public function send_daily_notifications() {
-        // Debug logging
-        if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-            error_log( 'PrayerPop: send_daily_notifications() called at ' . current_time( 'mysql' ) );
-        }
-        
-        $options = get_option( 'prayer_pop_notification_settings' );
-        
-        if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-            error_log( 'PrayerPop: Daily notification options: ' . print_r( $options, true ) );
-        }
-        
-        if ( isset( $options['enable_notifications'] ) && $options['enable_notifications'] && $options['notification_frequency'] === 'daily' ) {
-            if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-                error_log( 'PrayerPop: Calling send_scheduled_notifications(daily)' );
-            }
-            $this->send_scheduled_notifications( 'daily' );
-        } else {
-            if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-                error_log( 'PrayerPop: Daily notifications not enabled or wrong frequency' );
-            }
-        }
-    }
+	    public function send_daily_notifications() {
+		        $options = get_option( 'prayer_pop_notification_settings' );
+
+	        if ( isset( $options['enable_notifications'] ) && $options['enable_notifications'] && $options['notification_frequency'] === 'daily' ) {
+	            $this->send_scheduled_notifications( 'daily' );
+	        }
+	    }
 
     /**
      * Send weekly notifications
      */
-    public function send_weekly_notifications() {
-        // Debug logging
-        if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-            error_log( 'PrayerPop: send_weekly_notifications() called at ' . current_time( 'mysql' ) );
-        }
-        
-        $options = get_option( 'prayer_pop_notification_settings', array() );
-        
-        if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-            error_log( 'PrayerPop: Weekly notification options: ' . print_r( $options, true ) );
-        }
-        
-        if ( isset( $options['enable_notifications'] ) && $options['enable_notifications'] && $options['notification_frequency'] === 'weekly' ) {
-            if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-                error_log( 'PrayerPop: Calling send_scheduled_notifications(weekly)' );
-            }
-            $this->send_scheduled_notifications( 'weekly' );
-        } else {
-            if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-                error_log( 'PrayerPop: Weekly notifications not enabled or wrong frequency' );
-            }
-        }
-    }
+	    public function send_weekly_notifications() {
+		        $options = get_option( 'prayer_pop_notification_settings', array() );
+
+	        if ( isset( $options['enable_notifications'] ) && $options['enable_notifications'] && $options['notification_frequency'] === 'weekly' ) {
+	            $this->send_scheduled_notifications( 'weekly' );
+	        }
+	    }
 
     /**
      * Common function to send scheduled notifications
      */
-    public function send_scheduled_notifications( $frequency ) {
-        // Debug logging
-        if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-            error_log( 'PrayerPop: send_scheduled_notifications(' . $frequency . ') called at ' . current_time( 'mysql' ) );
-        }
-        
-        $options      = get_option( 'prayer_pop_notification_settings', array() );
+	    public function send_scheduled_notifications( $frequency ) {
+	        $options      = get_option( 'prayer_pop_notification_settings', array() );
         $admin_email  = ! empty( $options['notification_email'] ) ? sanitize_email( $options['notification_email'] ) : get_option( 'admin_email' );
         $email_template = get_option( 'prayer_pop_email_template', array() );
         $subject        = isset( $email_template['email_subject'] ) && ! empty( $email_template['email_subject'] ) ? $email_template['email_subject'] : __( 'Scheduled PrayerPop Submissions', 'prayerpop' );
         $body_template  = isset( $email_template['email_body'] ) && ! empty( $email_template['email_body'] ) ? $email_template['email_body'] : __( "Type: {type}\nName: {name}\nMessage:\n{message}", "prayerpop" );
 
-        if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-            error_log( 'PrayerPop: Admin email: ' . $admin_email );
-        }
-
-        // Get pending submissions since last notification.
+	        // Get pending submissions since last notification.
         $last_sent = get_option( 'prayer_pop_last_notification_time', 0 );
         $base_args = array(
             'post_type'              => 'prayer_request',
@@ -3085,12 +2894,7 @@ class Prayer_Pop_Run {
             'update_post_term_cache' => false,
         );
         
-        if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-            error_log( 'PrayerPop: Query args: ' . print_r( $base_args, true ) );
-            error_log( 'PrayerPop: Last sent: ' . ( $last_sent ? gmdate( 'Y-m-d H:i:s', $last_sent ) : 'Never' ) );
-        }
-
-		$submission_ids = array();
+			$submission_ids = array();
 		$max_pages      = 25; // Safety guard: up to 5000 IDs per run.
 		for ( $page = 1; $page <= $max_pages; $page++ ) {
 			$page_args         = $base_args;
@@ -3106,11 +2910,7 @@ class Prayer_Pop_Run {
 			}
 		}
         
-        if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-            error_log( 'PrayerPop: Found ' . count( $submission_ids ) . ' submissions for ' . $frequency . ' notification' );
-        }
-
-        if ( ! empty( $submission_ids ) ) {
+	        if ( ! empty( $submission_ids ) ) {
             $message = '';
 
             $pending_count = $this->get_pending_submission_count();
@@ -3150,30 +2950,13 @@ class Prayer_Pop_Run {
             /* translators: %s: admin URL to manage submissions. */
             $message .= sprintf( __( "\nManage submissions: %s", "prayerpop" ), admin_url( 'edit.php?post_type=prayer_request' ) );
 
-            if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-                error_log( 'PrayerPop: Sending email to: ' . $admin_email );
-                error_log( 'PrayerPop: Email subject: ' . $subject );
-                error_log( 'PrayerPop: Email message length: ' . strlen( $message ) );
-            }
-
-            $mail_sent = wp_mail( $admin_email, $subject, $message );
-            
-            if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-                error_log( 'PrayerPop: Email sent result: ' . ( $mail_sent ? 'SUCCESS' : 'FAILED' ) );
-            }
-        } else {
-            if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-                error_log( 'PrayerPop: No submissions found for ' . $frequency . ' notification - no email sent' );
-            }
-        }
+	            wp_mail( $admin_email, $subject, $message );
+	        }
 
         // Update last notification time (using local timezone)
         update_option( 'prayer_pop_last_notification_time', current_time( 'timestamp' ) );
         
-        if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'PRAYERPOP_DEBUG_LOGS' ) && PRAYERPOP_DEBUG_LOGS ) {
-            error_log( 'PrayerPop: Updated last notification time to: ' . current_time( 'mysql' ) );
-        }
-    }
+	    }
     
     /**
      * Add custom cron schedules.
@@ -3402,18 +3185,63 @@ class Prayer_Pop_Run {
 	            return '';
 	        }
 
-	        if ( false !== strpos( (string) $key, 'color' ) ) {
+		$color_keys = array(
+			'global_bg_color',
+			'bubble_bg_color',
+			'bubble_icon_color',
+			'global_font_color',
+			'global_label_color',
+			'global_button_hover_color',
+			'global_textarea_bg_color',
+			'global_border_color',
+		);
+	        if ( in_array( $key, $color_keys, true ) ) {
 	            $color = sanitize_hex_color( $value );
 	            return $color ? $color : '';
 	        }
 
-	        if ( in_array( $key, array( 'bubble_size', 'bubble_icon_size' ), true ) ) {
-	            return (string) absint( $value );
+		$dimension_keys = array(
+			'global_font_size',
+			'heading_font_size',
+			'global_padding',
+			'global_margin',
+			'global_border_radius',
+			'bubble_border_radius',
+			'bubble_padding',
+			'bubble_margin',
+			'bubble_height',
+			'checkbox_margin',
+		);
+		if ( in_array( $key, $dimension_keys, true ) ) {
+			return preg_match( '/^(?:0|[0-9]+(?:\.[0-9]+)?(?:%|px|em|rem))$/', $value ) ? $value : '';
 	        }
 
-	        // Block CSS-breaking delimiters for generic values.
-	        $value = str_replace( array( ';', '{', '}', '<', '>' ), '', $value );
+		if ( in_array( $key, array( 'bubble_size', 'bubble_icon_size' ), true ) ) {
+			return (string) absint( $value );
+		}
 
-	        return trim( $value );
+		if ( in_array( $key, array( 'heading_font_weight', 'global_bold_font_weight' ), true ) ) {
+			return preg_match( '/^(?:normal|bold|[1-9]00)$/', $value ) ? $value : '';
+		}
+
+		if ( in_array( $key, array( 'global_font_family', 'heading_font_family' ), true ) ) {
+			$allowed_fonts = array(
+				'system-ui',
+				'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
+				'Georgia, serif',
+				'"Helvetica Neue", Helvetica, Arial, sans-serif',
+				'Times, "Times New Roman", serif',
+				'Arial, Helvetica, sans-serif',
+				'Tahoma, Geneva, sans-serif',
+				'Verdana, Geneva, sans-serif',
+				'"Trebuchet MS", Helvetica, sans-serif',
+				'Impact, Charcoal, sans-serif',
+				'"Courier New", Courier, monospace',
+			);
+
+			return in_array( $value, $allowed_fonts, true ) ? $value : '';
+		}
+
+	        return '';
 	    }
 }

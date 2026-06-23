@@ -62,9 +62,26 @@
     box-sizing: border-box;
 }
 
+.prayer-pop-save-row__actions {
+    align-items: center;
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-width: 0;
+}
+
+.prayer-pop-save-row__actions:empty {
+    display: none;
+}
+
 .prayer-pop-save-row .submit {
     margin: 0;
     padding: 0;
+}
+
+.prayer-pop-save-row--logo-only {
+    justify-content: flex-end;
 }
 
 .prayer-pop-save-row .prayer-pop-brand-footer {
@@ -373,6 +390,92 @@ input:checked+.prayer-pop-toggle-slider:before {
     .prayer-pop-email-template-info {
         overflow-x: auto;
     }
+}
+
+.prayer-pop-doc-start {
+    margin: 0 0 18px;
+    padding: 14px 16px;
+    border: 1px solid #dcdcde;
+    border-left: 4px solid #2271b1;
+    background: #fff;
+}
+
+.prayer-pop-doc-start h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+}
+
+.prayer-pop-doc-start ol,
+.prayer-pop-doc-start ul {
+    margin: 0 0 0 18px;
+}
+
+.prayer-pop-doc-note {
+    margin: 12px 0;
+    padding: 10px 12px;
+    color: #1d2327;
+    border: 1px solid #c3d7ea;
+    border-radius: 6px;
+    background: #f0f6fc;
+}
+
+.prayer-pop-doc-note.is-tip {
+    border-color: #cde5c2;
+    background: #f4fbf0;
+}
+
+.prayer-pop-notification-debug-settings {
+    margin-top: 18px;
+}
+
+.prayer-pop-notification-debug-settings h3 {
+    margin: 0 0 10px;
+    color: #50575e;
+    font-size: 14px;
+}
+
+#custom-buttons .prayer-pop-settings-block,
+#custom-buttons .prayer-pop-wp-card {
+    margin: 0 0 24px;
+    padding-top: 18px;
+    border: 0 !important;
+    border-top: 1px solid #e2e5e9 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+#custom-buttons .prayer-pop-settings-block:first-child,
+#custom-buttons .prayer-pop-wp-card:first-child {
+    padding-top: 0;
+    border-top: 0 !important;
+}
+
+#custom-buttons .prayer-pop-wp-card__body {
+    padding: 0 !important;
+}
+
+.prayer-pop-doc-section,
+#prayer-pop-doc-ai-workflow {
+    scroll-margin-top: 96px;
+}
+
+@keyframes prayer-pop-doc-target-flash {
+    0%, 100% {
+        color: #1d2327;
+        background-color: transparent;
+        box-shadow: inset 0 0 0 transparent;
+    }
+    30% {
+        color: #0a4b78;
+        background-color: rgba(255, 224, 138, 0.98);
+        box-shadow: inset 0 -4px 0 #dba617;
+    }
+}
+
+.prayer-pop-doc-section:target > h2,
+#prayer-pop-doc-ai-workflow:target {
+    animation: prayer-pop-doc-target-flash 1.25s ease;
 }
 
 /* Layout Card Styles */
@@ -1418,5 +1521,92 @@ input:checked+.prayer-pop-toggle-slider:before {
 
     .prayer-pop-welcome-modal__action {
         min-width: 100%;
+    }
+}
+/* Settings table spacing. */
+#custom-buttons-table thead th,
+#custom-buttons-table tbody td,
+#custom-buttons-table tfoot td,
+#prayer-pop-faq-items-field .prayer-pop-faq-table th,
+#prayer-pop-faq-items-field .prayer-pop-faq-table td {
+    padding: 12px 14px !important;
+}
+
+#custom-buttons-table thead th,
+#prayer-pop-faq-items-field .prayer-pop-faq-table th {
+    width: auto !important;
+}
+
+.prayer-pop-size-control {
+    width: 100%;
+    max-width: 680px;
+}
+
+.prayer-pop-size-control--icon {
+    max-width: 760px;
+}
+
+.prayer-pop-range-slider {
+    flex: 1;
+    min-width: 360px;
+}
+
+.prayer-pop-tabler-selector {
+    max-width: 600px;
+}
+
+.prayer-pop-tabler-selector .dashicon-search-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.prayer-pop-tabler-selector .dashicon-search-wrapper input,
+.prayer-pop-tabler-selector .dashicon-dropdown-wrapper select {
+    width: 100%;
+}
+
+.prayer-pop-tabler-selector .dashicon-dropdown-wrapper {
+    margin-bottom: 15px;
+}
+
+.prayer-pop-tabler-selector .dashicon-dropdown-wrapper select {
+    height: 200px;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.prayer-pop-tabler-selector .dashicon-preview-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.prayer-pop-tabler-preview-shell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    border-radius: 8px;
+    background: #2755aa;
+}
+
+.prayer-pop-tabler-preview-shell .prayer-pop-tabler-icon {
+    display: block;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    color: currentColor;
+}
+
+@media screen and (max-width: 782px) {
+    .prayer-pop-range-slider {
+        min-width: 0;
     }
 }

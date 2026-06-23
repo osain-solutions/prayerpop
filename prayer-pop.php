@@ -1,10 +1,11 @@
 <?php
 /**
  * Plugin Name: PrayerPop
+ * Plugin URI: https://prayerpop.eu/
  * Description: Prayer request workflow plugin with a frontend bubble, admin review, and notifications.
- * Version: 1.5.7
+ * Version: 1.5.8
  * Author: Ösain OÜ
- * Author URI: https://www.osain.ee
+ * Author URI: https://osain.ee/
  * Text Domain: prayerpop
  * Domain Path: /languages
  * Requires at least: 5.8
@@ -20,7 +21,7 @@ if (!defined('ABSPATH')) {
 
 // Define plugin constants
 if ( ! defined( 'PRAYERPOP_VERSION' ) ) {
-	define( 'PRAYERPOP_VERSION', '1.5.7' );
+	define( 'PRAYERPOP_VERSION', '1.5.8' );
 }
 if ( ! defined( 'PRAYERPOP_PLUGIN_DIR' ) ) {
 	define( 'PRAYERPOP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -160,13 +161,12 @@ function prayer_pop_block_pro_activation_attempt() {
 	}
 
 	if ( ! $should_block && isset( $_REQUEST['action'] ) ) {
-		$bulk_action = sanitize_key( (string) wp_unslash( $_REQUEST['action'] ) );
-		if ( 'activate-selected' === $bulk_action ) {
-			check_admin_referer( 'bulk-plugins' );
-			$checked = isset( $_REQUEST['checked'] ) ? (array) wp_unslash( $_REQUEST['checked'] ) : array();
-			$checked = array_map( 'sanitize_text_field', $checked );
-			$should_block = in_array( $other_plugin, $checked, true );
-		}
+			$bulk_action = sanitize_key( (string) wp_unslash( $_REQUEST['action'] ) );
+			if ( 'activate-selected' === $bulk_action ) {
+				check_admin_referer( 'bulk-plugins' );
+				$checked = isset( $_REQUEST['checked'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_REQUEST['checked'] ) ) : array();
+				$should_block = in_array( $other_plugin, $checked, true );
+			}
 	}
 
 	if ( ! $should_block ) {
@@ -367,7 +367,7 @@ function prayer_pop_plugins_api( $result, $action, $args ) {
 		'name'          => 'PrayerPop',
 		'slug'          => $slug,
 		'version'       => (string) PRAYERPOP_VERSION,
-		'author'        => '<a href="https://www.osain.ee">Ösain OÜ</a>',
+		'author'        => '<a href="https://osain.ee/">Ösain OÜ</a>',
 		'homepage'      => 'https://prayerpop.eu/',
 		'requires'      => '5.8',
 		'requires_php'  => '7.2',

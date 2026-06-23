@@ -383,4 +383,122 @@ jQuery(document).ready(function($) {
         var activeTab = $('.nav-tab-active').data('tab') || 'general';
         $('input[name="prayer_pop_active_tab"]').val(activeTab);
     });
+
+    // Email-template placeholder insertion and test-email action.
+    $(document).on('click', '.prayer-pop-insert-placeholder', function(e) {
+        e.preventDefault();
+        var selector = $(this).attr('data-target');
+        var placeholder = $(this).attr('data-placeholder') || '';
+        var $field = selector ? $(selector) : $();
+        if (!$field.length || !placeholder) {
+            return;
+        }
+
+        var field = $field.get(0);
+        var current = $field.val() || '';
+        var start = typeof field.selectionStart === 'number' ? field.selectionStart : current.length;
+        var end = typeof field.selectionEnd === 'number' ? field.selectionEnd : current.length;
+        $field.val(current.substring(0, start) + placeholder + current.substring(end));
+        field.focus();
+        if (typeof field.setSelectionRange === 'function') {
+            field.setSelectionRange(start + placeholder.length, start + placeholder.length);
+        }
+        $field.trigger('input').trigger('change');
+    });
+
+    $('#prayer-pop-send-test-email').on('click', function() {
+        var config = (window.prayerPopAdmin && prayerPopAdmin.emailTemplate) || {};
+        var $button = $(this);
+        var sendLabel = config.sendLabel || 'Send Test Email';
+        var failedMessage = config.failedMessage || 'Failed to send test email.';
+        $button.prop('disabled', true).text(config.sendingLabel || 'Sending...');
+
+        $.post(window.ajaxurl, {
+            action: 'prayer_pop_send_test_email',
+            _wpnonce: (window.prayerPopAdmin && prayerPopAdmin.nonce) || ''
+        }).done(function(response) {
+            window.alert(response && response.data ? response.data : failedMessage);
+        }).fail(function() {
+            window.alert(failedMessage);
+        }).always(function() {
+            $button.prop('disabled', false).text(sendLabel);
+        });
+    });
+
+    // Text customization JSON import.
+    $('#import_translations_btn').on('click', function() {
+        var config = (window.prayerPopAdmin && prayerPopAdmin.textImport) || {};
+        var fileInput = $('#translation_file').get(0);
+        var file = fileInput && fileInput.files ? fileInput.files[0] : null;
+        if (!file) {
+            window.alert(config.selectFile || 'Please select a file to import.');
+            return;
+        }
+        if (!/\.json$/i.test(file.name)) {
+            window.alert(config.selectValidJson || 'Please select a valid JSON file.');
+            return;
+        }
+
+        var $button = $(this);
+        var originalText = $button.text();
+        var formData = new FormData();
+        formData.append('translation_file', file);
+        formData.append('action', 'prayer_pop_import_translations');
+        formData.append('_wpnonce', config.nonce || '');
+        $button.prop('disabled', true).text(config.importing || 'Importing...');
+
+        $.ajax({
+            url: window.ajaxurl,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false
+        }).done(function(response) {
+            if (response && response.success) {
+                window.alert(response.data || config.importSuccess || 'Text fields imported successfully!');
+                window.location.reload();
+                return;
+            }
+            window.alert((config.importFailedPrefix || 'Import failed: ') + ((response && response.data) || config.unknownError || 'Unknown error.'));
+            $button.prop('disabled', false).text(originalText);
+            fileInput.value = '';
+        }).fail(function(xhr, status, error) {
+            window.alert((config.importFailedRetry || 'Import failed. Please try again.') + '\n' + error);
+            $button.prop('disabled', false).text(originalText);
+            fileInput.value = '';
+        });
+    });
+
+    // Capture browser details for the feedback environment summary.
+    var userAgentField = document.getElementById('prayer-pop-feedback-user-agent');
+    var viewportField = document.getElementById('prayer-pop-feedback-viewport');
+    var platformField = document.getElementById('prayer-pop-feedback-platform');
+    var currentUrlField = document.getElementById('prayer-pop-feedback-current-url');
+    var environmentPreview = document.getElementById('prayer-pop-feedback-env-preview');
+    if (userAgentField) {
+        userAgentField.value = window.navigator.userAgent || '';
+    }
+    if (viewportField) {
+        viewportField.value = (window.innerWidth || 0) + 'x' + (window.innerHeight || 0);
+    }
+    if (platformField) {
+        platformField.value = window.navigator.platform || '';
+    }
+    if (currentUrlField) {
+        currentUrlField.value = window.location.href || '';
+    }
+    if (environmentPreview) {
+        var environmentValues = {
+            'User agent:': userAgentField && userAgentField.value,
+            'Viewport:': viewportField && viewportField.value,
+            'Platform:': platformField && platformField.value,
+            'Current URL:': currentUrlField && currentUrlField.value
+        };
+        environmentPreview.textContent = environmentPreview.textContent.split('\n').map(function(line) {
+            var label = Object.keys(environmentValues).find(function(candidate) {
+                return line.indexOf(candidate) === 0;
+            });
+            return label && environmentValues[label] ? label.padEnd(20, ' ') + environmentValues[label] : line;
+        }).join('\n');
+    }
 }); 

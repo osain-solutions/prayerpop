@@ -1,6 +1,13 @@
 (function () {
 	'use strict';
 
+	document.addEventListener('DOMContentLoaded', function () {
+		var messageNode = document.querySelector('#message.updated p');
+		if (messageNode && window.prayerPopBulkEmail && prayerPopBulkEmail.changesSaved) {
+			messageNode.textContent = prayerPopBulkEmail.changesSaved;
+		}
+	});
+
 	function getMessages() {
 		if (window.prayerPopBulkEmail && typeof window.prayerPopBulkEmail === 'object') {
 			return window.prayerPopBulkEmail;
