@@ -11,6 +11,36 @@ jQuery(document).ready(function($) {
     var originalFormData = '';
     var formTrackingReady = false;
 
+    function getCurrentSettingsUrl(activeTab, scrollY) {
+        var nextUrl = new URL(window.location.href);
+        nextUrl.searchParams.set('page', 'prayer-pop-settings');
+        nextUrl.searchParams.set('tab', activeTab || 'general');
+
+        if (typeof scrollY === 'number' && scrollY > 0) {
+            nextUrl.searchParams.set('prayer_pop_scroll', String(Math.max(0, Math.round(scrollY))));
+        } else {
+            nextUrl.searchParams.delete('prayer_pop_scroll');
+        }
+
+        return nextUrl.pathname + nextUrl.search;
+    }
+
+    function restoreSettingsScroll() {
+        if (!$settingsForm.length) {
+            return;
+        }
+
+        var params = new URLSearchParams(window.location.search);
+        var scrollValue = parseInt(params.get('prayer_pop_scroll') || '0', 10);
+        if (!scrollValue || scrollValue < 1) {
+            return;
+        }
+
+        window.setTimeout(function() {
+            window.scrollTo(0, scrollValue);
+        }, 80);
+    }
+
     // Function to show the selected tab content
     function showTab(tabId) {
         if (!tabId || $('#' + tabId).length === 0) {
@@ -171,8 +201,9 @@ jQuery(document).ready(function($) {
     // Handle form submission
     $('#prayer-pop-settings-form').on('submit', function(e) {
         // Store the active tab
-        var activeTab = $('.nav-tab-active').data('tab');
+        var activeTab = $('.nav-tab-active').data('tab') || 'general';
         $('input[name="prayer_pop_active_tab"]').val(activeTab);
+        $('input[name="_wp_http_referer"]').val(getCurrentSettingsUrl(activeTab, window.pageYOffset || document.documentElement.scrollTop || 0));
         
         // Hide sticky bar when form is submitted
         hideStickyBar();
@@ -279,6 +310,7 @@ jQuery(document).ready(function($) {
     initFormTracking();
     resetFormTrackingBaseline();
     formTrackingReady = true;
+    restoreSettingsScroll();
 
     // Email template variable insertion functionality
     function insertVariableAtCursor(targetFieldId, variable) {
@@ -382,6 +414,7 @@ jQuery(document).ready(function($) {
         // Ensure reset submits return user to the currently active tab.
         var activeTab = $('.nav-tab-active').data('tab') || 'general';
         $('input[name="prayer_pop_active_tab"]').val(activeTab);
+        $('input[name="_wp_http_referer"]').val(getCurrentSettingsUrl(activeTab, window.pageYOffset || document.documentElement.scrollTop || 0));
     });
 
     // Email-template placeholder insertion and test-email action.
