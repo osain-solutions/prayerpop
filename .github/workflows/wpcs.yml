@@ -1,0 +1,29 @@
+name: WordPress Coding Standards
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  phpcs:
+    name: WPCS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run WPCS
+        uses: 10up/wpcs-action@stable
+        with:
+          standard: WordPress
+          enable_warnings: true
+          paths: "prayer-pop.php uninstall.php core src templates languages"
+          excludes: "vendor node_modules .git .github"
