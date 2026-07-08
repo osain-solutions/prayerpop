@@ -12,16 +12,16 @@ permissions:
 jobs:
   phpcs:
     name: WPCS
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
 
       - name: Run WPCS
-        uses: 10up/wpcs-action@stable
+        uses: 10up/wpcs-action@39f1a9eb6139795e6798d11b51eeecf5a9678ccc # stable
         with:
           standard: WordPress
           enable_warnings: true

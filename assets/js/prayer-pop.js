@@ -433,49 +433,6 @@ jQuery(document).ready(function($) {
 
     setPrayerPopStartTime();
 
-    /**
-     * Handle the form submission via AJAX.
-     */
-    function handleSuccessfulSubmission(response, $form) {
-        debugLog('Form submission response:', response);
-        
-        if (response.success) {
-            var type = response.data.type;
-            debugLog('Submission type:', type);
-            
-            if (window.prayerPopLastTimes[type]) {
-                debugLog('Updating timestamp for', type);
-                window.prayerPopLastTimes[type].timestamp = normalizeUnixTimestamp(response.data.timestamp);
-                window.prayerPopLastTimes[type].message = response.data.message_template;
-            }
-
-            // Hide all form elements and messages
-            $form.hide();
-            $('#prayer-pop-error').hide();
-            $('#prayer-pop-header').hide();
-            $('#prayer-pop-description').hide();
-            $('#prayer-pop-last-time').hide();
-            
-            // Show success message
-            $('#prayer-pop-success').text(window.prayerPopConfig.messages.success).show();
-            
-            // Add "Submit Another" button
-            if ($('#prayer-pop-new-request').length === 0) {
-                $('#prayer-pop-success').after(
-                    '<button id="prayer-pop-new-request" class="prayer-pop-button">' + 
-                    window.prayerPopConfig.messages.newRequest + 
-                    '</button>'
-                );
-            }
-
-            // Re-enable the submit button
-            $form.find('button[type="submit"]').prop('disabled', false);
-        } else {
-            $('#prayer-pop-error').text(window.prayerPopConfig.messages.error).show();
-            $form.find('button[type="submit"]').prop('disabled', false);
-        }
-    }
-
     // Handle "Submit Another Request" button click
     $(document).on('click', '#prayer-pop-new-request', function() {
         clearPopupDraft();
