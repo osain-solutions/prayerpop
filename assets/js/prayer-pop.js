@@ -641,24 +641,14 @@ jQuery(document).ready(function($) {
         
         // Ensure the timer element exists and has the correct structure
         var $lastTime = $('#prayer-pop-last-time');
-        var iconSymbol = $lastTime.attr('data-badge-icon-symbol') || '⏱';
-        var iconColor = $lastTime.attr('data-badge-icon-color') || '';
-        var $iconElement = $lastTime.find('.prayer-pop-last-time-icon');
         var $textElement = $lastTime.find('.prayer-pop-last-time-text');
 
-        if ($iconElement.length === 0 || $textElement.length === 0) {
+        if ($textElement.length === 0) {
             // Rebuild expected structure if theme/builder markup altered it.
-            $lastTime.html('<span class="prayer-pop-last-time-icon"></span><span class="prayer-pop-last-time-text"></span>');
-            $iconElement = $lastTime.find('.prayer-pop-last-time-icon');
+            $lastTime.html('<span class="prayer-pop-last-time-text"></span>');
             $textElement = $lastTime.find('.prayer-pop-last-time-text');
         }
 
-        $iconElement.text(iconSymbol);
-        if (iconColor) {
-            $iconElement.css('color', iconColor);
-        } else {
-            $iconElement.css('color', '');
-        }
         $textElement.text(message);
         
         // Force display and ensure visibility

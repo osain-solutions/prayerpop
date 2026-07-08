@@ -22,15 +22,6 @@ if ( ! isset( $selected_animation ) ) {
 $prayer_request_header      = $texts['text_prayer_request_header'];
 $prayer_request_description = $texts['text_prayer_request_description'];
 
-$allowed_badge_icons = array( '⏱', '🕒', '⌛', '📅', '🔔' );
-$badge_icon_symbol   = isset( $attrs['badge']['advanced']['badgeIconSymbol']['desktop']['value'] ) ? (string) $attrs['badge']['advanced']['badgeIconSymbol']['desktop']['value'] : '⏱';
-if ( ! in_array( $badge_icon_symbol, $allowed_badge_icons, true ) ) {
-	$badge_icon_symbol = '⏱';
-}
-$badge_icon_color       = isset( $attrs['badge']['advanced']['badgeIconColor']['desktop']['value'] ) ? (string) $attrs['badge']['advanced']['badgeIconColor']['desktop']['value'] : '';
-$badge_icon_color_value = sanitize_hex_color( $badge_icon_color );
-$badge_icon_inline_style = $badge_icon_color_value ? 'color: ' . $badge_icon_color_value . ';' : '';
-
 // Get general settings (already loaded above via Prayer_Pop_Defaults::get_settings())
 $allow_anonymous = isset($settings['allow_anonymous']) ? $settings['allow_anonymous'] : true;
 

@@ -51,9 +51,7 @@
 }
 
 .prayer-pop-form__last-time {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: block;
     background: var(--pp-form-badge-bg);
     color: var(--pp-form-badge-text);
     padding: 12px 16px;
@@ -62,11 +60,6 @@
     width: 100%;
     box-sizing: border-box;
     align-self: var(--pp-form-badge-align, flex-start);
-}
-
-.prayer-pop-form__last-time-icon {
-    font-size: 18px;
-    line-height: 1;
 }
 
 .prayer-pop-form__form {
