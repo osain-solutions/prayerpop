@@ -42,7 +42,7 @@ jQuery(document).ready(function($) {
     }
 
     // Function to show the selected tab content
-    function showTab(tabId) {
+    function showTab(tabId, updateUrl) {
         if (!tabId || $('#' + tabId).length === 0) {
             tabId = 'general';
         }
@@ -60,10 +60,12 @@ jQuery(document).ready(function($) {
         // Update hidden field
         $('input[name="prayer_pop_active_tab"]').val(tabId);
         
-        // Update URL without page reload
-        var newUrl = new URL(window.location.href);
-        newUrl.searchParams.set('tab', tabId);
-        window.history.pushState({ path: newUrl.href }, '', newUrl.href);
+        if (updateUrl !== false) {
+            // Update URL without page reload
+            var newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('tab', tabId);
+            window.history.pushState({ path: newUrl.href }, '', newUrl.href);
+        }
 
         // Trigger resize event to fix any layout issues
         $(window).trigger('resize');
@@ -140,7 +142,7 @@ jQuery(document).ready(function($) {
     $('.nav-tab').on('click', function(e) {
         e.preventDefault();
         var tabId = $(this).data('tab');
-        showTab(tabId);
+        showTab(tabId, true);
     });
 
     // Handle toggle switch changes
@@ -195,8 +197,8 @@ jQuery(document).ready(function($) {
 
     // Show initial tab from URL or default to 'general'
     var urlParams = new URLSearchParams(window.location.search);
-    var initialTab = urlParams.get('tab') || 'general';
-    showTab(initialTab);
+    var initialTab = urlParams.get('tab') || (window.prayerPopAdmin && prayerPopAdmin.activeTab) || $('input[name="prayer_pop_active_tab"]').val() || 'general';
+    showTab(initialTab, false);
 
     // Handle form submission
     $('#prayer-pop-settings-form').on('submit', function(e) {
@@ -233,7 +235,7 @@ jQuery(document).ready(function($) {
         if (event.state && event.state.path) {
             var urlParams = new URLSearchParams(new URL(event.state.path).search);
             var tab = urlParams.get('tab') || 'general';
-            showTab(tab);
+            showTab(tab, false);
         }
     };
 

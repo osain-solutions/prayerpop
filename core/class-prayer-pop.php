@@ -145,8 +145,6 @@ final class Prayer_Pop {
 			$allow_anonymous = isset( $settings['allow_anonymous'] ) ? (bool) $settings['allow_anonymous'] : true;
 			$name_placeholder = $allow_anonymous ? $texts['text_name_placeholder'] : $texts['text_name_placeholder_required'];
 
-			$last_times_payload         = $this->get_last_submission_times_payload( $texts );
-
 			wp_localize_script( 'prayer-pop-script', 'prayerPopAjax', array(
 				'ajax_url'                => admin_url( 'admin-ajax.php' ),
 				'nonce'                   => wp_create_nonce( 'prayer_pop_nonce' ),
@@ -217,9 +215,7 @@ final class Prayer_Pop {
 				'newRequest' => $texts['text_new_request_button'],
 				'submitting' => $texts['text_submitting_button'],
 			),
-			'lastTimes' => array(
-				'prayer_request' => $last_times_payload['prayer_request'],
-			),
+			'lastTimes' => array(),
 			) );
 		}
 

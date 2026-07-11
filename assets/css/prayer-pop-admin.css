@@ -1167,6 +1167,11 @@ input:checked+.prayer-pop-toggle-slider:before {
     margin-top: 12px;
 }
 
+.prayer-pop-feature-card-intro {
+    border-left-color: #135e96;
+    background: #f6fbff;
+}
+
 .prayer-pop-feature-card h3 {
     margin: 0 0 8px;
     font-size: 15px;
@@ -1194,6 +1199,25 @@ input:checked+.prayer-pop-toggle-slider:before {
 .prayer-pop-feature-card li {
     margin-bottom: 4px;
     font-size: 12px;
+}
+
+.prayer-pop-feature-list {
+    margin-left: 0;
+}
+
+.prayer-pop-feature-list li {
+    display: grid;
+    gap: 2px;
+    margin-bottom: 10px;
+}
+
+.prayer-pop-feature-list strong {
+    color: #1d2327;
+}
+
+.prayer-pop-feature-list span {
+    color: #50575e;
+    line-height: 1.45;
 }
 
 .prayer-pop-feature-card .button {
@@ -1609,4 +1633,70 @@ input:checked+.prayer-pop-toggle-slider:before {
     .prayer-pop-range-slider {
         min-width: 0;
     }
+}
+
+/* Text Customization sections. */
+#text > h2,
+#text .prayer-pop-text-content-section > h2 {
+    margin: 28px 0 4px;
+    padding-top: 4px;
+    font-size: 19px;
+    line-height: 1.35;
+}
+
+#text .prayer-pop-text-section-description {
+    max-width: 760px;
+    margin: 0 0 12px;
+    color: #646970;
+}
+
+#text > .form-table {
+    margin: 0 0 22px;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    border-spacing: 0;
+    overflow: hidden;
+}
+
+#text > .form-table th,
+#text > .form-table td {
+    padding: 15px 18px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+#text > .form-table tr:last-child th,
+#text > .form-table tr:last-child td {
+    border-bottom: 0;
+}
+
+#text .prayer-pop-text-email-section {
+    margin-top: 8px;
+}
+.prayer-pop-position-controls {
+	display: grid;
+	grid-template-columns: minmax(180px, 240px) 130px 130px;
+	gap: 12px;
+	align-items: end;
+}
+
+.prayer-pop-position-control {
+	display: grid;
+	gap: 6px;
+	margin: 0;
+}
+
+.prayer-pop-position-control select,
+.prayer-pop-position-control input[type="number"] {
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 40px;
+	margin: 0;
+}
+
+@media screen and (max-width: 782px) {
+	.prayer-pop-position-controls {
+		grid-template-columns: 1fr;
+		max-width: 320px;
+	}
 }

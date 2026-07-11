@@ -29,10 +29,14 @@ class Prayer_Pop_Settings_Text {
 		// Main Section
 		add_settings_section(
 			'prayer_pop_text_section',
-			'',
+			esc_html__( 'Text Tools', 'prayerpop' ),
 			array( $this, 'render_section_description' ),
 			'prayer-pop-settings-text'
 		);
+		$this->register_content_section( 'bubble', esc_html__( 'Bubble & Navigation', 'prayerpop' ), esc_html__( 'Text shown on the floating bubble and its primary navigation.', 'prayerpop' ) );
+		$this->register_content_section( 'form', esc_html__( 'Prayer Request Form', 'prayerpop' ), esc_html__( 'Headings, fields, buttons, and accessibility labels used by the request form.', 'prayerpop' ) );
+		$this->register_content_section( 'messages', esc_html__( 'Confirmations & Errors', 'prayerpop' ), esc_html__( 'Success, validation, preview, and error messages shown to visitors.', 'prayerpop' ) );
+		$this->register_content_section( 'activity', esc_html__( 'Activity & Time', 'prayerpop' ), esc_html__( 'Recent-submission wording and the time units used in relative dates.', 'prayerpop' ) );
 
 		// Bubble and Main Menu
 		$this->add_text_field( 'text_bubble_label', esc_html__( 'Bubble Label', 'prayerpop' ), 'PrayerPop' );
@@ -123,7 +127,7 @@ class Prayer_Pop_Settings_Text {
 			$label,
 			array( $this, 'render_text_field' ),
 			'prayer-pop-settings-text',
-			'prayer_pop_text_section',
+			$this->get_field_section( $id ),
 			array(
 				'id' => $id,
 				'default' => $default,
@@ -141,13 +145,37 @@ class Prayer_Pop_Settings_Text {
 			$label,
 			array( $this, 'render_textarea_field' ),
 			'prayer-pop-settings-text',
-			'prayer_pop_text_section',
+			$this->get_field_section( $id ),
 			array(
 				'id' => $id,
 				'default' => $default,
 				'label_for' => $id
 			)
 		);
+	}
+
+	private function register_content_section( $id, $title, $description ) {
+		add_settings_section( 'prayer_pop_text_' . $id . '_section', $title, array( $this, 'render_content_section_description' ), 'prayer-pop-settings-text', array( 'description' => $description ) );
+	}
+
+	public function render_content_section_description( $args ) {
+		if ( ! empty( $args['description'] ) ) {
+			echo '<p class="prayer-pop-text-section-description">' . esc_html( $args['description'] ) . '</p>';
+		}
+	}
+
+	private function get_field_section( $id ) {
+		$bubble = array( 'text_bubble_label', 'text_bubble_icon_alt', 'text_prayer_request_label', 'text_back_button' );
+		if ( in_array( $id, $bubble, true ) ) {
+			return 'prayer_pop_text_bubble_section';
+		}
+		if ( 0 === strpos( $id, 'text_error_' ) || in_array( $id, array( 'text_success_message', 'text_new_request_button', 'text_required_field', 'text_preview_permission_error', 'text_preview_invalid_token', 'text_answered_message_label' ), true ) ) {
+			return 'prayer_pop_text_messages_section';
+		}
+		if ( 0 === strpos( $id, 'text_last_' ) || 0 === strpos( $id, 'text_time_unit_' ) ) {
+			return 'prayer_pop_text_activity_section';
+		}
+		return 'prayer_pop_text_form_section';
 	}
 
 	/**

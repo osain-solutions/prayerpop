@@ -17,7 +17,21 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-// Delete all plugin options
+/**
+ * Determine whether PrayerPop Pro is still installed.
+ *
+ * Free and Pro intentionally share option names so Pro can pick up Free
+ * settings during an upgrade. Do not delete shared data while Pro exists.
+ *
+ * @return bool
+ */
+function prayer_pop_pro_installed_for_uninstall() {
+	$plugins_dir = defined( 'WP_PLUGIN_DIR' ) ? WP_PLUGIN_DIR : dirname( __DIR__ );
+	return file_exists( trailingslashit( $plugins_dir ) . 'prayerpop-pro/prayer-pop.php' );
+}
+
+$prayer_pop_preserve_shared_data = prayer_pop_pro_installed_for_uninstall();
+
 $prayer_pop_options_to_delete = array(
 	'prayer_pop_texts',
 	'prayer_pop_styles',
@@ -30,15 +44,19 @@ $prayer_pop_options_to_delete = array(
 	'prayer_pop_migrated_post_type'
 );
 
-foreach ( $prayer_pop_options_to_delete as $prayer_pop_option ) {
-	delete_option( $prayer_pop_option );
+if ( ! $prayer_pop_preserve_shared_data ) {
+	foreach ( $prayer_pop_options_to_delete as $prayer_pop_option ) {
+		delete_option( $prayer_pop_option );
+	}
 }
 
 
-// Clear any scheduled hooks
-wp_clear_scheduled_hook( 'prayer_pop_send_daily_notifications' );
-wp_clear_scheduled_hook( 'prayer_pop_send_weekly_notifications' );
-wp_clear_scheduled_hook( 'prayer_pop_cleanup_event' );
+if ( ! $prayer_pop_preserve_shared_data ) {
+	// Clear shared scheduled hooks only when no other PrayerPop edition remains.
+	wp_clear_scheduled_hook( 'prayer_pop_send_daily_notifications' );
+	wp_clear_scheduled_hook( 'prayer_pop_send_weekly_notifications' );
+	wp_clear_scheduled_hook( 'prayer_pop_cleanup_event' );
+}
 
 // Flush rewrite rules
 flush_rewrite_rules();

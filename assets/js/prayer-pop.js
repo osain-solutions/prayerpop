@@ -105,11 +105,11 @@ jQuery(document).ready(function($) {
     if (!window.prayerPopHeaders && prayerPopAjax.headers) {
         window.prayerPopHeaders = prayerPopAjax.headers;
     }
-    if (!window.prayerPopLastTimes && prayerPopAjax.last_times) {
-        window.prayerPopLastTimes = prayerPopAjax.last_times;
+    if (!window.prayerPopLastTimes) {
+        window.prayerPopLastTimes = {};
     }
 
-    if (!window.prayerPopConfig || !window.prayerPopHeaders || !window.prayerPopLastTimes) {
+    if (!window.prayerPopConfig || !window.prayerPopHeaders) {
         return;
     }
 

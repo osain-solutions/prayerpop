@@ -367,7 +367,7 @@ class Prayer_Pop_Settings {
 						'general'       => __( 'Configure the prayer-request workflow: bubble visibility, anonymous names, required admin review, and retention cleanup.', 'prayerpop' ),
 						'notifications' => __( 'Set who gets prayer request alerts, when alerts are sent, and how those alert emails are written.', 'prayerpop' ),
 						'style'         => __( 'Customize the PrayerPop bubble, including core colors, typography, size, animation, icon, position, and spacing.', 'prayerpop' ),
-						'text'          => __( 'Customize visible prayer request form text, labels, and messages.', 'prayerpop' ),
+						'text'          => __( 'Customize bubble, form, message, and activity wording in clearly grouped sections.', 'prayerpop' ),
 						'documentation' => __( 'Setup and usage guidance for the PrayerPop bubble, admin submissions, notifications, styling, text customization, and troubleshooting.', 'prayerpop' ),
 					);
 
@@ -428,13 +428,8 @@ class Prayer_Pop_Settings {
 							echo '</table>';
 							?>
 							<div class="prayer-pop-subsection-card prayer-pop-email-template-card">
-								<h3 class="prayer-pop-subsection-title">
-									<span class="dashicons dashicons-media-text" aria-hidden="true"></span>
-									<?php esc_html_e( 'Email Template Settings', 'prayerpop' ); ?>
-								</h3>
-								<p class="prayer-pop-subsection-description">
-									<?php esc_html_e( 'This is part of Notifications. Set the subject/body placeholders and send a test email to verify delivery and formatting.', 'prayerpop' ); ?>
-								</p>
+								<h3 class="prayer-pop-subsection-title"><span class="dashicons dashicons-media-text" aria-hidden="true"></span> <?php esc_html_e( 'Email Template Settings', 'prayerpop' ); ?></h3>
+								<p class="prayer-pop-subsection-description"><?php esc_html_e( 'This is part of Notifications. Set the subject/body placeholders and send a test email to verify delivery and formatting.', 'prayerpop' ); ?></p>
 								<?php do_settings_sections( 'prayer-pop-settings-email-template' ); ?>
 								<?php $this->email_template_settings->render_section_description(); ?>
 							</div>
@@ -501,18 +496,31 @@ class Prayer_Pop_Settings {
 		$features_url = 'https://prayerpop.eu/features';
 		?>
 		<aside class="prayer-pop-feature-rail" aria-label="<?php esc_attr_e( 'Pro feature highlights', 'prayerpop' ); ?>">
-			<div class="prayer-pop-feature-card">
-				<h3><span class="dashicons dashicons-star-filled" aria-hidden="true"></span> <?php esc_html_e( 'Reasons to go PRO', 'prayerpop' ); ?></h3>
+			<div class="prayer-pop-feature-card prayer-pop-feature-card-intro">
+				<h3><span class="dashicons dashicons-star-filled" aria-hidden="true"></span> <?php esc_html_e( 'Reasons to go Pro', 'prayerpop' ); ?></h3>
+				<p><?php esc_html_e( 'Add public-facing prayer content, deeper moderation, and more design control when your prayer workflow grows.', 'prayerpop' ); ?></p>
+				<a class="button button-primary" href="<?php echo esc_url( $features_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'View Pro Features', 'prayerpop' ); ?></a>
 			</div>
 			<div class="prayer-pop-feature-card">
 				<h3><span class="dashicons dashicons-superhero" aria-hidden="true"></span> <?php esc_html_e( 'AI-Assisted Moderation', 'prayerpop' ); ?></h3>
 				<p><?php esc_html_e( 'Reduce manual review load with optional AI checks for public submissions and clearer moderation flow.', 'prayerpop' ); ?></p>
 			</div>
 			<div class="prayer-pop-feature-card">
-				<h3><span class="dashicons dashicons-groups" aria-hidden="true"></span> <?php esc_html_e( 'More Functionality', 'prayerpop' ); ?></h3>
-				<p><strong><?php esc_html_e( 'Testimonies, FAQ, Custom link buttons', 'prayerpop' ); ?></strong></p>
-				<p><strong><?php esc_html_e( 'Divi 5 PrayerPop modules', 'prayerpop' ); ?></strong> <?php esc_html_e( 'and design options', 'prayerpop' ); ?></p>
-				<p><strong><?php esc_html_e( 'Social media sharing', 'prayerpop' ); ?></strong></p>
+				<h3><span class="dashicons dashicons-admin-page" aria-hidden="true"></span> <?php esc_html_e( 'Pro Content Tools', 'prayerpop' ); ?></h3>
+				<ul class="prayer-pop-feature-list">
+					<li>
+						<strong><?php esc_html_e( 'Prayer Campaigns', 'prayerpop' ); ?></strong>
+						<span><?php esc_html_e( 'Create focused prayer campaigns with public campaign pages, progress, and clear calls to action.', 'prayerpop' ); ?></span>
+					</li>
+					<li>
+						<strong><?php esc_html_e( 'Testimonies and FAQ', 'prayerpop' ); ?></strong>
+						<span><?php esc_html_e( 'Show answered prayers and helpful explanations beside the prayer experience.', 'prayerpop' ); ?></span>
+					</li>
+					<li>
+						<strong><?php esc_html_e( 'Custom Link Buttons', 'prayerpop' ); ?></strong>
+						<span><?php esc_html_e( 'Guide visitors to calendars, groups, giving pages, or other next steps.', 'prayerpop' ); ?></span>
+					</li>
+				</ul>
 			</div>
 			<div class="prayer-pop-feature-card">
 				<h3><span class="dashicons dashicons-format-chat" aria-hidden="true"></span> <?php esc_html_e( 'Public Submissions Wall', 'prayerpop' ); ?></h3>
@@ -521,6 +529,10 @@ class Prayer_Pop_Settings {
 					<li><?php esc_html_e( 'Social media sharing', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Reactions like "I Prayed" and "Celebrate"', 'prayerpop' ); ?></li>
 				</ul>
+			</div>
+			<div class="prayer-pop-feature-card">
+				<h3><span class="dashicons dashicons-layout" aria-hidden="true"></span> <?php esc_html_e( 'Builder Modules', 'prayerpop' ); ?></h3>
+				<p><strong><?php esc_html_e( 'Divi 5 PrayerPop modules', 'prayerpop' ); ?></strong> <?php esc_html_e( 'let you place and style forms, submissions, campaigns, and campaign cards directly inside the builder.', 'prayerpop' ); ?></p>
 			</div>
 			<div class="prayer-pop-feature-card">
 				<h3><span class="dashicons dashicons-art" aria-hidden="true"></span> <?php esc_html_e( 'Extra Styling Options', 'prayerpop' ); ?></h3>

@@ -97,6 +97,14 @@ class Prayer_Pop_Settings_Style {
 				)
 			);
 
+			add_settings_field(
+				'bubble_position',
+				esc_html__( 'Bubble Position', 'prayerpop' ),
+				array( $this, 'bubble_position_callback' ),
+				'prayer-pop-settings-style',
+				'prayer_pop_style_section'
+			);
+
 			add_settings_section(
 				'prayer_pop_bubble_icon_section',
 				'<span class="dashicons dashicons-format-image"></span> ' . esc_html__( 'Bubble Icon', 'prayerpop' ),
@@ -389,19 +397,26 @@ class Prayer_Pop_Settings_Style {
 			'left'  => esc_html__( 'Bottom Left', 'prayerpop' ),
 		);
 		$current = isset( $options['bubble_position'] ) ? sanitize_key( $options['bubble_position'] ) : 'right';
+		$offset_x = isset( $options['bubble_offset_x'] ) ? min( 500, absint( $options['bubble_offset_x'] ) ) : 0;
+		$offset_y = isset( $options['bubble_offset_y'] ) ? min( 500, absint( $options['bubble_offset_y'] ) ) : 0;
 		if ( ! isset( $positions[ $current ] ) ) {
 			$current = 'right';
 		}
 		?>
+		<div class="prayer-pop-position-controls">
+		<label class="prayer-pop-position-control prayer-pop-position-control--side"><span><?php esc_html_e( 'Side', 'prayerpop' ); ?></span>
 		<select name="prayer_pop_styles[bubble_position]" id="bubble_position">
 			<?php foreach ( $positions as $value => $label ) : ?>
 				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $current, $value ); ?>>
 					<?php echo esc_html( $label ); ?>
 				</option>
 			<?php endforeach; ?>
-		</select>
+		</select></label>
+		<label class="prayer-pop-position-control"><span><?php esc_html_e( 'X offset (px)', 'prayerpop' ); ?></span><input type="number" min="0" max="500" step="1" name="prayer_pop_styles[bubble_offset_x]" value="<?php echo esc_attr( $offset_x ); ?>"></label>
+		<label class="prayer-pop-position-control"><span><?php esc_html_e( 'Y offset (px)', 'prayerpop' ); ?></span><input type="number" min="0" max="500" step="1" name="prayer_pop_styles[bubble_offset_y]" value="<?php echo esc_attr( $offset_y ); ?>"></label>
+		</div>
 		<p class="description">
-			<?php esc_html_e( 'Choose whether the bubble (and popup form) opens from the bottom right or bottom left.', 'prayerpop' ); ?>
+			<?php esc_html_e( 'X moves the bubble inward from the selected side. Y moves it upward from the bottom. The popup follows the adjusted bubble position.', 'prayerpop' ); ?>
 		</p>
 		<?php
 	}
@@ -1607,6 +1622,8 @@ class Prayer_Pop_Settings_Style {
 				} elseif ( $key === 'bubble_position' ) {
 					$allowed_positions = array( 'right', 'left' );
 					$sanitized[ $key ] = in_array( $value, $allowed_positions, true ) ? $value : 'right';
+				} elseif ( in_array( $key, array( 'bubble_offset_x', 'bubble_offset_y' ), true ) ) {
+					$sanitized[ $key ] = min( 500, absint( $value ) ) . 'px';
 				} elseif ( $key === 'bubble_design_mode' ) {
 				$allowed_modes = array( 'adaptive', 'fixed_square', 'fixed_circle' );
 				$sanitized[ $key ] = in_array( $value, $allowed_modes, true ) ? $value : 'adaptive';

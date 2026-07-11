@@ -3210,6 +3210,8 @@ class Prayer_Pop_Run {
 			'bubble_padding',
 			'bubble_margin',
 			'bubble_height',
+			'bubble_offset_x',
+			'bubble_offset_y',
 			'checkbox_margin',
 		);
 		if ( in_array( $key, $dimension_keys, true ) ) {

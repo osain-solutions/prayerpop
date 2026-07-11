@@ -2,8 +2,9 @@
 /**
  * Plugin Name: PrayerPop
  * Plugin URI: https://prayerpop.eu/
+ * Update URI: https://wordpress.org/plugins/prayerpop/
  * Description: Prayer request workflow plugin with a frontend bubble, admin review, and notifications.
- * Version: 1.5.9
+ * Version: 1.5.11
  * Author: Ösain OÜ
  * Author URI: https://osain.ee/
  * Text Domain: prayerpop
@@ -21,7 +22,7 @@ if (!defined('ABSPATH')) {
 
 // Define plugin constants
 if ( ! defined( 'PRAYERPOP_VERSION' ) ) {
-	define( 'PRAYERPOP_VERSION', '1.5.9' );
+	define( 'PRAYERPOP_VERSION', '1.5.11' );
 }
 if ( ! defined( 'PRAYERPOP_PLUGIN_DIR' ) ) {
 	define( 'PRAYERPOP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -105,6 +106,9 @@ function prayer_pop_activate() {
 			'bubble_dashicon'    => 'prayerpop',
 			'bubble_design_mode' => 'fixed_circle',
 			'bubble_layout'      => 'icon',
+			'bubble_position'    => 'right',
+			'bubble_offset_x'    => '0px',
+			'bubble_offset_y'    => '0px',
 			'bubble_icon_color'  => '#ffffff',
 			'bubble_icon_size'   => 170,
 		)
@@ -118,7 +122,8 @@ function prayer_pop_activate() {
 	// Migrate old prayer request post type slug
 	prayer_pop_migrate_post_type();
 
-	// Flush rewrite rules
+	// Register plugin routes before flushing so they are persisted on activation.
+	prayer_pop_register_rewrite_dependencies();
 	flush_rewrite_rules();
 
 	// Show one-time welcome modal on first settings visit after activation.
@@ -136,6 +141,25 @@ function prayer_pop_deactivate() {
 	
 	// Flush rewrite rules
 	flush_rewrite_rules();
+}
+
+/**
+ * Register custom post types and rewrite rules before an activation flush.
+ *
+ * WordPress does not run the normal init lifecycle before activation hooks, so
+ * rewrite rules must be registered explicitly before flush_rewrite_rules().
+ */
+function prayer_pop_register_rewrite_dependencies() {
+	require_once __DIR__ . '/core/includes/classes/class-prayer-pop-run.php';
+
+	static $runner = null;
+
+	if ( null === $runner ) {
+		$runner = new Prayer_Pop_Run();
+	}
+
+	$runner->register_prayer_request_cpt();
+	prayer_pop_add_rewrite_rule();
 }
 
 /**
@@ -323,7 +347,20 @@ function prayer_pop_plugin_row_meta( $links, $file, $plugin_data = array(), $sta
 		admin_url( 'plugin-install.php' )
 	);
 
-	$links[] = '<a href="' . esc_url( $details_url ) . '" class="thickbox open-plugin-details-modal" aria-label="' . esc_attr__( 'View PrayerPop details', 'prayerpop' ) . '">' . esc_html__( 'View details', 'prayerpop' ) . '</a>';
+	$plugin_name = ! empty( $plugin_data['Name'] ) ? (string) $plugin_data['Name'] : 'PrayerPop';
+	$links[]     = sprintf(
+		'<a href="%1$s" class="thickbox open-plugin-details-modal" aria-label="%2$s" data-title="%3$s">%4$s</a>',
+		esc_url( $details_url ),
+		esc_attr(
+			sprintf(
+				/* translators: %s: Plugin name. */
+				__( 'More information about %s' ),
+				$plugin_name
+			)
+		),
+		esc_attr( $plugin_name ),
+		esc_html__( 'View details' )
+	);
 	return $links;
 }
 
@@ -349,19 +386,8 @@ function prayer_pop_plugins_api( $result, $action, $args ) {
 		return $result;
 	}
 
-	$changelog = '';
-	$readme    = PRAYERPOP_PLUGIN_DIR . 'readme.txt';
-	if ( file_exists( $readme ) && is_readable( $readme ) ) {
-		$contents = (string) file_get_contents( $readme );
-		if ( preg_match( '/==\s*Changelog\s*==(.*)$/si', $contents, $matches ) ) {
-			$changelog = trim( (string) $matches[1] );
-		}
-	}
-
-	$sections = array(
-		'description' => wp_kses_post( __( 'PrayerPop helps churches collect and moderate prayer requests with a simple frontend bubble and admin workflow.', 'prayerpop' ) ),
-		'changelog'   => '' !== $changelog ? wp_kses_post( nl2br( esc_html( $changelog ) ) ) : wp_kses_post( __( 'See readme.txt for release notes.', 'prayerpop' ) ),
-	);
+	$readme_headers = prayer_pop_get_readme_headers();
+	$sections       = prayer_pop_get_plugin_information_sections();
 
 	return (object) array(
 		'name'          => 'PrayerPop',
@@ -369,8 +395,243 @@ function prayer_pop_plugins_api( $result, $action, $args ) {
 		'version'       => (string) PRAYERPOP_VERSION,
 		'author'        => '<a href="https://osain.ee/">Ösain OÜ</a>',
 		'homepage'      => 'https://prayerpop.eu/',
-		'requires'      => '5.8',
-		'requires_php'  => '7.2',
+		'requires'      => ! empty( $readme_headers['requires_at_least'] ) ? $readme_headers['requires_at_least'] : '5.8',
+		'tested'        => ! empty( $readme_headers['tested_up_to'] ) ? $readme_headers['tested_up_to'] : '',
+		'requires_php'  => ! empty( $readme_headers['requires_php'] ) ? $readme_headers['requires_php'] : '7.2',
+		'last_updated'  => gmdate( 'Y-m-d', (int) filemtime( PRAYERPOP_PLUGIN_FILE ) ),
+		'external'      => true,
+		'download_link' => '',
 		'sections'      => $sections,
+		'banners'       => array(
+			'low'  => PRAYERPOP_PLUGIN_URL . 'assets/images/prayer-pop-cover.jpg',
+			'high' => PRAYERPOP_PLUGIN_URL . 'assets/images/prayer-pop-cover.jpg',
+		),
+		'icons'         => array(
+			'1x'  => PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-favicon-512x512.png',
+			'2x'  => PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-favicon-512x512.png',
+			'svg' => PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-icon.svg',
+		),
 	);
+}
+
+/**
+ * Parse readme header fields used by the plugin information modal.
+ *
+ * @return array
+ */
+function prayer_pop_get_readme_headers() {
+	$content = prayer_pop_get_readme_content();
+	$headers = array();
+	if ( '' === $content ) {
+		return $headers;
+	}
+
+	$map = array(
+		'requires_at_least' => 'Requires at least',
+		'tested_up_to'      => 'Tested up to',
+		'requires_php'      => 'Requires PHP',
+	);
+
+	foreach ( $map as $key => $label ) {
+		if ( preg_match( '/^' . preg_quote( $label, '/' ) . ':\s*(.+)$/mi', $content, $matches ) ) {
+			$headers[ $key ] = sanitize_text_field( trim( (string) $matches[1] ) );
+		}
+	}
+
+	return $headers;
+}
+
+/**
+ * Build WordPress plugin-information modal sections from readme.txt.
+ *
+ * @return array
+ */
+function prayer_pop_get_plugin_information_sections() {
+	$readme_sections = prayer_pop_get_readme_sections();
+	$sections        = array(
+		'description'  => prayer_pop_format_plugin_information_content(
+			$readme_sections['Description'] ?? __( 'PrayerPop helps churches collect and moderate prayer requests with a simple frontend bubble and admin workflow.', 'prayerpop' )
+		),
+		'installation' => prayer_pop_format_plugin_information_content(
+			$readme_sections['Quick Start'] ?? __( 'Install and activate PrayerPop, then open PrayerPop -> Settings to configure the bubble, notifications, styling, and text.', 'prayerpop' )
+		),
+		'faq'          => prayer_pop_format_plugin_information_content( $readme_sections['Frequently Asked Questions'] ?? '' ),
+		'screenshots'  => prayer_pop_get_plugin_information_screenshots_section(),
+		'changelog'    => prayer_pop_format_plugin_information_content(
+			$readme_sections['Changelog'] ?? __( 'See readme.txt for release notes.', 'prayerpop' )
+		),
+	);
+
+	$other_notes = prayer_pop_get_plugin_information_other_notes( $readme_sections );
+	if ( '' !== $other_notes ) {
+		$sections['other_notes'] = $other_notes;
+	}
+
+	return array_filter( $sections );
+}
+
+/**
+ * Read local readme.txt.
+ *
+ * @return string
+ */
+function prayer_pop_get_readme_content() {
+	$readme = PRAYERPOP_PLUGIN_DIR . 'readme.txt';
+	if ( ! file_exists( $readme ) || ! is_readable( $readme ) ) {
+		return '';
+	}
+
+	return (string) file_get_contents( $readme );
+}
+
+/**
+ * Split readme.txt into top-level sections.
+ *
+ * @return array
+ */
+function prayer_pop_get_readme_sections() {
+	$content = prayer_pop_get_readme_content();
+	if ( '' === $content ) {
+		return array();
+	}
+
+	$sections = array();
+	if ( preg_match_all( '/^==\s*(.+?)\s*==\s*$/m', $content, $matches, PREG_OFFSET_CAPTURE ) ) {
+		foreach ( $matches[1] as $index => $match ) {
+			$title = trim( (string) $match[0] );
+			$start = (int) $matches[0][ $index ][1] + strlen( (string) $matches[0][ $index ][0] );
+			$end   = isset( $matches[0][ $index + 1 ] ) ? (int) $matches[0][ $index + 1 ][1] : strlen( $content );
+			$sections[ $title ] = trim( substr( $content, $start, $end - $start ) );
+		}
+	}
+
+	return $sections;
+}
+
+/**
+ * Convert simple readme markup into modal-safe HTML.
+ *
+ * @param string $content Readme section content.
+ * @return string
+ */
+function prayer_pop_format_plugin_information_content( $content ) {
+	$content = trim( (string) $content );
+	if ( '' === $content ) {
+		return '';
+	}
+
+	$lines   = preg_split( '/\R/', $content );
+	$html    = '';
+	$list    = '';
+	foreach ( $lines as $line ) {
+		$line = trim( (string) $line );
+		if ( '' === $line ) {
+			if ( '' !== $list ) {
+				$html .= '</' . $list . '>';
+				$list = '';
+			}
+			continue;
+		}
+
+		if ( preg_match( '/^=\s*(.+?)\s*=$/', $line, $matches ) ) {
+			if ( '' !== $list ) {
+				$html .= '</' . $list . '>';
+				$list = '';
+			}
+			$html .= '<h4>' . prayer_pop_format_plugin_information_line( $matches[1] ) . '</h4>';
+			continue;
+		}
+
+		if ( preg_match( '/^\*\s+(.+)$/', $line, $matches ) ) {
+			if ( 'ul' !== $list ) {
+				if ( '' !== $list ) {
+					$html .= '</' . $list . '>';
+				}
+				$html .= '<ul>';
+				$list = 'ul';
+			}
+			$html .= '<li>' . prayer_pop_format_plugin_information_line( $matches[1] ) . '</li>';
+			continue;
+		}
+
+		if ( preg_match( '/^\d+\.\s+(.+)$/', $line, $matches ) ) {
+			if ( 'ol' !== $list ) {
+				if ( '' !== $list ) {
+					$html .= '</' . $list . '>';
+				}
+				$html .= '<ol>';
+				$list = 'ol';
+			}
+			$html .= '<li>' . prayer_pop_format_plugin_information_line( $matches[1] ) . '</li>';
+			continue;
+		}
+
+		if ( '' !== $list ) {
+			$html .= '</' . $list . '>';
+			$list = '';
+		}
+		$html .= '<p>' . prayer_pop_format_plugin_information_line( $line ) . '</p>';
+	}
+
+	if ( '' !== $list ) {
+		$html .= '</' . $list . '>';
+	}
+
+	return wp_kses_post( $html );
+}
+
+/**
+ * Escape a readme line and preserve inline code formatting.
+ *
+ * @param string $line Text line.
+ * @return string
+ */
+function prayer_pop_format_plugin_information_line( $line ) {
+	$line = esc_html( (string) $line );
+	$line = preg_replace( '/`([^`]+)`/', '<code>$1</code>', $line );
+	$line = preg_replace( '/\*\*([^*]+)\*\*/', '<strong>$1</strong>', $line );
+	$line = preg_replace_callback(
+		'/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/',
+		static function ( $matches ) {
+			return sprintf(
+				'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+				esc_url( $matches[2] ),
+				$matches[1]
+			);
+		},
+		$line
+	);
+
+	return $line;
+}
+
+/**
+ * Build a screenshots tab for the modal.
+ *
+ * @return string
+ */
+function prayer_pop_get_plugin_information_screenshots_section() {
+	return wp_kses_post(
+		'<p>' . esc_html__( 'PrayerPop includes a focused admin workflow, a frontend prayer request bubble, notification settings, style controls, and built-in documentation.', 'prayerpop' ) . '</p>' .
+		'<p><img src="' . esc_url( PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-favicon-512x512.png' ) . '" class="screenshot" width="320" height="320" alt="' . esc_attr__( 'PrayerPop app icon', 'prayerpop' ) . '" /></p>'
+	);
+}
+
+/**
+ * Combine remaining readme sections into Other Notes.
+ *
+ * @param array $readme_sections Parsed readme sections.
+ * @return string
+ */
+function prayer_pop_get_plugin_information_other_notes( $readme_sections ) {
+	$wanted = array( 'Frontend Usage', 'Admin Workflow', 'Notifications', 'Text Customization', 'Privacy & Data Handling' );
+	$html   = '';
+	foreach ( $wanted as $title ) {
+		if ( empty( $readme_sections[ $title ] ) ) {
+			continue;
+		}
+		$html .= '<h3>' . esc_html( $title ) . '</h3>' . prayer_pop_format_plugin_information_content( $readme_sections[ $title ] );
+	}
+
+	return wp_kses_post( $html );
 }

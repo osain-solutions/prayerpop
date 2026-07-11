@@ -252,6 +252,9 @@ class Prayer_Pop_Defaults {
 					'bubble_dashicon'    => 'prayerpop',
 					'bubble_design_mode' => 'fixed_circle',
 					'bubble_layout'      => 'icon',
+					'bubble_position'    => 'right',
+					'bubble_offset_x'    => '0px',
+					'bubble_offset_y'    => '0px',
 					'bubble_icon_color'  => '#ffffff',
 					'bubble_icon_size'   => 170,
 				)

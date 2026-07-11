@@ -93,8 +93,8 @@
     --prayerpop-bubble-current-padding: var(--prayerpop-bubble-padding, var(--bubble-padding));
     --prayerpop-bubble-content-size: max(12px, calc(var(--bubble-height) - (var(--prayerpop-bubble-current-padding) * 2)));
     position: fixed;
-    bottom: var(--bubble-margin);
-    right: var(--bubble-margin);
+    bottom: calc(var(--bubble-margin) + var(--bubble-offset-y, 0px));
+    right: calc(var(--bubble-margin) + var(--bubble-offset-x, 0px));
     z-index: 999997;
     background-color: var(--global-bg-color);
     color: var(--global-font-color);
@@ -115,7 +115,7 @@
 }
 
 #prayer-pop-bubble[data-bubble-position="left"] {
-    left: var(--bubble-margin);
+    left: calc(var(--bubble-margin) + var(--bubble-offset-x, 0px));
     right: auto;
     transform-origin: bottom left;
 }
@@ -308,17 +308,17 @@
     
     /* Optimize bubble for mobile */
     #prayer-pop-bubble {
-        bottom: 20px;
-        right: 20px;
+        bottom: calc(20px + var(--bubble-offset-y, 0px));
+        right: calc(20px + var(--bubble-offset-x, 0px));
     }
 
     #prayer-pop-modal[data-bubble-position="left"] #prayer-pop-form-container {
-        left: 20px;
+        left: calc(20px + var(--bubble-offset-x, 0px));
         right: auto;
     }
 
     #prayer-pop-bubble[data-bubble-position="left"] {
-        left: 20px;
+        left: calc(20px + var(--bubble-offset-x, 0px));
         right: auto;
     }
 }
@@ -326,7 +326,7 @@
 /* Form Container bottom: calc(var(--bubble-height) + var(--bubble-margin) + 20px); */
 #prayer-pop-form-container {
     position: fixed;
-    right: var(--bubble-margin);
+    right: calc(var(--bubble-margin) + var(--bubble-offset-x, 0px));
     width: 350px;
     background-color: #ffffff;
     border-radius: var(--global-border-radius);
@@ -341,7 +341,7 @@
 }
 
 #prayer-pop-modal[data-bubble-position="left"] #prayer-pop-form-container {
-    left: var(--bubble-margin);
+    left: calc(var(--bubble-margin) + var(--bubble-offset-x, 0px));
     right: auto;
 }
 
