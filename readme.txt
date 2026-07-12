@@ -3,7 +3,7 @@ Contributors: osain
 Tags: prayer, church, ministry, notifications
 Requires at least: 5.8
 Tested up to: 7.0
-Stable tag: 1.5.11
+Stable tag: 1.5.12
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -169,6 +169,10 @@ No. The free plugin focuses on collecting, reviewing, and emailing prayer reques
 * Submission posts remain in WordPress after uninstall unless you delete them manually.
 
 == Changelog ==
+
+= 1.5.12 =
+* Fixed the Style settings icon switcher so selected Dashicons and Tabler icons preview and save correctly.
+* Corrected bubble icon alignment for fixed Circle and Square layouts.
 
 = 1.5.11 =
 * Added the bubble positioning feature from PrayerPop Pro to the free version for greater convenience and in response to user feedback.

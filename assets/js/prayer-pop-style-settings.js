@@ -84,6 +84,7 @@ jQuery(document).ready(function($) {
     var config = window.prayerPopStyleSettings || {};
     var strings = config.strings || {};
     var datasetPromise = null;
+	var loadedIconNodes = {};
 
     function loadIconNodes() {
         if (!datasetPromise) {
@@ -171,6 +172,46 @@ jQuery(document).ready(function($) {
         }
         return total + ' ' + (strings.iconCountLabel || 'icon(s)');
     }
+
+	function applyCombinedIconSelection($select) {
+		var value = String($select.val() || '');
+		var separator = value.indexOf(':');
+		if (separator < 1) {
+			return;
+		}
+
+		var source = value.substring(0, separator);
+		var key = value.substring(separator + 1);
+		var $preview = $('#dashicon_preview');
+		var selectedLabel = $select.find('option:selected').text().split(' (')[0];
+
+		if (source === 'tabler') {
+			$('#bubble_icon_type').val('tabler').trigger('change');
+			$('#bubble_tabler_icon').val(key).trigger('change');
+			$('#dashicon_name').text('Tabler • ' + humanize(key));
+			$('#dashicon_class').text('tabler:' + key);
+			if (loadedIconNodes[key]) {
+				$preview.empty().append(createTablerSvg(loadedIconNodes[key]));
+			}
+		} else {
+			$('#bubble_icon_type').val('dashicon').trigger('change');
+			$('#bubble_dashicon').val(key).trigger('change');
+			$('#dashicon_name').text(selectedLabel);
+			$('#dashicon_class').text(key === 'prayerpop' ? 'dashicon:prayerpop' : 'dashicons-' + key);
+			$preview.empty();
+			if (key === 'prayerpop') {
+				$('<img>').attr({ src: config.prayerPopIconUrl || '', alt: 'PrayerPop icon' }).addClass('prayer-pop-brand-icon').appendTo($preview);
+			} else {
+				$('<span>').addClass('dashicons dashicons-' + key.replace(/[^a-z0-9-]/gi, '')).appendTo($preview);
+			}
+		}
+
+		updatePreviewColors($preview);
+	}
+
+	$(document).on('input change click', '#bubble_icon_library_select', function() {
+		applyCombinedIconSelection($(this));
+	});
 
     function initializeCombinedSelector(iconNodes) {
         var $select = $('#bubble_icon_library_select');
@@ -353,9 +394,11 @@ jQuery(document).ready(function($) {
             return;
         }
         loadIconNodes().then(function(iconNodes) {
+			loadedIconNodes = iconNodes || {};
             initializeCombinedSelector(iconNodes || {});
             initializeTablerSelector(iconNodes || {});
         }).catch(function() {
+			initializeCombinedSelector({});
             $('#icon_library_results_count').text(strings.tablerLoadFailed || 'Tabler dataset could not be loaded.');
             $('#tabler_icon_results_count').text(strings.tablerLoadFailedResave || 'Could not load Tabler icon data. Re-save or refresh the page.');
         });

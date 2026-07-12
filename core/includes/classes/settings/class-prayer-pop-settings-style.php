@@ -23,7 +23,9 @@ class Prayer_Pop_Settings_Style {
 	 * Enqueue the scripts.
 	 */
 	public function enqueue_scripts( $hook ) {
-		if ( 'prayer-pop_page_prayer-pop-settings' !== $hook ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only page routing check for asset loading.
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+		if ( 'prayer-pop_page_prayer-pop-settings' !== $hook && 'prayer-pop-settings' !== $page ) {
 			return;
 		}
 		

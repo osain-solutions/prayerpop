@@ -629,11 +629,22 @@ input:checked+.prayer-pop-toggle-slider:before {
 }
 
 .dashicon-preview .dashicons {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
     font-size: 42px;
     width: 42px;
     height: 42px;
     line-height: 42px;
     color: currentColor;
+}
+
+.dashicon-preview .dashicons::before {
+	display: block;
+	width: 1em;
+	height: 1em;
+	line-height: 1;
+	text-align: center;
 }
 
 #style .prayer-pop-icon-preview-shell .dashicons {
@@ -645,7 +656,7 @@ input:checked+.prayer-pop-toggle-slider:before {
     display: block;
     width: 42px;
     height: 42px;
-    margin: 0;
+    margin: auto;
     color: currentColor;
 }
 
