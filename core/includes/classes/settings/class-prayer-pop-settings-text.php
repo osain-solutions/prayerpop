@@ -68,7 +68,7 @@ class Prayer_Pop_Settings_Text {
 		$this->add_text_field( 'text_preview_invalid_token', esc_html__( 'Preview Invalid Token Error', 'prayerpop' ), 'Invalid preview token.' );
 
 		// Last Time Messages
-		$this->add_text_field( 'text_last_prayer_time_message', esc_html__( 'Last Prayer Time Message', 'prayerpop' ), 'Last prayer request was submitted {time_ago} ago' );
+		$this->add_text_field( 'text_last_prayer_time_message', esc_html__( 'Last Prayer Time Message', 'prayerpop' ), 'Last prayer request: {time_ago} ago' );
 
 		// Time Units
 		$this->add_text_field( 'text_time_unit_second_singular', esc_html__( '"Second" (Singular)', 'prayerpop' ), 'second' );
@@ -82,6 +82,102 @@ class Prayer_Pop_Settings_Text {
 
 		// Admin answered-prayer note.
 		$this->add_text_field( 'text_answered_message_label', esc_html__( 'Answered Message Label', 'prayerpop' ), 'Answer Update' );
+	}
+
+	/**
+	 * Render searchable, counted text groups using only fields registered by Free.
+	 *
+	 * @return void
+	 */
+	public function render_tab_content() {
+		global $wp_settings_sections, $wp_settings_fields;
+
+		$page       = 'prayer-pop-settings-text';
+		$common_ids = array(
+			'text_bubble_label',
+			'text_prayer_request_label',
+			'text_prayer_request_header',
+			'text_message_placeholder',
+			'text_name_placeholder',
+			'text_submit_button',
+			'text_success_message',
+			'text_last_prayer_time_message',
+		);
+		?>
+		<?php $this->render_section_description(); ?>
+		<div class="prayer-pop-language-tools">
+			<label for="prayer-pop-text-search"><span class="dashicons dashicons-search" aria-hidden="true"></span><?php esc_html_e( 'Search text fields', 'prayerpop' ); ?></label>
+			<input type="search" id="prayer-pop-text-search" class="regular-text" placeholder="<?php esc_attr_e( 'Search labels, field names, or current text…', 'prayerpop' ); ?>" autocomplete="off">
+			<button type="button" class="button" id="prayer-pop-text-search-clear" hidden><?php esc_html_e( 'Clear', 'prayerpop' ); ?></button>
+			<button type="button" class="button" id="prayer-pop-text-groups-toggle" data-open-label="<?php esc_attr_e( 'Open all', 'prayerpop' ); ?>" data-close-label="<?php esc_attr_e( 'Close all', 'prayerpop' ); ?>"><?php esc_html_e( 'Open all', 'prayerpop' ); ?></button>
+		</div>
+		<p id="prayer-pop-text-search-status" class="description" aria-live="polite"></p>
+
+		<details class="prayer-pop-text-group prayer-pop-text-group--common">
+			<summary><span><?php esc_html_e( 'Commonly Edited', 'prayerpop' ); ?></span><span class="prayer-pop-text-group-count"><?php echo esc_html( count( $common_ids ) ); ?></span></summary>
+			<div class="prayer-pop-advanced-panel__content">
+				<p class="prayer-pop-text-section-description"><?php esc_html_e( 'The visitor-facing labels and messages most often adapted first.', 'prayerpop' ); ?></p>
+				<table class="form-table" role="presentation"><?php $this->render_text_field_rows( $common_ids ); ?></table>
+			</div>
+		</details>
+
+		<div class="prayer-pop-text-groups">
+			<?php
+			foreach ( (array) ( $wp_settings_sections[ $page ] ?? array() ) as $section ) {
+				if ( 'prayer_pop_text_section' === $section['id'] ) {
+					continue;
+				}
+				$registered = array_keys( (array) ( $wp_settings_fields[ $page ][ $section['id'] ] ?? array() ) );
+				$field_ids  = array_values( array_diff( $registered, $common_ids ) );
+				if ( empty( $field_ids ) ) {
+					continue;
+				}
+				$description = isset( $section['args']['description'] ) ? (string) $section['args']['description'] : '';
+				?>
+				<details class="prayer-pop-text-group" data-text-group="<?php echo esc_attr( $section['id'] ); ?>">
+					<summary><span><?php echo esc_html( wp_strip_all_tags( $section['title'] ) ); ?></span><span class="prayer-pop-text-group-count"><?php echo esc_html( count( $field_ids ) ); ?></span></summary>
+					<div class="prayer-pop-advanced-panel__content">
+						<?php if ( '' !== $description ) : ?><p class="prayer-pop-text-section-description"><?php echo esc_html( $description ); ?></p><?php endif; ?>
+						<table class="form-table" role="presentation"><?php $this->render_text_field_rows( $field_ids ); ?></table>
+					</div>
+				</details>
+				<?php
+			}
+			?>
+		</div>
+		<div id="prayer-pop-text-search-empty" class="notice notice-info inline" hidden><p><?php esc_html_e( 'No text fields match that search.', 'prayerpop' ); ?></p></div>
+		<?php
+	}
+
+	/**
+	 * Render registered text fields with client-side search metadata.
+	 *
+	 * @param array<int, string> $field_ids Field identifiers.
+	 * @return void
+	 */
+	private function render_text_field_rows( $field_ids ) {
+		global $wp_settings_fields;
+		$all_sections = (array) ( $wp_settings_fields['prayer-pop-settings-text'] ?? array() );
+
+		foreach ( $field_ids as $field_id ) {
+			$field = null;
+			foreach ( $all_sections as $fields ) {
+				if ( isset( $fields[ $field_id ] ) ) {
+					$field = $fields[ $field_id ];
+					break;
+				}
+			}
+			if ( ! $field ) {
+				continue;
+			}
+			$search_text = implode( ' ', array( $field_id, wp_strip_all_tags( $field['title'] ), (string) ( $field['args']['default'] ?? '' ) ) );
+			?>
+			<tr class="prayer-pop-text-field-row" data-text-search="<?php echo esc_attr( strtolower( $search_text ) ); ?>">
+				<th scope="row"><label for="<?php echo esc_attr( $field['args']['label_for'] ?? $field_id ); ?>"><?php echo wp_kses_post( $field['title'] ); ?></label></th>
+				<td><?php call_user_func( $field['callback'], $field['args'] ); ?></td>
+			</tr>
+			<?php
+		}
 	}
 
 	/**
@@ -107,12 +203,12 @@ class Prayer_Pop_Settings_Text {
 					name="prayer_pop_reset_action"
 					value="translations"
 					formnovalidate
-					data-confirm="<?php echo esc_attr__( 'Reset all text customization fields to plugin defaults?', 'prayerpop' ); ?>"
+					data-confirm="<?php echo esc_attr__( 'Reset all Language & Text accordion fields to plugin defaults?', 'prayerpop' ); ?>"
 				>
-					<?php esc_html_e( 'Reset Text Customization Defaults', 'prayerpop' ); ?>
+					<?php esc_html_e( 'Reset Language & Text Defaults', 'prayerpop' ); ?>
 				</button>
 			</p>
-			<p class="description"><?php esc_html_e( 'Resets all text customization fields back to the plugin default English text.', 'prayerpop' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Resets every accordion field on this page to the plugin default English text. Other settings are not changed.', 'prayerpop' ); ?></p>
 		</div>
 			
 		<?php
@@ -221,6 +317,9 @@ class Prayer_Pop_Settings_Text {
 	public function sanitize_texts( $input ) {
 		$existing_texts = get_option( 'prayer_pop_texts', array() );
 		$defaults_raw   = Prayer_Pop_Defaults::get_default_texts_raw();
+		$managed_keys   = $this->get_managed_text_keys();
+		$page_defaults  = array_intersect_key( $defaults_raw, array_flip( $managed_keys ) );
+		$existing_texts = is_array( $existing_texts ) ? $existing_texts : array();
 		$old_anonymous  = isset( $existing_texts['text_anonymous'] ) ? (string) $existing_texts['text_anonymous'] : ( isset( $defaults_raw['text_anonymous'] ) ? (string) $defaults_raw['text_anonymous'] : 'Anonymous' );
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Runs during Settings API save request with options.php nonce.
@@ -228,7 +327,7 @@ class Prayer_Pop_Settings_Text {
 			? sanitize_key( wp_unslash( $_POST['prayer_pop_reset_action'] ) )
 			: '';
 		if ( 'translations' === $reset_action ) {
-			$reset_texts   = Prayer_Pop_Defaults::get_default_texts_raw();
+			$reset_texts   = array_replace( $existing_texts, $page_defaults );
 			$new_anonymous = isset( $reset_texts['text_anonymous'] ) ? (string) $reset_texts['text_anonymous'] : 'Anonymous';
 			$this->migrate_anonymous_submission_names( $old_anonymous, $new_anonymous );
 			return $reset_texts;
@@ -238,8 +337,11 @@ class Prayer_Pop_Settings_Text {
 			return array();
 		}
 
-		$sanitized = array();
+		$sanitized = $existing_texts;
 		foreach ( $input as $key => $value ) {
+			if ( ! in_array( $key, $managed_keys, true ) ) {
+				continue;
+			}
 			$value = $this->normalize_utf8_text( (string) $value );
 			if ( strpos( $key, 'description' ) !== false ) {
 				$sanitized[ $key ] = wp_kses_post( $value );
@@ -252,6 +354,47 @@ class Prayer_Pop_Settings_Text {
 		$this->migrate_anonymous_submission_names( $old_anonymous, $new_anonymous );
 
 		return $sanitized;
+	}
+
+	/**
+	 * Return the text keys represented by accordion fields on this page.
+	 *
+	 * @return array<int, string>
+	 */
+	private function get_managed_text_keys() {
+		return array(
+			'text_bubble_label',
+			'text_bubble_icon_alt',
+			'text_prayer_request_label',
+			'text_back_button',
+			'text_prayer_request_header',
+			'text_prayer_request_description',
+			'text_message_placeholder',
+			'text_name_placeholder',
+			'text_name_placeholder_required',
+			'text_submit_button',
+			'text_submitting_button',
+			'text_anonymous',
+			'text_honeypot_label',
+			'text_success_message',
+			'text_error_message',
+			'text_error_rate_limit',
+			'text_error_invalid_name',
+			'text_new_request_button',
+			'text_required_field',
+			'text_preview_permission_error',
+			'text_preview_invalid_token',
+			'text_last_prayer_time_message',
+			'text_time_unit_second_singular',
+			'text_time_unit_second_plural',
+			'text_time_unit_minute_singular',
+			'text_time_unit_minute_plural',
+			'text_time_unit_hour_singular',
+			'text_time_unit_hour_plural',
+			'text_time_unit_day_singular',
+			'text_time_unit_day_plural',
+			'text_answered_message_label',
+		);
 	}
 
 	/**
@@ -373,10 +516,10 @@ class Prayer_Pop_Settings_Text {
 		}
 
 		// Get raw default values (without translation functions)
-		$defaults = Prayer_Pop_Defaults::get_default_texts_raw();
+		$defaults = array_intersect_key( Prayer_Pop_Defaults::get_default_texts_raw(), array_flip( $this->get_managed_text_keys() ) );
 		
 		// Get saved texts
-		$saved_texts = get_option( 'prayer_pop_texts', array() );
+		$saved_texts = array_intersect_key( (array) get_option( 'prayer_pop_texts', array() ), $defaults );
 		
 		// Merge defaults with saved texts (saved texts override defaults)
 		$all_texts = array_merge( $defaults, $saved_texts );
@@ -467,7 +610,7 @@ class Prayer_Pop_Settings_Text {
 		$current_texts = get_option( 'prayer_pop_texts', array() );
 		
 		// Get default texts (raw keys only for validation)
-		$defaults = Prayer_Pop_Defaults::get_default_texts_raw();
+		$defaults = array_intersect_key( Prayer_Pop_Defaults::get_default_texts_raw(), array_flip( $this->get_managed_text_keys() ) );
 		
 		// Only import valid text keys that exist in defaults
 		$imported_texts = array();
@@ -503,9 +646,9 @@ class Prayer_Pop_Settings_Text {
 	 * Render export/import section.
 	 */
 	public function render_export_import_section() {
-		$export_url = wp_nonce_url( 
-			admin_url( 'admin.php?page=prayer-pop-settings&tab=text&prayer_pop_export_texts=1' ), 
-			'prayer_pop_export_texts' 
+		$export_url = wp_nonce_url(
+			admin_url( 'admin.php?page=prayer-pop-settings&tab=language-text&prayer_pop_export_texts=1' ),
+			'prayer_pop_export_texts'
 		);
 		?>
 				<div class="prayer-pop-export-import-section prayer-pop-text-card">

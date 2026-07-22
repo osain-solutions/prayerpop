@@ -1,0 +1,85 @@
+/* Keep the Free inbox as one continuous Pro-style workspace. */
+.ppm-settings-link {
+	appearance: none;
+	cursor: pointer;
+	font-size: 13px;
+}
+
+.ppfc-settings[hidden] {
+	display: none !important;
+}
+
+.ppfc-settings {
+	margin: 0;
+	padding: 14px 24px;
+	border: 0;
+	border-bottom: 1px solid var(--ppm-line);
+	border-radius: 0;
+	box-shadow: none;
+}
+
+.ppm-inbox {
+	height: calc(100vh - 108px);
+	min-height: 580px;
+	grid-template-columns: 380px minmax(420px, 1fr) 360px;
+	margin: 0;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+.ppm-admin-wrap.ppfc-settings-open .ppm-inbox {
+	height: calc(100vh - 181px);
+}
+
+.ppm-delete {
+	display: grid;
+	place-items: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 0;
+	border-radius: 10px;
+	background: #f0f2f5;
+	color: #445064;
+	cursor: pointer;
+}
+
+.ppm-admin-message:not(.admin) {
+	align-self: flex-start;
+}
+
+.ppm-admin-message > div {
+	width: fit-content;
+	min-width: 0;
+}
+
+@media (max-width: 1200px) {
+	.ppm-inbox {
+		grid-template-columns: 310px minmax(420px, 1fr);
+	}
+
+	#ppfc-contact-panel {
+		display: none;
+	}
+}
+
+@media (max-width: 900px) {
+	.ppm-inbox {
+		grid-template-columns: 280px minmax(0, 1fr);
+		margin: 0;
+	}
+}
+
+@media (max-width: 782px) {
+	.ppfc-settings {
+		margin: 0;
+		padding: 14px;
+	}
+
+	.ppm-inbox,
+	.ppm-admin-wrap.ppfc-settings-open .ppm-inbox {
+		height: auto;
+		grid-template-columns: 1fr;
+	}
+}

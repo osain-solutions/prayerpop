@@ -1,0 +1,256 @@
+.ppfc-trigger {
+    position: fixed;
+    z-index: var(--prayerpop-z-bubble, 1099000);
+    right: var(--bubble-margin, 20px);
+    bottom: calc(var(--bubble-margin, 20px) + var(--bubble-height, 60px) + 12px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--global-bg-color, #365bb2);
+    color: var(--global-font-color, #fff);
+    font: 600 14px/1.2 var(--global-font-family, system-ui);
+    box-shadow: 0 8px 22px rgba(23, 32, 51, 0.18);
+    cursor: pointer;
+}
+
+.ppfc-trigger:not(.ppfc-with-bubble) {
+    bottom: var(--bubble-margin, 20px);
+}
+
+.ppfc-trigger[data-position="left"],
+.ppfc-panel[data-position="left"] {
+    right: auto;
+    left: var(--bubble-margin, 20px);
+}
+
+.ppfc-trigger:focus-visible,
+.ppfc-panel button:focus-visible,
+.ppfc-panel input:focus-visible,
+.ppfc-panel textarea:focus-visible {
+    outline: 3px solid rgba(54, 91, 178, 0.3);
+    outline: 3px solid color-mix(in srgb, var(--global-bg-color, #365bb2) 30%, transparent);
+    outline-offset: 2px;
+}
+
+.ppfc-panel {
+    position: fixed;
+    z-index: var(--prayerpop-z-modal, 1100000);
+    right: var(--bubble-margin, 20px);
+    bottom: calc(var(--bubble-margin, 20px) + var(--bubble-height, 60px) + 64px);
+    display: flex;
+    flex-direction: column;
+    width: min(380px, calc(100vw - 32px));
+    height: min(610px, calc(100vh - 130px));
+    overflow: hidden;
+    border: 1px solid var(--global-border-color, #ddd);
+    border-radius: var(--global-border-radius, 18px);
+    background: #fff;
+    color: var(--global-label-color, #202638);
+    font: 16px/1.45 var(--global-font-family, system-ui);
+    box-shadow: 0 20px 55px rgba(23, 32, 51, 0.2);
+}
+
+.ppfc-panel:not(.ppfc-with-bubble) {
+    bottom: calc(var(--bubble-margin, 20px) + 52px);
+}
+
+.ppfc-panel[hidden],
+.ppfc-conversation[hidden] {
+    display: none !important;
+}
+
+.ppfc-panel > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--global-border-color, #ddd);
+}
+
+.ppfc-panel > header div {
+    display: flex;
+    flex-direction: column;
+}
+
+.ppfc-panel > header small,
+.ppfc-message time {
+    color: #6b7280;
+}
+
+.ppfc-close {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.ppfc-start,
+.ppfc-conversation {
+    flex: 1;
+    min-height: 0;
+    padding: 20px;
+    overflow: auto;
+}
+
+.ppfc-start > p {
+    margin: 0 0 18px;
+}
+
+.ppfc-start-form {
+    display: grid;
+    gap: 14px;
+}
+
+.ppfc-start-form label {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.ppfc-start-form input,
+.ppfc-start-form textarea,
+.ppfc-composer textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--global-border-color, #ddd);
+    border-radius: var(--global-border-radius, 10px);
+    background: var(--global-textarea-bg-color, #fff);
+    color: inherit;
+    font: inherit;
+}
+
+.ppfc-start-form button {
+    padding: 13px 16px;
+    border: 0;
+    border-radius: var(--global-border-radius, 10px);
+    background: var(--global-bg-color, #365bb2);
+    color: var(--global-font-color, #fff);
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.ppfc-website {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+}
+
+.ppfc-conversation {
+    display: flex;
+    flex-direction: column;
+}
+
+.ppfc-messages {
+    flex: 1;
+    overflow: auto;
+    padding: 4px;
+}
+
+.ppfc-message {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 10px 0;
+}
+
+.ppfc-message > div {
+    max-width: 82%;
+    padding: 11px 14px;
+    border-radius: 16px 16px 16px 4px;
+    background: #eef1f5;
+}
+
+.ppfc-message-visitor {
+    align-items: flex-end;
+}
+
+.ppfc-message-visitor > div {
+    border-radius: 16px 16px 4px;
+    background: var(--global-bg-color, #365bb2);
+    color: var(--global-font-color, #fff);
+}
+
+.ppfc-message time {
+    margin: 3px 5px;
+    font-size: 11px;
+}
+
+.ppfc-composer {
+    display: flex;
+    gap: 8px;
+    padding-top: 12px;
+}
+
+.ppfc-composer textarea {
+    resize: none;
+}
+
+.ppfc-composer button {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--global-bg-color, #365bb2);
+    color: var(--global-font-color, #fff);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.ppfc-closed {
+    padding: 12px;
+    border-radius: 10px;
+    background: #f5f6f8;
+}
+
+.ppfc-closed button {
+    display: block;
+    margin-top: 8px;
+    border: 0;
+    background: transparent;
+    color: var(--global-bg-color, #365bb2);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ppfc-error {
+    margin: 0;
+    padding: 10px 20px;
+    color: #b42318;
+    background: #fff3f2;
+}
+
+@media (max-width: 600px) {
+    .ppfc-panel,
+    .ppfc-panel[data-position="left"] {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .ppfc-trigger {
+        right: 16px;
+    }
+
+    .ppfc-trigger[data-position="left"] {
+        right: auto;
+        left: 16px;
+    }
+
+    .ppfc-start,
+    .ppfc-conversation {
+        padding: 18px;
+    }
+}

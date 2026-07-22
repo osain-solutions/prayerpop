@@ -4,6 +4,160 @@
     line-height: 1.4;
 }
 
+/* Task-oriented Free settings shell, matching Pro without exposing Pro controls. */
+.prayer-pop-settings-layout {
+	display: block;
+}
+
+.prayer-pop-settings-layout .tab-content,
+.wrap #prayer-pop-settings-form > .tab-content {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 1240px;
+}
+
+.prayer-pop-settings-search,
+.prayer-pop-language-tools {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	margin: 16px 0 12px;
+}
+
+.prayer-pop-settings-search > label,
+.prayer-pop-language-tools > label {
+	display: inline-flex;
+	gap: 6px;
+	align-items: center;
+	font-weight: 600;
+}
+
+.prayer-pop-settings-search input,
+.prayer-pop-language-tools input {
+	width: min(520px, 100%);
+}
+
+.prayer-pop-settings-search-results {
+	box-sizing: border-box;
+	max-width: 980px;
+	margin: 0 0 14px;
+	padding: 14px 16px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+}
+
+.prayer-pop-settings-search-results ul {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 7px 18px;
+	margin: 10px 0 0 18px;
+}
+
+.prayer-pop-advanced-panel,
+.prayer-pop-text-group {
+	margin: 16px 0;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+}
+
+.prayer-pop-advanced-panel > summary,
+.prayer-pop-text-group > summary {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	min-height: 26px;
+	padding: 15px 18px;
+	cursor: pointer;
+	font-size: 15px;
+	font-weight: 650;
+}
+
+.prayer-pop-advanced-panel__content,
+.prayer-pop-text-group > .form-table,
+.prayer-pop-text-group > .prayer-pop-text-section-description {
+	margin: 0;
+	padding: 0 18px 18px;
+}
+
+.prayer-pop-text-group > .form-table {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.prayer-pop-text-group-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 24px;
+	height: 24px;
+	padding: 0 6px;
+	background: #eef2ff;
+	color: #314ca0;
+	border-radius: 999px;
+	font-size: 12px;
+}
+
+#language-text,
+#language-text .form-table,
+#language-text .form-table td {
+	box-sizing: border-box;
+	min-width: 0;
+	max-width: 100%;
+}
+
+#language-text .form-table {
+	width: 100%;
+	table-layout: fixed;
+}
+
+#language-text .form-table th {
+	width: 220px;
+}
+
+#language-text .prayer-pop-text-field-input,
+#language-text textarea.large-text,
+#language-text input.regular-text,
+#language-text select {
+	box-sizing: border-box;
+	max-width: 100%;
+}
+
+.prayer-pop-text-field-row[hidden],
+.prayer-pop-text-group[hidden],
+.is-hidden {
+	display: none !important;
+}
+
+.prayer-pop-search-highlight {
+	animation: prayer-pop-settings-highlight 1.8s ease;
+}
+
+@keyframes prayer-pop-settings-highlight {
+	0%, 100% { box-shadow: none; }
+	25%, 75% { box-shadow: 0 0 0 3px rgba(56, 89, 173, .28); }
+}
+
+.prayer-pop-sticky-save-bar {
+	right: 20px;
+}
+
+@media screen and (max-width: 900px) {
+	.prayer-pop-settings-search-results ul {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media screen and (max-width: 782px) {
+	#language-text .form-table th,
+	#language-text .form-table td {
+		display: block;
+		width: 100%;
+	}
+}
+
 .prayer-pop-brand-logo {
     display: inline-flex;
     align-items: center;
@@ -1710,4 +1864,51 @@ input:checked+.prayer-pop-toggle-slider:before {
 		grid-template-columns: 1fr;
 		max-width: 320px;
 	}
+}
+
+/* New tab identifiers retain the existing Free control styling. */
+#design {
+	--pp-admin-space-1: 4px;
+	--pp-admin-space-2: 8px;
+	--pp-admin-space-3: 12px;
+	--pp-admin-space-4: 16px;
+	--pp-admin-space-5: 24px;
+	--pp-admin-space-6: 32px;
+}
+
+#design .form-table th {
+	width: 200px;
+	padding: 10px 10px 10px 0;
+	vertical-align: top;
+}
+
+#design .form-table td {
+	padding: 8px 10px;
+	vertical-align: top;
+}
+
+#design .form-table .description {
+	margin-top: 4px;
+}
+
+#design .prayer-pop-icon-preview-shell .dashicons {
+	display: inline-flex;
+}
+
+#design tr.prayer-pop-style-reset-row th {
+	display: none;
+}
+
+#design tr.prayer-pop-style-reset-row td {
+	padding-top: 14px;
+	padding-left: 0;
+}
+
+#design .prayer-pop-style-reset-row-actions {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.prayer-pop-sticky-save-bar {
+	right: 20px;
 }

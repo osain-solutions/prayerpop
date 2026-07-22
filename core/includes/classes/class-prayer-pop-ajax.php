@@ -213,7 +213,7 @@ class Prayer_Pop_Ajax {
 		// Get the appropriate message template using centralized texts
 		$message_template = Prayer_Pop_Defaults::get_text(
 			'text_last_prayer_time_message',
-			__( 'Last prayer request was submitted {time_ago} ago', 'prayerpop' )
+			__( 'Last prayer request: {time_ago} ago', 'prayerpop' )
 		);
 
 		// Get success message

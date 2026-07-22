@@ -14,7 +14,7 @@ jQuery(document).ready(function($) {
     function getCurrentSettingsUrl(activeTab, scrollY) {
         var nextUrl = new URL(window.location.href);
         nextUrl.searchParams.set('page', 'prayer-pop-settings');
-        nextUrl.searchParams.set('tab', activeTab || 'general');
+        nextUrl.searchParams.set('tab', activeTab || 'popup');
 
         if (typeof scrollY === 'number' && scrollY > 0) {
             nextUrl.searchParams.set('prayer_pop_scroll', String(Math.max(0, Math.round(scrollY))));
@@ -44,7 +44,7 @@ jQuery(document).ready(function($) {
     // Function to show the selected tab content
     function showTab(tabId, updateUrl) {
         if (!tabId || $('#' + tabId).length === 0) {
-            tabId = 'general';
+            tabId = 'popup';
         }
 
         // Hide all tab content
@@ -69,6 +69,13 @@ jQuery(document).ready(function($) {
 
         // Trigger resize event to fix any layout issues
         $(window).trigger('resize');
+
+		if (tabId === 'documentation') {
+			hideStickyBar();
+			formChanged = false;
+		}
+
+		$('.prayer-pop-settings-save-row').toggleClass('is-hidden', tabId === 'documentation');
 
     }
 
@@ -104,6 +111,12 @@ jQuery(document).ready(function($) {
         if (!$settingsForm.length || !formTrackingReady) {
             return;
         }
+
+		if (($('.nav-tab-active').data('tab') || 'popup') === 'documentation') {
+			hideStickyBar();
+			formChanged = false;
+			return;
+		}
 
         var currentFormData = $settingsForm.serialize();
         var hasChanges = (currentFormData !== originalFormData);
@@ -195,15 +208,15 @@ jQuery(document).ready(function($) {
         toggleNotificationDebugPanel();
     }
 
-    // Show initial tab from URL or default to 'general'
+    // Show initial tab from URL or use the task-oriented default.
     var urlParams = new URLSearchParams(window.location.search);
-    var initialTab = urlParams.get('tab') || (window.prayerPopAdmin && prayerPopAdmin.activeTab) || $('input[name="prayer_pop_active_tab"]').val() || 'general';
+    var initialTab = urlParams.get('tab') || (window.prayerPopAdmin && prayerPopAdmin.activeTab) || $('input[name="prayer_pop_active_tab"]').val() || 'popup';
     showTab(initialTab, false);
 
     // Handle form submission
     $('#prayer-pop-settings-form').on('submit', function(e) {
         // Store the active tab
-        var activeTab = $('.nav-tab-active').data('tab') || 'general';
+        var activeTab = $('.nav-tab-active').data('tab') || 'popup';
         $('input[name="prayer_pop_active_tab"]').val(activeTab);
         $('input[name="_wp_http_referer"]').val(getCurrentSettingsUrl(activeTab, window.pageYOffset || document.documentElement.scrollTop || 0));
         
@@ -234,7 +247,7 @@ jQuery(document).ready(function($) {
     window.onpopstate = function(event) {
         if (event.state && event.state.path) {
             var urlParams = new URLSearchParams(new URL(event.state.path).search);
-            var tab = urlParams.get('tab') || 'general';
+            var tab = urlParams.get('tab') || 'popup';
             showTab(tab, false);
         }
     };
@@ -414,7 +427,7 @@ jQuery(document).ready(function($) {
         }
 
         // Ensure reset submits return user to the currently active tab.
-        var activeTab = $('.nav-tab-active').data('tab') || 'general';
+        var activeTab = $('.nav-tab-active').data('tab') || 'popup';
         $('input[name="prayer_pop_active_tab"]').val(activeTab);
         $('input[name="_wp_http_referer"]').val(getCurrentSettingsUrl(activeTab, window.pageYOffset || document.documentElement.scrollTop || 0));
     });
@@ -503,6 +516,162 @@ jQuery(document).ready(function($) {
             fileInput.value = '';
         });
     });
+
+	// Search and expand the Free-only Language & Text groups.
+	(function initTextSearch() {
+		var input = document.getElementById('prayer-pop-text-search');
+		if (!input) return;
+		var clear = document.getElementById('prayer-pop-text-search-clear');
+		var status = document.getElementById('prayer-pop-text-search-status');
+		var empty = document.getElementById('prayer-pop-text-search-empty');
+		var groupsToggle = document.getElementById('prayer-pop-text-groups-toggle');
+
+		function textGroups() {
+			return Array.prototype.slice.call(document.querySelectorAll('#language-text .prayer-pop-text-group'));
+		}
+
+		function updateGroupsToggle() {
+			if (!groupsToggle) return;
+			var groups = textGroups();
+			var allOpen = groups.length > 0 && groups.every(function(group) { return group.open; });
+			groupsToggle.textContent = allOpen ? groupsToggle.dataset.closeLabel : groupsToggle.dataset.openLabel;
+			groupsToggle.setAttribute('aria-expanded', allOpen ? 'true' : 'false');
+		}
+
+		function filterTextFields() {
+			var query = (input.value || '').trim().toLowerCase();
+			var visible = 0;
+			textGroups().forEach(function(group) {
+				var groupVisible = 0;
+				group.querySelectorAll('.prayer-pop-text-field-row').forEach(function(row) {
+					var fieldValues = Array.prototype.map.call(row.querySelectorAll('input, textarea'), function(field) { return field.value || ''; }).join(' ');
+					var fieldText = ((row.getAttribute('data-text-search') || '') + ' ' + (row.textContent || '') + ' ' + fieldValues).toLowerCase();
+					var matches = !query || fieldText.indexOf(query) !== -1;
+					row.hidden = !matches;
+					if (matches) {
+						groupVisible += 1;
+						visible += 1;
+					}
+				});
+				group.hidden = !!query && groupVisible === 0;
+				if (query && groupVisible > 0) group.open = true;
+			});
+			if (clear) clear.hidden = !query;
+			if (empty) empty.hidden = !query || visible > 0;
+			if (status) status.textContent = query ? (visible + (visible === 1 ? ' field found' : ' fields found')) : '';
+			updateGroupsToggle();
+		}
+
+		input.addEventListener('input', filterTextFields);
+		input.addEventListener('keydown', function(event) {
+			if (event.key === 'Enter') event.preventDefault();
+		});
+		if (clear) clear.addEventListener('click', function() { input.value = ''; filterTextFields(); input.focus(); });
+		if (groupsToggle) {
+			groupsToggle.addEventListener('click', function() {
+				var groups = textGroups();
+				var open = !groups.length || !groups.every(function(group) { return group.open; });
+				groups.forEach(function(group) { group.open = open; });
+				updateGroupsToggle();
+			});
+			textGroups().forEach(function(group) { group.addEventListener('toggle', updateGroupsToggle); });
+		}
+		filterTextFields();
+	}());
+
+	// Search across the task-oriented settings tabs without changing saved values.
+	(function initSettingsSearch() {
+		var input = document.getElementById('prayer-pop-settings-search');
+		var results = document.getElementById('prayer-pop-settings-search-results');
+		var clear = document.getElementById('prayer-pop-settings-search-clear');
+		if (!input || !results) return;
+
+		input.addEventListener('keydown', function(event) {
+			if (event.key === 'Enter') event.preventDefault();
+		});
+
+		function searchableBlocks() {
+			return Array.prototype.slice.call(document.querySelectorAll('.tab-content .prayer-pop-subsection-card, .tab-content .prayer-pop-advanced-panel, .tab-content .prayer-pop-text-group'));
+		}
+
+		function blockTitle(block) {
+			var title = block.querySelector('h2, h3, summary');
+			return title ? title.textContent.trim() : 'Settings section';
+		}
+
+		function runSettingsSearch() {
+			var query = (input.value || '').trim().toLowerCase();
+			results.innerHTML = '';
+			if (clear) clear.hidden = !query;
+			if (!query) {
+				results.hidden = true;
+				return;
+			}
+
+			var matches = searchableBlocks().filter(function(block) {
+				return (block.textContent || '').toLowerCase().indexOf(query) !== -1;
+			}).slice(0, 30);
+			var heading = document.createElement('strong');
+			heading.textContent = matches.length + (matches.length === 1 ? ' matching section' : ' matching sections');
+			results.appendChild(heading);
+			var list = document.createElement('ul');
+			matches.forEach(function(block) {
+				var tab = block.closest('.tab-content');
+				var item = document.createElement('li');
+				var button = document.createElement('button');
+				button.type = 'button';
+				button.className = 'button-link';
+				button.textContent = (tab ? tab.getAttribute('data-tab-label') + ': ' : '') + blockTitle(block);
+				button.addEventListener('click', function() {
+					if (tab) showTab(tab.id, true);
+					if (block.tagName === 'DETAILS') block.open = true;
+					block.scrollIntoView({behavior: 'smooth', block: 'start'});
+					block.classList.add('prayer-pop-search-highlight');
+					window.setTimeout(function() { block.classList.remove('prayer-pop-search-highlight'); }, 1800);
+				});
+				item.appendChild(button);
+				list.appendChild(item);
+			});
+			results.appendChild(list);
+			results.hidden = false;
+		}
+
+		input.addEventListener('input', runSettingsSearch);
+		if (clear) clear.addEventListener('click', function() { input.value = ''; runSettingsSearch(); input.focus(); });
+	}());
+
+    // Adapt the feedback form to the selected report type.
+    var feedbackType = document.getElementById('prayer-pop-feedback-type');
+    var feedbackTitle = document.getElementById('prayer-pop-feedback-title');
+    var feedbackTitleLabel = document.getElementById('prayer-pop-feedback-title-label');
+    var feedbackDescription = document.getElementById('prayer-pop-feedback-description');
+    var feedbackDescriptionLabel = document.getElementById('prayer-pop-feedback-description-label');
+    var feedbackStepsRow = document.getElementById('prayer-pop-feedback-steps-row');
+    var feedbackConfig = window.prayerPopAdmin && window.prayerPopAdmin.feedbackForm ? window.prayerPopAdmin.feedbackForm : {};
+
+    function updateFeedbackForm() {
+        if (!feedbackType) {
+            return;
+        }
+        var selectedType = feedbackType.value;
+        var prefix = selectedType === 'feature request' ? 'feature' : (selectedType === 'question' ? 'question' : 'bug');
+        var defaults = {
+            bug: ['Bug summary', 'A short summary of the problem', 'What happened? What did you expect?', 'Describe what went wrong and what you expected to happen.'],
+            feature: ['Feature idea', 'A short name for your idea', 'What would you like PrayerPop to do?', 'Describe the feature and how it would help you.'],
+            question: ['Question', 'What is your question about?', 'How can we help?', 'Write your question and include any helpful details.']
+        };
+        var values = defaults[prefix];
+        feedbackTitleLabel.textContent = feedbackConfig[prefix + 'Title'] || values[0];
+        feedbackTitle.placeholder = feedbackConfig[prefix + 'TitlePlaceholder'] || values[1];
+        feedbackDescriptionLabel.textContent = feedbackConfig[prefix + 'Description'] || values[2];
+        feedbackDescription.placeholder = feedbackConfig[prefix + 'DescriptionPlaceholder'] || values[3];
+        feedbackStepsRow.hidden = prefix !== 'bug';
+    }
+
+    if (feedbackType && feedbackTitle && feedbackTitleLabel && feedbackDescription && feedbackDescriptionLabel && feedbackStepsRow) {
+        feedbackType.addEventListener('change', updateFeedbackForm);
+        updateFeedbackForm();
+    }
 
     // Capture browser details for the feedback environment summary.
     var userAgentField = document.getElementById('prayer-pop-feedback-user-agent');

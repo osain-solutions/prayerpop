@@ -3,8 +3,8 @@
  * Plugin Name: PrayerPop
  * Plugin URI: https://prayerpop.eu/
  * Update URI: https://wordpress.org/plugins/prayerpop/
- * Description: Prayer request workflow plugin with a frontend bubble, admin review, and notifications.
- * Version: 1.5.12
+ * Description: Prayer request workflow and simple visitor chat with frontend tools, WordPress inboxes, and email notifications.
+ * Version: 1.6.0
  * Author: Ösain OÜ
  * Author URI: https://osain.ee/
  * Text Domain: prayerpop
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 
 // Define plugin constants
 if ( ! defined( 'PRAYERPOP_VERSION' ) ) {
-	define( 'PRAYERPOP_VERSION', '1.5.12' );
+	define( 'PRAYERPOP_VERSION', '1.6.0' );
 }
 if ( ! defined( 'PRAYERPOP_PLUGIN_DIR' ) ) {
 	define( 'PRAYERPOP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -34,8 +34,66 @@ if ( ! defined( 'PRAYERPOP_PLUGIN_FILE' ) ) {
 	define( 'PRAYERPOP_PLUGIN_FILE', __FILE__ );
 }
 
+/** Whether the current request is rendering a PrayerPop-owned admin screen. */
+function prayer_pop_is_admin_screen() {
+	$page      = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+	$post_type = isset( $_GET['post_type'] ) ? sanitize_key( wp_unslash( $_GET['post_type'] ) ) : '';
+	return 0 === strpos( $page, 'prayer-pop' ) || 'prayerpop-print' === $page || 'prayer_request' === $post_type;
+}
+
+/** Resolve the source file for a registered notice callback when possible. */
+function prayer_pop_notice_callback_file( $callback ) {
+	try {
+		if ( is_array( $callback ) && 2 === count( $callback ) ) {
+			$reflection = new ReflectionMethod( $callback[0], $callback[1] );
+		} elseif ( $callback instanceof Closure || is_string( $callback ) ) {
+			$reflection = new ReflectionFunction( $callback );
+		} elseif ( is_object( $callback ) && is_callable( $callback ) ) {
+			$reflection = new ReflectionMethod( $callback, '__invoke' );
+		} else {
+			return '';
+		}
+		return (string) $reflection->getFileName();
+	} catch ( ReflectionException $exception ) {
+		return '';
+	}
+}
+
+/** Hide notices supplied by unrelated plugins on PrayerPop screens only. */
+function prayer_pop_remove_other_plugin_notices() {
+	if ( ! prayer_pop_is_admin_screen() ) {
+		return;
+	}
+
+	global $wp_filter;
+	$plugins_root = trailingslashit( wp_normalize_path( WP_PLUGIN_DIR ) );
+	$our_root     = trailingslashit( wp_normalize_path( PRAYERPOP_PLUGIN_DIR ) );
+	$notice_hooks = array( 'admin_notices', 'all_admin_notices', 'network_admin_notices', 'user_admin_notices' );
+
+	foreach ( $notice_hooks as $hook_name ) {
+		if ( empty( $wp_filter[ $hook_name ] ) || empty( $wp_filter[ $hook_name ]->callbacks ) ) {
+			continue;
+		}
+		foreach ( $wp_filter[ $hook_name ]->callbacks as $priority => $callbacks ) {
+			foreach ( $callbacks as $callback_data ) {
+				$file = wp_normalize_path( prayer_pop_notice_callback_file( $callback_data['function'] ) );
+				if ( $file && 0 === strpos( $file, $plugins_root ) && 0 !== strpos( $file, $our_root ) ) {
+					remove_filter( $hook_name, $callback_data['function'], $priority );
+				}
+			}
+		}
+	}
+}
+add_action( 'admin_init', 'prayer_pop_remove_other_plugin_notices', PHP_INT_MAX );
+add_action( 'in_admin_header', 'prayer_pop_remove_other_plugin_notices', 0 );
+
 // Include the defaults class first (needed for activation)
 require_once __DIR__ . '/core/includes/classes/class-prayer-pop-defaults.php';
+require_once __DIR__ . '/core/includes/classes/class-prayer-pop-notification-scheduler.php';
+require_once __DIR__ . '/core/includes/classes/class-prayer-pop-chat.php';
+require_once __DIR__ . '/core/includes/classes/class-prayer-pop-upgrades.php';
+
+Prayer_Pop_Upgrades::init();
 
 // Include the main plugin class
 require_once __DIR__ . '/core/class-prayer-pop.php';
@@ -49,6 +107,7 @@ function PRAYERPOP() {
 
 // Initialize the plugin
 add_action('plugins_loaded', 'PRAYERPOP');
+add_action( 'plugins_loaded', array( 'Prayer_Pop_Chat', 'init' ) );
 
 // Activation Hook
 register_activation_hook(__FILE__, 'prayer_pop_activate');
@@ -88,6 +147,7 @@ function prayer_pop_activate() {
 			'retention_period'          => 0,
 		)
 	);
+	Prayer_Pop_Chat::install();
 	add_option(
 		'prayer_pop_notification_settings',
 		array(
@@ -113,6 +173,9 @@ function prayer_pop_activate() {
 			'bubble_icon_size'   => 170,
 		)
 	);
+
+	// Restore saved digest schedules after activation or reactivation.
+	Prayer_Pop_Upgrades::activate();
 
 	// Schedule daily cleanup of old submissions (only if not already scheduled)
 	if ( ! wp_next_scheduled( 'prayer_pop_cleanup_event' ) ) {
@@ -354,12 +417,12 @@ function prayer_pop_plugin_row_meta( $links, $file, $plugin_data = array(), $sta
 		esc_attr(
 			sprintf(
 				/* translators: %s: Plugin name. */
-				__( 'More information about %s' ),
+					__( 'More information about %s', 'prayerpop' ),
 				$plugin_name
 			)
 		),
 		esc_attr( $plugin_name ),
-		esc_html__( 'View details' )
+			esc_html__( 'View details', 'prayerpop' )
 	);
 	return $links;
 }

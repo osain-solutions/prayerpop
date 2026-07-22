@@ -722,6 +722,10 @@ class Prayer_Pop_Run {
      * Output custom styles
      */
 	    public function output_custom_styles() {
+		if ( ! wp_style_is( 'prayer-pop-style', 'enqueued' ) ) {
+			return;
+		}
+
 		static $styles_printed = false;
 		if ( $styles_printed ) {
 			return;
@@ -2846,24 +2850,28 @@ class Prayer_Pop_Run {
     /**
      * Send daily notifications
      */
-	    public function send_daily_notifications() {
-		        $options = get_option( 'prayer_pop_notification_settings' );
+	public function send_daily_notifications() {
+		$options = get_option( 'prayer_pop_notification_settings', array() );
 
-	        if ( isset( $options['enable_notifications'] ) && $options['enable_notifications'] && $options['notification_frequency'] === 'daily' ) {
-	            $this->send_scheduled_notifications( 'daily' );
-	        }
-	    }
+		if ( isset( $options['enable_notifications'], $options['notification_frequency'] ) && $options['enable_notifications'] && 'daily' === $options['notification_frequency'] ) {
+			$this->send_scheduled_notifications( 'daily' );
+		}
+
+		Prayer_Pop_Notification_Scheduler::ensure_scheduled( is_array( $options ) ? $options : array() );
+	}
 
     /**
      * Send weekly notifications
      */
-	    public function send_weekly_notifications() {
-		        $options = get_option( 'prayer_pop_notification_settings', array() );
+	public function send_weekly_notifications() {
+		$options = get_option( 'prayer_pop_notification_settings', array() );
 
-	        if ( isset( $options['enable_notifications'] ) && $options['enable_notifications'] && $options['notification_frequency'] === 'weekly' ) {
-	            $this->send_scheduled_notifications( 'weekly' );
-	        }
-	    }
+		if ( isset( $options['enable_notifications'], $options['notification_frequency'] ) && $options['enable_notifications'] && 'weekly' === $options['notification_frequency'] ) {
+			$this->send_scheduled_notifications( 'weekly' );
+		}
+
+		Prayer_Pop_Notification_Scheduler::ensure_scheduled( is_array( $options ) ? $options : array() );
+	}
 
     /**
      * Common function to send scheduled notifications

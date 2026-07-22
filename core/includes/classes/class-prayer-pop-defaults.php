@@ -93,7 +93,7 @@ class Prayer_Pop_Defaults {
 			'text_preview_invalid_token'      => __( 'Invalid preview token.', 'prayerpop' ),
 
 			// Last Time Messages
-			'text_last_prayer_time_message'   => __( 'Last prayer request was submitted {time_ago} ago', 'prayerpop' ),
+			'text_last_prayer_time_message'   => __( 'Last prayer request: {time_ago} ago', 'prayerpop' ),
 
 			// Time Units
 			'text_time_unit_second_singular'  => __( 'second', 'prayerpop' ),
@@ -136,6 +136,9 @@ class Prayer_Pop_Defaults {
 	public static function get_texts() {
 		if ( self::$texts_cache === null ) {
 			$custom_texts = get_option( 'prayer_pop_texts', array() );
+			if ( isset( $custom_texts['text_last_prayer_time_message'] ) && in_array( $custom_texts['text_last_prayer_time_message'], array( 'Last prayer request was submitted {time_ago} ago', 'Last prayer request was submitted {time_ago} ago.' ), true ) ) {
+				$custom_texts['text_last_prayer_time_message'] = __( 'Last prayer request: {time_ago} ago', 'prayerpop' );
+			}
 			$defaults     = self::get_default_texts();
 			self::$texts_cache = wp_parse_args( $custom_texts, $defaults );
 		}
@@ -310,7 +313,7 @@ class Prayer_Pop_Defaults {
 			'text_required_field'             => 'Please fill out this field',
 			'text_preview_permission_error'   => 'You do not have permission to view this preview.',
 			'text_preview_invalid_token'      => 'Invalid preview token.',
-			'text_last_prayer_time_message'   => 'Last prayer request was submitted {time_ago} ago',
+			'text_last_prayer_time_message'   => 'Last prayer request: {time_ago} ago',
 			'text_time_unit_second_singular'  => 'second',
 			'text_time_unit_second_plural'    => 'seconds',
 			'text_time_unit_minute_singular'  => 'minute',

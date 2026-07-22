@@ -312,7 +312,12 @@ jQuery(document).ready(function($) {
                 $('#dashicon_name').text($select.find('option:selected').text().split(' (')[0]);
                 if (key === 'prayerpop') {
                     $('#dashicon_class').text('dashicon:prayerpop');
-                    $('<span>').addClass('prayer-pop-brand-icon-mask').attr('aria-hidden', 'true').appendTo($preview);
+                    // The bundled SVG is multicolour. A CSS mask flattens it into a
+                    // generic speech-bubble silhouette, so use the actual asset here.
+                    $('<img>')
+                        .attr({ src: config.prayerPopIconUrl || '', alt: 'PrayerPop icon' })
+                        .addClass('prayer-pop-brand-icon')
+                        .appendTo($preview);
                 } else {
                     $('#dashicon_class').text('dashicons-' + key);
                     $('<span>').addClass('dashicons dashicons-' + key.replace(/[^a-z0-9-]/gi, '')).appendTo($preview);

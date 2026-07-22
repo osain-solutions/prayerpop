@@ -117,6 +117,39 @@
 .prayer-pop-form__checkbox-label input[type="checkbox"] {
     margin: 0;
     margin-inline-end: 12px;
+    width: 1.15em;
+    height: 1.15em;
+    box-sizing: border-box;
+    border: 1px solid var(--pp-form-border);
+    border-radius: 4px;
+    background-color: var(--pp-form-bg);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.prayer-pop-form__checkbox-label input[type="checkbox"]:checked {
+    border-color: var(--pp-form-button-bg);
+    background-color: var(--pp-form-button-bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3 8 3 3 7-7' fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.2'/%3E%3C/svg%3E");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.prayer-pop-form :where(.prayer-pop-form__textarea, .prayer-pop-form__input):focus-visible {
+    border-color: var(--pp-form-button-bg);
+    outline: 3px solid color-mix(in srgb, var(--pp-form-button-bg) 24%, transparent);
+    outline-offset: 1px;
+}
+
+.prayer-pop-form__checkbox-label input[type="checkbox"]:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--pp-form-button-bg) 28%, transparent);
+    outline-offset: 2px;
+}
+
+.prayer-pop-form :where(.prayer-pop-form__submit, .prayer-pop-form__collapse-toggle, .prayer-pop-form__new-request):focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--pp-form-button-bg) 32%, transparent);
+    outline-offset: 3px;
 }
 
 

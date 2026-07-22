@@ -112,6 +112,19 @@ final class Prayer_Pop {
 		wp_register_style( 'prayer-pop-form-style', PRAYERPOP_PLUGIN_URL . 'assets/css/prayer-pop-form.css', array(), PRAYERPOP_VERSION );
 		wp_register_script( 'prayer-pop-form-script', PRAYERPOP_PLUGIN_URL . 'assets/js/prayer-pop-form.js', array( 'jquery' ), PRAYERPOP_VERSION, true );
 
+		$settings     = Prayer_Pop_Defaults::get_settings();
+		$force_render = defined( 'PRAYERPOP_FORCE_BUBBLE' ) && PRAYERPOP_FORCE_BUBBLE;
+		$show_bubble  = isset( $settings['show_prayer_pop_bubble'] ) ? (bool) $settings['show_prayer_pop_bubble'] : true;
+		/**
+		 * Filter whether PrayerPop Free should load its frontend bubble assets.
+		 *
+		 * @param bool $should_enqueue Whether frontend assets are required.
+		 */
+		$should_enqueue = (bool) apply_filters( 'prayer_pop_should_enqueue_frontend_assets', $force_render || $show_bubble );
+		if ( ! $should_enqueue ) {
+			return;
+		}
+
 		// Retrieve styles once and conditionally load icon dependencies.
 		$styles    = Prayer_Pop_Defaults::get_styles();
 		$icon_type = isset( $styles['bubble_icon_type'] ) ? sanitize_key( $styles['bubble_icon_type'] ) : 'none';
@@ -140,8 +153,7 @@ final class Prayer_Pop {
 		$grid_view_text = Prayer_Pop_Defaults::get_text( 'text_grid_view', esc_html__( 'Grid View', 'prayerpop' ) );
 		$anonymous_text = Prayer_Pop_Defaults::get_text( 'text_anonymous', esc_html__( 'Anonymous', 'prayerpop' ) );
 
-			// Get settings using cache.
-			$settings = Prayer_Pop_Defaults::get_settings();
+			// Use the settings retrieved before the conditional enqueue decision.
 			$allow_anonymous = isset( $settings['allow_anonymous'] ) ? (bool) $settings['allow_anonymous'] : true;
 			$name_placeholder = $allow_anonymous ? $texts['text_name_placeholder'] : $texts['text_name_placeholder_required'];
 
@@ -228,7 +240,7 @@ final class Prayer_Pop {
 	private function get_last_submission_times_payload( $texts ) {
 		$last_prayer_time_message = isset( $texts['text_last_prayer_time_message'] )
 			? (string) $texts['text_last_prayer_time_message']
-			: __( 'Last prayer request was submitted {time_ago} ago.', 'prayerpop' );
+			: __( 'Last prayer request: {time_ago} ago', 'prayerpop' );
 
 		return array(
 			'prayer_request' => array(

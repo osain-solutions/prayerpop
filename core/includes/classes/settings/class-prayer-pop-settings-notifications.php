@@ -288,64 +288,8 @@ class Prayer_Pop_Settings_Notifications {
 	 * Schedule notifications when settings are updated.
 	 */
 	public function schedule_notifications( $old_value, $value ) {
-		// Clear any existing scheduled hooks
-		wp_clear_scheduled_hook( 'prayer_pop_send_daily_notifications' );
-		wp_clear_scheduled_hook( 'prayer_pop_send_weekly_notifications' );
-
-		if ( isset( $value['enable_notifications'] ) && $value['enable_notifications'] ) {
-			if ( isset( $value['notification_frequency'] ) && 'daily' === $value['notification_frequency'] ) {
-				// Fix: Calculate next occurrence of the specified time using UTC for WordPress cron
-				$notification_time = isset( $value['notification_time'] ) ? $value['notification_time'] : '08:00';
-				
-				// Get current local time and calculate target in local timezone
-				$current_local = current_time( 'timestamp' );
-				$today_target_local = strtotime( 'today ' . $notification_time, $current_local );
-				
-				// If time has passed today, schedule for tomorrow
-				if ( $today_target_local <= $current_local ) {
-					$target_local = strtotime( 'tomorrow ' . $notification_time, $current_local );
-				} else {
-					$target_local = $today_target_local;
-				}
-				
-				// Convert to UTC for wp_schedule_event (WordPress cron works in UTC)
-				$target_utc = $target_local - ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
-				
-				$scheduled = wp_schedule_event( $target_utc, 'daily', 'prayer_pop_send_daily_notifications' );
-				
-			} elseif ( isset( $value['notification_frequency'] ) && 'weekly' === $value['notification_frequency'] ) {
-				// Fix: Calculate next occurrence of the specified day and time using UTC for WordPress cron
-				$notification_day = isset( $value['notification_day'] ) ? $value['notification_day'] : 'Monday';
-				$notification_time = isset( $value['notification_time'] ) ? $value['notification_time'] : '08:00';
-				
-				// Get current local time
-				$current_local = current_time( 'timestamp' );
-				$today = strtolower( gmdate( 'l', $current_local ) );
-				$target_day = strtolower( $notification_day );
-				
-				// Calculate target time in local timezone
-				if ( $today === $target_day ) {
-					// If it's the same day, check if time has passed
-					$today_target_local = strtotime( 'today ' . $notification_time, $current_local );
-					if ( $today_target_local > $current_local ) {
-						// Time hasn't passed today, use today
-						$target_local = $today_target_local;
-					} else {
-						// Time has passed, schedule for next week
-						$target_local = strtotime( 'next ' . $notification_day . ' ' . $notification_time, $current_local );
-					}
-				} else {
-					// Different day, find next occurrence
-					$target_local = strtotime( 'next ' . $notification_day . ' ' . $notification_time, $current_local );
-				}
-				
-				// Convert to UTC for wp_schedule_event (WordPress cron works in UTC)
-				$target_utc = $target_local - ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
-				
-				$scheduled = wp_schedule_event( $target_utc, 'prayer_pop_weekly', 'prayer_pop_send_weekly_notifications' );
-				
-			}
-		}
+		unset( $old_value );
+		Prayer_Pop_Notification_Scheduler::sync( is_array( $value ) ? $value : array() );
 
 		delete_option( 'prayer_pop_last_notification_time' );
 	}

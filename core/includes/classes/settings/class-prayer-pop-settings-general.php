@@ -55,14 +55,6 @@ class Prayer_Pop_Settings_General {
 		);
 
 		add_settings_field(
-			'admin_approval_note',
-			esc_html__( 'Admin Approval', 'prayerpop' ),
-			array( $this, 'admin_approval_note_callback' ),
-			'prayer-pop-settings-general',
-			'prayer_pop_general_section'
-		);
-
-		add_settings_field(
 			'retention_period',
 			esc_html__( 'Retention Period', 'prayerpop' ),
 			array( $this, 'retention_period_callback' ),
@@ -85,13 +77,6 @@ class Prayer_Pop_Settings_General {
 		$sanitized['require_admin_approval']      = 1;
 
 		return $sanitized;
-	}
-
-	/**
-	 * Render fixed admin-approval note.
-	 */
-	public function admin_approval_note_callback() {
-		echo '<p class="description">' . esc_html__( 'Every prayer request starts in Pending Action and requires manual admin review.', 'prayerpop' ) . '</p>';
 	}
 
 	/**
