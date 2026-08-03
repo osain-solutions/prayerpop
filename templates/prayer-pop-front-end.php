@@ -11,11 +11,9 @@ $settings = Prayer_Pop_Defaults::get_settings();
 
 // Ensure $selected_animation is set
 if ( ! isset( $selected_animation ) ) {
-    $styles = Prayer_Pop_Defaults::get_styles();
-    $selected_animation = isset( $styles['bubble_animation'] ) ? $styles['bubble_animation'] : 'fade-in';
-    if ( ! in_array( $selected_animation, array( 'none', 'fade-in', 'slide-up', 'bounce-in' ), true ) ) {
-        $selected_animation = 'fade-in';
-    }
+	$selected_animation = Prayer_Pop_Defaults::get_popup_animation();
+} else {
+	$selected_animation = Prayer_Pop_Defaults::get_popup_animation( array( 'bubble_animation' => $selected_animation ) );
 }
 
 // Fetch the prayer-request heading and description.
@@ -24,6 +22,14 @@ $prayer_request_description = $texts['text_prayer_request_description'];
 
 // Get general settings (already loaded above via Prayer_Pop_Defaults::get_settings())
 $allow_anonymous = isset($settings['allow_anonymous']) ? $settings['allow_anonymous'] : true;
+$chat_settings   = class_exists( 'Prayer_Pop_Chat' ) ? Prayer_Pop_Chat::settings() : array();
+$chat_enabled    = ! empty( $chat_settings['enabled'] );
+$popup_intro_image_id  = isset( $settings['popup_intro_image_id'] ) ? absint( $settings['popup_intro_image_id'] ) : 0;
+$popup_intro_image_url = $popup_intro_image_id ? wp_get_attachment_image_url( $popup_intro_image_id, 'large' ) : '';
+$popup_intro_image_alt = $popup_intro_image_id ? (string) get_post_meta( $popup_intro_image_id, '_wp_attachment_image_alt', true ) : '';
+$popup_intro_classes   = 'prayer-pop-popup-intro prayer-pop-popup-intro--hero' . ( $popup_intro_image_url ? ' prayer-pop-popup-intro--has-image' : '' );
+$popup_intro_text_enabled = '' !== trim( (string) $texts['text_popup_intro_title'] ) || '' !== trim( (string) $texts['text_popup_intro_description'] );
+$has_popup_intro          = $popup_intro_image_url || $popup_intro_text_enabled;
 
 // Update name placeholder based on anonymous setting
 $name_placeholder = $allow_anonymous ? 
@@ -157,10 +163,39 @@ $bubble_style_attr = sprintf(
 <!-- PrayerPop Form Modal -->
 <div id="prayer-pop-modal" data-bubble-position="<?php echo esc_attr( $bubble_position ); ?>" style="display: none;">
     <div id="prayer-pop-form-container">
-        <div id="prayer-pop-form-wrapper">
-            <div id="prayer-pop-header">
-                <h2 class="prayer-pop-heading"><?php echo esc_html( $prayer_request_header ); ?></h2>
+	        <?php if ( $has_popup_intro ) : ?>
+	            <div id="prayer-pop-popup-intro" class="<?php echo esc_attr( $popup_intro_classes ); ?>">
+                <?php if ( $popup_intro_image_url ) : ?>
+                    <div class="prayer-pop-popup-intro__media"><img src="<?php echo esc_url( $popup_intro_image_url ); ?>" alt="<?php echo esc_attr( $popup_intro_image_alt ); ?>"></div>
+                <?php endif; ?>
+	                <?php if ( $popup_intro_text_enabled ) : ?><div class="prayer-pop-popup-intro__content">
+						<?php if ( $chat_enabled ) : ?><div class="prayer-pop-popup-intro__sender"><span class="prayer-pop-popup-intro__avatar dashicons dashicons-groups" aria-hidden="true"></span><span><strong><?php echo esc_html( $chat_settings['team_name'] ); ?></strong><small><i aria-hidden="true"></i><?php echo esc_html( $texts['text_chat_reply_time'] ); ?></small></span></div><?php endif; ?>
+						<div class="prayer-pop-popup-intro__message">
+							<?php if ( '' !== trim( (string) $texts['text_popup_intro_title'] ) ) : ?><h2 class="prayer-pop-popup-intro__title"><?php echo esc_html( $texts['text_popup_intro_title'] ); ?></h2><?php endif; ?>
+							<?php if ( '' !== trim( (string) $texts['text_popup_intro_description'] ) ) : ?><p class="prayer-pop-popup-intro__description"><?php echo nl2br( esc_html( $texts['text_popup_intro_description'] ) ); ?></p><?php endif; ?>
+						</div>
+	                </div><?php endif; ?>
+	            </div>
+	        <?php endif; ?>
+	        <?php if ( $chat_enabled ) : ?>
+	            <div id="prayer-pop-initial-options">
+				<button type="button" class="prayer-pop-option-button ppm-classic-chat-launch"><span class="prayer-pop-option-button__icon dashicons dashicons-format-chat" aria-hidden="true"></span><span class="prayer-pop-option-button__label"><?php echo esc_html( $texts['text_chat_button'] ); ?></span><span class="prayer-pop-option-button__chevron dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span></button>
+				<button type="button" class="prayer-pop-option-button" data-option="prayer_request"><span class="prayer-pop-option-button__icon dashicons dashicons-heart" aria-hidden="true"></span><span class="prayer-pop-option-button__label"><?php echo esc_html( $texts['text_prayer_request_label'] ); ?></span><span class="prayer-pop-option-button__chevron dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span></button>
             </div>
+        <?php endif; ?>
+        <div id="prayer-pop-form-wrapper"<?php echo $chat_enabled ? ' style="display: none;"' : ''; ?>>
+            <?php if ( $chat_enabled ) : ?>
+                <header class="ppm-classic-screen-header">
+                    <button type="button" id="prayer-pop-back-button" aria-label="<?php esc_attr_e( 'Back to options', 'prayerpop' ); ?>"><span class="dashicons dashicons-arrow-left-alt2" aria-hidden="true"></span></button>
+                    <div id="prayer-pop-header">
+                        <h2 class="prayer-pop-heading"><?php echo esc_html( $prayer_request_header ); ?></h2>
+                    </div>
+                </header>
+            <?php else : ?>
+                <div id="prayer-pop-header">
+                    <h2 class="prayer-pop-heading"><?php echo esc_html( $prayer_request_header ); ?></h2>
+                </div>
+            <?php endif; ?>
             <div id="prayer-pop-description">
                 <p><?php echo esc_html( $prayer_request_description ); ?></p>
             </div>

@@ -1,4 +1,4 @@
-=== PrayerPop ===
+=== PrayerPop – Chat & Prayer Requests ===
 Contributors: osain
 Tags: prayer, church, ministry, notifications
 Requires at least: 5.8
@@ -53,7 +53,7 @@ The free plugin focuses on two essentials: collecting and reviewing prayer reque
 **Simple visitor chat**
 
 * One classic chat layout using your existing PrayerPop styling
-* Required visitor name, reply email, and message
+* Required visitor name and message, with an optional reply email
 * Shared WordPress inbox with conversation history and unread indicators
 * Admin replies plus close, reopen, and permanent deletion controls
 * Email alerts for new visitor messages and team replies
@@ -62,7 +62,6 @@ The free plugin focuses on two essentials: collecting and reviewing prayer reque
 **Notifications and settings**
 
 * Email notifications with immediate, daily, or weekly scheduling
-* Send Test Email tool
 * Required admin review for incoming requests
 * Retention period cleanup controls
 * Primary color, global font family, bubble position, bubble animation, and bubble icon settings
@@ -198,7 +197,7 @@ No. The free plugin focuses on prayer requests and simple visitor chat. Public [
 
 = 1.6.0 =
 * Added a simple PrayerPop Chat with one classic visitor layout and a shared WordPress inbox.
-* Added secure visitor sessions, required reply email collection, admin replies, unread indicators, and close/reopen/delete controls.
+* Added secure visitor sessions, optional reply email collection, admin replies, unread indicators, and close/reopen/delete controls.
 * Added email notifications for new visitor messages and team replies.
 * Improved scheduled prayer-request notifications so daily and weekly delivery survives reactivation and follows the WordPress timezone.
 * Avoided loading frontend bubble and form assets when the bubble is disabled.

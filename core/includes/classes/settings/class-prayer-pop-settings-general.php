@@ -42,6 +42,14 @@ class Prayer_Pop_Settings_General {
 		);
 
 		add_settings_field(
+			'popup_intro_image_id',
+			esc_html__( 'Welcome Image', 'prayerpop' ),
+			array( $this, 'popup_intro_image_callback' ),
+			'prayer-pop-settings-general',
+			'prayer_pop_general_section'
+		);
+
+		add_settings_field(
 			'allow_anonymous',
 			esc_html__( 'Anonymous Submissions', 'prayerpop' ),
 			array( $this, 'toggle_callback' ),
@@ -71,12 +79,38 @@ class Prayer_Pop_Settings_General {
 		$existing  = get_option( 'prayer_pop_general_settings', array() );
 		$sanitized = is_array( $existing ) ? $existing : array();
 
+		$popup_intro_image_id                    = isset( $input['popup_intro_image_id'] ) ? absint( $input['popup_intro_image_id'] ) : 0;
 		$sanitized['show_prayer_pop_bubble']      = isset( $input['show_prayer_pop_bubble'] ) ? 1 : 0;
+		$sanitized['popup_intro_image_id']        = $popup_intro_image_id && wp_attachment_is_image( $popup_intro_image_id ) ? $popup_intro_image_id : 0;
 		$sanitized['allow_anonymous']             = isset( $input['allow_anonymous'] ) ? 1 : 0;
 		$sanitized['retention_period']            = isset( $input['retention_period'] ) ? absint( $input['retention_period'] ) : 0;
 		$sanitized['require_admin_approval']      = 1;
 
 		return $sanitized;
+	}
+
+	/** Render the single Free welcome-image control. */
+	public function popup_intro_image_callback() {
+		$options  = get_option( 'prayer_pop_general_settings', array() );
+		$image_id = isset( $options['popup_intro_image_id'] ) ? absint( $options['popup_intro_image_id'] ) : 0;
+		$image_url = $image_id ? wp_get_attachment_image_url( $image_id, 'medium' ) : '';
+		?>
+		<div class="prayer-pop-free-intro-image-field">
+			<input type="hidden" id="prayer_pop_general_settings_popup_intro_image_id" name="prayer_pop_general_settings[popup_intro_image_id]" value="<?php echo esc_attr( $image_id ); ?>">
+			<div id="prayer-pop-free-intro-image-preview" class="prayer-pop-free-intro-image-preview<?php echo $image_url ? '' : ' is-empty'; ?>" data-empty-label="<?php esc_attr_e( 'No image selected', 'prayerpop' ); ?>">
+				<?php if ( $image_url ) : ?>
+					<img src="<?php echo esc_url( $image_url ); ?>" alt="">
+				<?php else : ?>
+					<span><?php esc_html_e( 'No image selected', 'prayerpop' ); ?></span>
+				<?php endif; ?>
+			</div>
+			<div class="prayer-pop-free-intro-image-actions">
+				<button type="button" class="button" id="prayer-pop-select-free-intro-image" data-frame-title="<?php esc_attr_e( 'Choose popup welcome image', 'prayerpop' ); ?>" data-frame-button="<?php esc_attr_e( 'Use this image', 'prayerpop' ); ?>"><?php esc_html_e( 'Choose Image', 'prayerpop' ); ?></button>
+				<button type="button" class="button" id="prayer-pop-remove-free-intro-image"<?php echo $image_url ? '' : ' hidden'; ?>><?php esc_html_e( 'Remove Image', 'prayerpop' ); ?></button>
+			</div>
+			<p class="description"><?php esc_html_e( 'Choose the image shown behind the popup welcome text. A wide image works best.', 'prayerpop' ); ?></p>
+		</div>
+		<?php
 	}
 
 	/**

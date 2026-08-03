@@ -11,6 +11,43 @@ jQuery(document).ready(function($) {
     var originalFormData = '';
     var formTrackingReady = false;
 
+    var freeIntroImageFrame = null;
+
+    $(document).on('click', '#prayer-pop-select-free-intro-image', function(event) {
+        event.preventDefault();
+		var $button = $(this);
+
+        if (freeIntroImageFrame) {
+            freeIntroImageFrame.open();
+            return;
+        }
+
+        freeIntroImageFrame = wp.media({
+            title: $button.data('frame-title'),
+            button: { text: $button.data('frame-button') },
+            library: { type: 'image' },
+            multiple: false
+        });
+
+        freeIntroImageFrame.on('select', function() {
+            var attachment = freeIntroImageFrame.state().get('selection').first().toJSON();
+            var previewUrl = attachment.sizes && attachment.sizes.medium ? attachment.sizes.medium.url : attachment.url;
+            $('#prayer_pop_general_settings_popup_intro_image_id').val(attachment.id).trigger('change');
+            $('#prayer-pop-free-intro-image-preview').removeClass('is-empty').html($('<img>', { src: previewUrl, alt: '' }));
+            $('#prayer-pop-remove-free-intro-image').prop('hidden', false);
+        });
+
+        freeIntroImageFrame.open();
+    });
+
+    $(document).on('click', '#prayer-pop-remove-free-intro-image', function(event) {
+        event.preventDefault();
+        $('#prayer_pop_general_settings_popup_intro_image_id').val('0').trigger('change');
+        var $preview = $('#prayer-pop-free-intro-image-preview');
+        $preview.addClass('is-empty').html($('<span>').text($preview.data('empty-label')));
+        $(this).prop('hidden', true);
+    });
+
     function getCurrentSettingsUrl(activeTab, scrollY) {
         var nextUrl = new URL(window.location.href);
         nextUrl.searchParams.set('page', 'prayer-pop-settings');
@@ -452,25 +489,6 @@ jQuery(document).ready(function($) {
             field.setSelectionRange(start + placeholder.length, start + placeholder.length);
         }
         $field.trigger('input').trigger('change');
-    });
-
-    $('#prayer-pop-send-test-email').on('click', function() {
-        var config = (window.prayerPopAdmin && prayerPopAdmin.emailTemplate) || {};
-        var $button = $(this);
-        var sendLabel = config.sendLabel || 'Send Test Email';
-        var failedMessage = config.failedMessage || 'Failed to send test email.';
-        $button.prop('disabled', true).text(config.sendingLabel || 'Sending...');
-
-        $.post(window.ajaxurl, {
-            action: 'prayer_pop_send_test_email',
-            _wpnonce: (window.prayerPopAdmin && prayerPopAdmin.nonce) || ''
-        }).done(function(response) {
-            window.alert(response && response.data ? response.data : failedMessage);
-        }).fail(function() {
-            window.alert(failedMessage);
-        }).always(function() {
-            $button.prop('disabled', false).text(sendLabel);
-        });
     });
 
     // Text customization JSON import.

@@ -34,6 +34,7 @@ class Prayer_Pop_Settings_Text {
 			'prayer-pop-settings-text'
 		);
 		$this->register_content_section( 'bubble', esc_html__( 'Bubble & Navigation', 'prayerpop' ), esc_html__( 'Text shown on the floating bubble and its primary navigation.', 'prayerpop' ) );
+		$this->register_content_section( 'chat', esc_html__( 'Chat Conversation', 'prayerpop' ), esc_html__( 'Prompts, placeholders, buttons, and status text shown in the visitor chat.', 'prayerpop' ) );
 		$this->register_content_section( 'form', esc_html__( 'Prayer Request Form', 'prayerpop' ), esc_html__( 'Headings, fields, buttons, and accessibility labels used by the request form.', 'prayerpop' ) );
 		$this->register_content_section( 'messages', esc_html__( 'Confirmations & Errors', 'prayerpop' ), esc_html__( 'Success, validation, preview, and error messages shown to visitors.', 'prayerpop' ) );
 		$this->register_content_section( 'activity', esc_html__( 'Activity & Time', 'prayerpop' ), esc_html__( 'Recent-submission wording and the time units used in relative dates.', 'prayerpop' ) );
@@ -41,10 +42,31 @@ class Prayer_Pop_Settings_Text {
 		// Bubble and Main Menu
 		$this->add_text_field( 'text_bubble_label', esc_html__( 'Bubble Label', 'prayerpop' ), 'PrayerPop' );
 		$this->add_text_field( 'text_bubble_icon_alt', esc_html__( 'Bubble Icon Alt Text', 'prayerpop' ), 'PrayerPop icon' );
-		$this->add_text_field( 'text_prayer_request_label', esc_html__( 'Prayer Request Button', 'prayerpop' ), 'Prayer Request' );
+		$this->add_text_field( 'text_chat_button', esc_html__( 'Chat Button', 'prayerpop' ), 'Send us a message' );
+		$this->add_text_field( 'text_prayer_request_label', esc_html__( 'Prayer Request Button', 'prayerpop' ), 'Prayer request' );
 		$this->add_text_field( 'text_back_button', esc_html__( 'Back Button', 'prayerpop' ), 'Back' );
+		$this->add_text_field( 'text_chat_team_help', esc_html__( 'Chat Team Help Text', 'prayerpop' ), 'The team can also help' );
+		$this->add_text_field( 'text_chat_reply_time', esc_html__( 'Chat Reply Time Text', 'prayerpop' ), 'Replies within a day' );
+		$this->add_text_field( 'text_chat_intro', esc_html__( 'Chat Intro Text', 'prayerpop' ), 'We are here to help. Leave a message and we will reply here.' );
+		$this->add_text_field( 'text_chat_step_one', esc_html__( 'Chat Step One Label', 'prayerpop' ), '1 of 3' );
+		$this->add_text_field( 'text_chat_step_two', esc_html__( 'Chat Step Two Label', 'prayerpop' ), '2 of 3' );
+		$this->add_text_field( 'text_chat_step_three', esc_html__( 'Chat Step Three Label', 'prayerpop' ), '3 of 3' );
+		$this->add_text_field( 'text_chat_name_prompt', esc_html__( 'Chat Name Prompt', 'prayerpop' ), 'Before we start, what’s your name?' );
+		$this->add_text_field( 'text_chat_name_placeholder', esc_html__( 'Chat Name Placeholder', 'prayerpop' ), 'Type your name' );
+		$this->add_text_field( 'text_chat_thanks', esc_html__( 'Chat Thank-you Text', 'prayerpop' ), 'Thanks,' );
+		$this->add_text_field( 'text_chat_email_prompt', esc_html__( 'Chat Email Prompt', 'prayerpop' ), 'Where should we send reply notifications?' );
+		$this->add_text_field( 'text_chat_email_placeholder', esc_html__( 'Chat Email Placeholder', 'prayerpop' ), 'Email address (optional)' );
+		$this->add_text_field( 'text_chat_skip', esc_html__( 'Chat Skip Button', 'prayerpop' ), 'Skip for now' );
+		$this->add_text_field( 'text_chat_message_prompt', esc_html__( 'Chat Message Prompt', 'prayerpop' ), 'How can we help?' );
+		$this->add_text_field( 'text_chat_message_placeholder', esc_html__( 'Chat Message Placeholder', 'prayerpop' ), 'Write your message…' );
+		$this->add_text_field( 'text_chat_continue_label', esc_html__( 'Chat Continue Accessibility Label', 'prayerpop' ), 'Continue' );
+		$this->add_text_field( 'text_chat_send_label', esc_html__( 'Chat Send Accessibility Label', 'prayerpop' ), 'Send message' );
+		$this->add_text_field( 'text_chat_closed', esc_html__( 'Closed Chat Text', 'prayerpop' ), 'This conversation is closed.' );
+		$this->add_text_field( 'text_chat_new_conversation', esc_html__( 'New Conversation Button', 'prayerpop' ), 'Start a new conversation' );
 
 		// Headers and Descriptions
+		$this->add_text_field( 'text_popup_intro_title', esc_html__( 'Popup Intro Title', 'prayerpop' ), 'Hi there, prayer warrior!' );
+		$this->add_textarea_field( 'text_popup_intro_description', esc_html__( 'Popup Intro Description', 'prayerpop' ), 'Send us a message and we will get back to you.' );
 		$this->add_text_field( 'text_prayer_request_header', esc_html__( 'Prayer Request Header', 'prayerpop' ), 'Submit a Prayer Request' );
 		$this->add_text_field( 'text_prayer_request_description', esc_html__( 'Prayer Request Description', 'prayerpop' ), 'Please fill out the form below to submit your prayer request.' );
 
@@ -95,7 +117,10 @@ class Prayer_Pop_Settings_Text {
 		$page       = 'prayer-pop-settings-text';
 		$common_ids = array(
 			'text_bubble_label',
+			'text_chat_button',
 			'text_prayer_request_label',
+			'text_popup_intro_title',
+			'text_popup_intro_description',
 			'text_prayer_request_header',
 			'text_message_placeholder',
 			'text_name_placeholder',
@@ -261,7 +286,10 @@ class Prayer_Pop_Settings_Text {
 	}
 
 	private function get_field_section( $id ) {
-		$bubble = array( 'text_bubble_label', 'text_bubble_icon_alt', 'text_prayer_request_label', 'text_back_button' );
+		if ( 0 === strpos( $id, 'text_chat_' ) && 'text_chat_button' !== $id ) {
+			return 'prayer_pop_text_chat_section';
+		}
+		$bubble = array( 'text_bubble_label', 'text_bubble_icon_alt', 'text_chat_button', 'text_prayer_request_label', 'text_popup_intro_title', 'text_popup_intro_description', 'text_back_button' );
 		if ( in_array( $id, $bubble, true ) ) {
 			return 'prayer_pop_text_bubble_section';
 		}
@@ -282,6 +310,9 @@ class Prayer_Pop_Settings_Text {
 		$id      = $args['id'];
 		$default = $args['default'];
 		$value   = isset( $options[ $id ] ) ? $options[ $id ] : $default;
+		if ( 'text_prayer_request_label' === $id && 'Prayer Request' === $value ) {
+			$value = $default;
+		}
 		?>
 		<input type="text" 
 			   id="<?php echo esc_attr( $id ); ?>"
@@ -339,7 +370,7 @@ class Prayer_Pop_Settings_Text {
 
 		$sanitized = $existing_texts;
 		foreach ( $input as $key => $value ) {
-			if ( ! in_array( $key, $managed_keys, true ) ) {
+			if ( ! in_array( $key, $managed_keys, true ) || ! is_scalar( $value ) ) {
 				continue;
 			}
 			$value = $this->normalize_utf8_text( (string) $value );
@@ -365,7 +396,28 @@ class Prayer_Pop_Settings_Text {
 		return array(
 			'text_bubble_label',
 			'text_bubble_icon_alt',
+			'text_chat_button',
+			'text_chat_team_help',
+			'text_chat_reply_time',
+			'text_chat_intro',
+			'text_chat_step_one',
+			'text_chat_step_two',
+			'text_chat_step_three',
+			'text_chat_name_prompt',
+			'text_chat_name_placeholder',
+			'text_chat_thanks',
+			'text_chat_email_prompt',
+			'text_chat_email_placeholder',
+			'text_chat_skip',
+			'text_chat_message_prompt',
+			'text_chat_message_placeholder',
+			'text_chat_continue_label',
+			'text_chat_send_label',
+			'text_chat_closed',
+			'text_chat_new_conversation',
 			'text_prayer_request_label',
+			'text_popup_intro_title',
+			'text_popup_intro_description',
 			'text_back_button',
 			'text_prayer_request_header',
 			'text_prayer_request_description',
@@ -616,7 +668,7 @@ class Prayer_Pop_Settings_Text {
 		$imported_texts = array();
 		$imported_count = 0;
 		foreach ( $data['texts'] as $key => $value ) {
-			if ( array_key_exists( $key, $defaults ) ) {
+			if ( array_key_exists( $key, $defaults ) && is_scalar( $value ) ) {
 				$imported_texts[ $key ] = $value;
 				$imported_count++;
 			}

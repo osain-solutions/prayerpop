@@ -83,14 +83,6 @@ class Prayer_Pop_Settings_Email_Template {
 			'prayer_pop_email_template_section'
 		);
 
-		add_settings_field(
-			'email_test_button',
-			'',
-			array( $this, 'email_test_button_callback' ),
-			'prayer-pop-settings-email-template',
-			'prayer_pop_email_template_section'
-		);
-
 	}
 
 	/**
@@ -139,15 +131,6 @@ class Prayer_Pop_Settings_Email_Template {
 				</tbody>
 			</table>
 		</div>
-		<?php
-	}
-
-	/**
-	 * Render test email button below the input fields.
-	 */
-	public function email_test_button_callback() {
-		?>
-		<p><button type="button" class="button" id="prayer-pop-send-test-email"><?php esc_html_e( 'Send Test Email', 'prayerpop' ); ?></button></p>
 		<?php
 	}
 

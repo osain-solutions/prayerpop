@@ -11,11 +11,60 @@ jQuery(document).ready(function($) {
         return;
     }
 
-    var selectedAnimation = prayerPopAjax.selected_animation || 'fade-in';
-    var validAnimations = ['none', 'fade-in', 'slide-up', 'bounce-in'];
+    var selectedAnimation = prayerPopAjax.selected_animation || 'gentle-rise';
+    var validAnimations = ['none', 'fade-in', 'gentle-rise', 'soft-scale', 'slide-up', 'bounce-in'];
     if (validAnimations.indexOf(selectedAnimation) === -1) {
-        selectedAnimation = 'fade-in';
+        selectedAnimation = 'gentle-rise';
     }
+
+    window.PrayerPopMotion = window.PrayerPopMotion || (function () {
+        var motionClasses = ['none', 'fade-in', 'gentle-rise', 'soft-scale', 'slide-up', 'bounce-in'];
+        var stateClasses = ['prayerpop-motion-enter', 'prayerpop-motion-exit'];
+
+        function reduced() {
+            return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        }
+
+        function reset(element) {
+            motionClasses.concat(stateClasses).forEach(function (className) {
+                element.classList.remove(className);
+            });
+        }
+
+        function play(element, direction, complete) {
+            if (!element) {
+                if (complete) complete();
+                return;
+            }
+            reset(element);
+            element.classList.add(selectedAnimation);
+            if (selectedAnimation === 'none' || reduced()) {
+                if (complete) complete();
+                return;
+            }
+            void element.offsetWidth;
+            var stateClass = direction === 'exit' ? 'prayerpop-motion-exit' : 'prayerpop-motion-enter';
+            var finished = false;
+            var finish = function (event) {
+                if (event && event.target !== element) return;
+                if (finished) return;
+                finished = true;
+                element.removeEventListener('animationend', finish);
+                element.classList.remove(stateClass);
+                if (complete) complete();
+            };
+            element.addEventListener('animationend', finish);
+            element.classList.add(stateClass);
+            window.setTimeout(finish, 340);
+        }
+
+        return {
+            enter: function (element) { play(element, 'enter'); },
+            exit: function (element, complete) { play(element, 'exit', complete); },
+            reset: reset,
+            selected: selectedAnimation
+        };
+    }());
     var lastTimeInterval;
     
     function keepFirstById(id) {
@@ -64,9 +113,53 @@ jQuery(document).ready(function($) {
     var hasModuleAnchor = $moduleAnchor.length > 0;
     var $bubbleElement = hasModuleAnchor ? keepModuleInstanceById('prayer-pop-bubble') : keepFirstById('prayer-pop-bubble');
     var $modalElement = hasModuleAnchor ? keepModuleInstanceById('prayer-pop-modal') : keepFirstById('prayer-pop-modal');
+    var lastFocusedElement = null;
+    var modalClosing = false;
 
     if (!$bubbleElement.length || !$modalElement.length) {
         return;
+    }
+
+    var popupHeightStart = null;
+    var popupHeightFrame = 0;
+    var popupHeightTimer = 0;
+    var popupHeightOverflow = null;
+
+    function beginPopupHeightTransition() {
+        var container = document.getElementById('prayer-pop-form-container');
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!container || !$modalElement.is(':visible') || reduceMotion) {
+            popupHeightStart = null;
+            return;
+        }
+
+        if (popupHeightFrame) window.cancelAnimationFrame(popupHeightFrame);
+        window.clearTimeout(popupHeightTimer);
+        if (popupHeightOverflow === null) popupHeightOverflow = container.style.overflow;
+        popupHeightStart = container.getBoundingClientRect().height;
+        container.style.height = popupHeightStart + 'px';
+        container.style.overflow = 'hidden';
+    }
+
+    function finishPopupHeightTransition() {
+        if (popupHeightStart === null) return;
+        var container = document.getElementById('prayer-pop-form-container');
+        if (!container) return;
+
+        container.style.height = 'auto';
+        var targetHeight = container.getBoundingClientRect().height;
+        container.style.height = popupHeightStart + 'px';
+        void container.offsetHeight;
+        popupHeightFrame = window.requestAnimationFrame(function () {
+            popupHeightFrame = 0;
+            container.style.height = targetHeight + 'px';
+        });
+        popupHeightTimer = window.setTimeout(function () {
+            container.style.height = '';
+            container.style.overflow = popupHeightOverflow || '';
+            popupHeightOverflow = null;
+        }, 220);
+        popupHeightStart = null;
     }
 
     // When rendered inside Theme Builder content, move floating UI to <body>
@@ -293,8 +386,11 @@ jQuery(document).ready(function($) {
         restorePopupDraftForType('prayer_request');
     }
 
-    // Apply the animation class to the bubble (reset first to avoid stale classes)
-    $bubbleElement.removeClass('none fade-in slide-up bounce-in').addClass(selectedAnimation);
+    // Templates already carry the saved class. Only correct stale/missing output so
+    // document-ready does not restart the Bubble's load animation midway through.
+    if (!$bubbleElement.hasClass(selectedAnimation)) {
+        $bubbleElement.removeClass('none fade-in gentle-rise soft-scale slide-up bounce-in').addClass(selectedAnimation);
+    }
 
     // If Last Prayer Time is enabled and you want to display it immediately (for testing),
     // you can call updateLastTime for a default option (e.g. "prayer_request").
@@ -313,17 +409,28 @@ jQuery(document).ready(function($) {
 
     // Function to open the modal with animation
     function openModal() {
-        $('#prayer-pop-form-container').removeClass('none fade-in slide-up bounce-in')
+        if (modalClosing) return;
+        lastFocusedElement = document.activeElement;
+        $('#prayer-pop-form-container').removeClass('none fade-in gentle-rise soft-scale slide-up bounce-in')
             .addClass(selectedAnimation);
-        if (selectedAnimation === 'none') {
-            $('#prayer-pop-modal').stop(true, true).show();
-        } else {
-            $('#prayer-pop-modal').stop(true, true).fadeIn();
-        }
+        $modalElement.attr('aria-hidden', 'false');
+        $bubbleElement.attr('aria-expanded', 'true');
+        $('#prayer-pop-modal').stop(true, true).show();
+        window.PrayerPopMotion.enter(document.getElementById('prayer-pop-form-container'));
+        window.setTimeout(function() {
+            var $firstFocusable = $('#prayer-pop-form-container').find('a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])').filter(':visible').first();
+            ($firstFocusable.length ? $firstFocusable : $('#prayer-pop-form-container')).trigger('focus');
+        }, 0);
 
         resetPopupFormState('prayer_request');
         $('#prayer-pop-form input[name="prayer_pop_type"]').val('prayer_request');
-        $('#prayer-pop-form-wrapper').show();
+        if ($('#prayer-pop-initial-options').length) {
+            $('#prayer-pop-popup-intro').show();
+            $('#prayer-pop-initial-options').show();
+            $('#prayer-pop-form-wrapper').hide();
+        } else {
+            $('#prayer-pop-form-wrapper').show();
+        }
 
         // Ensure the form container is properly positioned
         var $bubble = $('#prayer-pop-bubble');
@@ -388,6 +495,8 @@ jQuery(document).ready(function($) {
 
     // Function to close the modal
     function closeModal() {
+        if (modalClosing || !$modalElement.is(':visible')) return;
+        modalClosing = true;
         if ($('#prayer-pop-success').is(':visible')) {
             clearPopupDraft();
         } else {
@@ -395,8 +504,10 @@ jQuery(document).ready(function($) {
         }
 
         var afterClose = function() {
-            $('#prayer-pop-form-container').removeClass('none fade-in slide-up bounce-in');
+            $('#prayer-pop-form-container').removeClass('none fade-in gentle-rise soft-scale slide-up bounce-in');
             $('#prayer-pop-form-wrapper').show();
+            $('#prayer-pop-initial-options').hide();
+            $('#prayer-pop-popup-intro').hide();
             $('#prayer-pop-header').show();
             $('#prayer-pop-description').show();
             $('#prayer-pop-last-time').hide().empty();
@@ -405,14 +516,21 @@ jQuery(document).ready(function($) {
                 lastTimeInterval = null;
             }
             resetPopupFormState('');
+            $modalElement.attr('aria-hidden', 'true');
+            $bubbleElement.attr('aria-expanded', 'false');
+            if (lastFocusedElement && document.contains(lastFocusedElement)) {
+                $(lastFocusedElement).trigger('focus');
+            } else {
+                $bubbleElement.trigger('focus');
+            }
+            lastFocusedElement = null;
+            modalClosing = false;
         };
 
-        if (selectedAnimation === 'none') {
+        window.PrayerPopMotion.exit(document.getElementById('prayer-pop-form-container'), function () {
             $('#prayer-pop-modal').stop(true, true).hide();
             afterClose();
-        } else {
-            $('#prayer-pop-modal').stop(true, true).fadeOut(afterClose);
-        }
+        });
     }
 
     // Toggle the modal when the bubble is clicked
@@ -422,6 +540,49 @@ jQuery(document).ready(function($) {
         } else {
             openModal();
         }
+    });
+
+    $(document).on('keydown.prayerPopModal', function(event) {
+        if (!$modalElement.is(':visible')) return;
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            closeModal();
+            return;
+        }
+        if (event.key !== 'Tab') return;
+        var $focusable = $('#prayer-pop-form-container').find('a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])').filter(':visible');
+        if (!$focusable.length) {
+            event.preventDefault();
+            $('#prayer-pop-form-container').trigger('focus');
+            return;
+        }
+        var first = $focusable.get(0);
+        var last = $focusable.get($focusable.length - 1);
+        if (event.shiftKey && (document.activeElement === first || !$.contains($modalElement.get(0), document.activeElement))) {
+            event.preventDefault();
+            $(last).trigger('focus');
+        } else if (!event.shiftKey && (document.activeElement === last || !$.contains($modalElement.get(0), document.activeElement))) {
+            event.preventDefault();
+            $(first).trigger('focus');
+        }
+    });
+
+    $(document).on('click', '#prayer-pop-initial-options [data-option="prayer_request"]', function(event) {
+        event.preventDefault();
+        beginPopupHeightTransition();
+        $('#prayer-pop-popup-intro').hide();
+        $('#prayer-pop-initial-options').hide();
+        $('#prayer-pop-form-wrapper').show();
+        finishPopupHeightTransition();
+    });
+
+    $(document).on('click', '#prayer-pop-back-button', function(event) {
+        event.preventDefault();
+        beginPopupHeightTransition();
+        $('#prayer-pop-form-wrapper').hide();
+        $('#prayer-pop-popup-intro').show();
+        $('#prayer-pop-initial-options').show();
+        finishPopupHeightTransition();
     });
 
     // Close the modal when clicking outside the form container

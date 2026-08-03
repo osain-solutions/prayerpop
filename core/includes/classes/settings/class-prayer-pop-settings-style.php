@@ -107,6 +107,14 @@ class Prayer_Pop_Settings_Style {
 				'prayer_pop_style_section'
 			);
 
+			add_settings_field(
+				'bubble_animation',
+				esc_html__( 'Popup Animation', 'prayerpop' ),
+				array( $this, 'animation_field_callback' ),
+				'prayer-pop-settings-style',
+				'prayer_pop_style_section'
+			);
+
 			add_settings_section(
 				'prayer_pop_bubble_icon_section',
 				'<span class="dashicons dashicons-format-image"></span> ' . esc_html__( 'Bubble Icon', 'prayerpop' ),
@@ -334,14 +342,16 @@ class Prayer_Pop_Settings_Style {
 	public function animation_field_callback() {
 		$options = get_option( 'prayer_pop_styles', array() );
 		$animations = array(
-			'none'      => esc_html__( 'None', 'prayerpop' ),
-			'fade-in'   => esc_html__( 'Fade In', 'prayerpop' ),
-			'slide-up'  => esc_html__( 'Slide Up', 'prayerpop' ),
-			'bounce-in' => esc_html__( 'Bounce In', 'prayerpop' ),
+			'none'        => esc_html__( 'None', 'prayerpop' ),
+			'fade-in'     => esc_html__( 'Smooth Fade', 'prayerpop' ),
+			'gentle-rise' => esc_html__( 'Gentle Rise', 'prayerpop' ),
+			'soft-scale'  => esc_html__( 'Soft Scale', 'prayerpop' ),
+			'slide-up'    => esc_html__( 'Slide Up', 'prayerpop' ),
+			'bounce-in'   => esc_html__( 'Soft Pop', 'prayerpop' ),
 		);
-		$current = isset( $options['bubble_animation'] ) ? $options['bubble_animation'] : 'fade-in';
+		$current = isset( $options['bubble_animation'] ) ? $options['bubble_animation'] : 'gentle-rise';
 		if ( ! in_array( $current, array_keys( $animations ), true ) ) {
-			$current = 'fade-in';
+			$current = 'gentle-rise';
 		}
 		?>
 		<div class="prayer-pop-animation-preview">
@@ -352,11 +362,8 @@ class Prayer_Pop_Settings_Style {
 					</option>
 				<?php endforeach; ?>
 			</select>
-			<button type="button" class="button preview-animation">
-				<?php esc_html_e( 'Preview Animation', 'prayerpop' ); ?>
-			</button>
-			<div class="animation-preview-bubble"></div>
 		</div>
+		<p class="description"><?php esc_html_e( 'Fade changes opacity only; Gentle Rise moves subtly; Slide Up travels visibly; Soft Scale zooms from the corner; Soft Pop overshoots and settles.', 'prayerpop' ); ?></p>
 		<?php
 	}
 
@@ -541,6 +548,13 @@ class Prayer_Pop_Settings_Style {
 			'heading_font_weight'     => '600',
 			'global_font_family'      => 'system-ui',
 			'global_font_size'        => '16px',
+			'bubble_position'         => 'right',
+			'bubble_offset_x'         => '0px',
+			'bubble_offset_y'         => '0px',
+			'bubble_animation'        => 'gentle-rise',
+			'bubble_icon_type'        => 'dashicon',
+			'bubble_dashicon'         => 'prayerpop',
+			'bubble_icon_color'       => '#ffffff',
 		);
 	}
 
@@ -1603,21 +1617,23 @@ class Prayer_Pop_Settings_Style {
 	 * Sanitize style settings.
 	 */
 	public function sanitize_styles( $input ) {
+		$existing_styles = get_option( 'prayer_pop_styles', array() );
+		$existing_styles = is_array( $existing_styles ) ? $existing_styles : array();
 		if ( ! is_array( $input ) ) {
-			return array();
+			return $existing_styles;
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Runs during Settings API save request with options.php nonce.
 		$reset_action = isset( $_POST['prayer_pop_reset_action'] )
 			? sanitize_key( wp_unslash( $_POST['prayer_pop_reset_action'] ) )
 			: '';
 
-		$sanitized = array();
+		$sanitized = $existing_styles;
 		foreach ( $input as $key => $value ) {
 			if ( strpos( $key, 'color' ) !== false ) {
 				$sanitized[ $key ] = sanitize_hex_color( $value );
 			} elseif ( $key === 'bubble_animation' ) {
-				$allowed_animations = array( 'none', 'fade-in', 'slide-up', 'bounce-in' );
-				$sanitized[ $key ]  = in_array( $value, $allowed_animations, true ) ? $value : 'fade-in';
+				$allowed_animations = array( 'none', 'fade-in', 'gentle-rise', 'soft-scale', 'slide-up', 'bounce-in' );
+				$sanitized[ $key ]  = in_array( $value, $allowed_animations, true ) ? $value : 'gentle-rise';
 				} elseif ( $key === 'bubble_layout' ) {
 					$allowed_layouts = array( 'icon', 'text', 'icon_text', 'text_icon' );
 					$sanitized[ $key ] = in_array( $value, $allowed_layouts, true ) ? $value : 'icon_text';
@@ -1664,6 +1680,17 @@ class Prayer_Pop_Settings_Style {
 			}
 		}
 
+		// Apply section-specific reset actions before type-aware icon normalization.
+		if ( 'layout' === $reset_action ) {
+			foreach ( $this->get_layout_defaults() as $field_key => $default_value ) {
+				$sanitized[ $field_key ] = $default_value;
+			}
+		} elseif ( 'style_customization' === $reset_action ) {
+			foreach ( $this->get_style_customization_defaults() as $field_key => $default_value ) {
+				$sanitized[ $field_key ] = $default_value;
+			}
+		}
+
 		// Type-aware guard: keep icon-specific values consistent with selected icon type.
 		$icon_type = isset( $sanitized['bubble_icon_type'] ) ? $sanitized['bubble_icon_type'] : 'none';
 		if ( 'dashicon' !== $icon_type ) {
@@ -1697,17 +1724,6 @@ class Prayer_Pop_Settings_Style {
 			$sanitized['faq_item_gap'],
 			$sanitized['faq_padding']
 		);
-
-		// Apply section-specific reset actions through Settings API save flow.
-		if ( 'layout' === $reset_action ) {
-			foreach ( $this->get_layout_defaults() as $field_key => $default_value ) {
-				$sanitized[ $field_key ] = $default_value;
-			}
-		} elseif ( 'style_customization' === $reset_action ) {
-			foreach ( $this->get_style_customization_defaults() as $field_key => $default_value ) {
-				$sanitized[ $field_key ] = $default_value;
-			}
-		}
 
 		return $sanitized;
 	}

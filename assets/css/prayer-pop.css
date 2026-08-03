@@ -46,46 +46,83 @@
     font-family: var(--global-font-family);
 }
 
-/* No Animation (Default) */
-#prayer-pop-bubble.none,
-#prayer-pop-form-container.none {
-    opacity: 1;
-    transform: none;
+/* Shared Bubble and popup motion. The saved Bubble Animation setting controls
+ * both the initial Bubble entrance and every popup surface entrance/exit. */
+@keyframes prayerpop-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes prayerpop-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes prayerpop-slide-in { from { opacity: .15; transform: translate3d(0, 64px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@keyframes prayerpop-slide-out { from { opacity: 1; transform: translate3d(0, 0, 0); } to { opacity: 0; transform: translate3d(0, 48px, 0); } }
+@keyframes prayerpop-gentle-rise-in { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@keyframes prayerpop-gentle-rise-out { from { opacity: 1; transform: translate3d(0, 0, 0); } to { opacity: 0; transform: translate3d(0, 8px, 0); } }
+@keyframes prayerpop-soft-scale-in { from { opacity: 0; transform: scale(.86); } to { opacity: 1; transform: scale(1); } }
+@keyframes prayerpop-soft-scale-out { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(.9); } }
+@keyframes prayerpop-pop-in {
+    0% { opacity: 0; transform: scale(.76); }
+    62% { opacity: 1; transform: scale(1.045); }
+    82% { transform: scale(.992); }
+    100% { opacity: 1; transform: scale(1); }
+}
+@keyframes prayerpop-pop-out { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(.84); } }
+@keyframes prayerpop-bubble-slide-in { from { opacity: .1; transform: translateY(48px) scale(var(--prayerpop-bubble-scale, 1)); } to { opacity: 1; transform: translateY(0) scale(var(--prayerpop-bubble-scale, 1)); } }
+@keyframes prayerpop-bubble-gentle-rise-in { from { opacity: 0; transform: translateY(11px) scale(var(--prayerpop-bubble-scale, 1)); } to { opacity: 1; transform: translateY(0) scale(var(--prayerpop-bubble-scale, 1)); } }
+@keyframes prayerpop-bubble-soft-scale-in { from { opacity: 0; transform: scale(.68); } to { opacity: 1; transform: scale(var(--prayerpop-bubble-scale, 1)); } }
+@keyframes prayerpop-bubble-pop-in {
+    0% { opacity: 0; transform: scale(.55); }
+    60% { opacity: 1; transform: scale(1.09); }
+    80% { transform: scale(.975); }
+    100% { opacity: 1; transform: scale(var(--prayerpop-bubble-scale, 1)); }
 }
 
-/* Fade In Animation */
-@keyframes prayerpop-fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+#prayer-pop-bubble.none { opacity: 1; transform: scale(var(--prayerpop-bubble-scale, 1)); }
+#prayer-pop-bubble.fade-in { animation: prayerpop-fade-in 240ms cubic-bezier(0,0,.38,.9) both; }
+#prayer-pop-bubble.gentle-rise { animation: prayerpop-bubble-gentle-rise-in 240ms cubic-bezier(0,0,.38,.9) both; }
+#prayer-pop-bubble.soft-scale { animation: prayerpop-bubble-soft-scale-in 240ms cubic-bezier(0,0,.3,1) both; }
+#prayer-pop-bubble.slide-up { animation: prayerpop-bubble-slide-in 240ms cubic-bezier(0,0,.3,1) both; }
+#prayer-pop-bubble.bounce-in { animation: prayerpop-bubble-pop-in 240ms cubic-bezier(.2,.8,.2,1) both; }
 
-#prayer-pop-bubble.fade-in,
-#prayer-pop-form-container.fade-in {
-    animation: prayerpop-fade-in 0.5s forwards;
-}
+#prayer-pop-form-container,
+.ppfc-panel,
+.prayer-pop-messenger { transform-origin: bottom right; }
+#prayer-pop-modal[data-bubble-position="left"] #prayer-pop-form-container,
+.ppfc-panel[data-position="left"],
+.prayer-pop-messenger[data-bubble-position="left"] { transform-origin: bottom left; }
 
-/* Slide In from Bottom Animation */
-@keyframes prayerpop-slide-up {
-    from { opacity: 0; transform: translateY(100%); }
-    to { opacity: 1; transform: translateY(0); }
-}
+#prayer-pop-form-container.prayerpop-motion-enter.fade-in,
+.ppfc-panel.prayerpop-motion-enter.fade-in,
+.prayer-pop-messenger.prayerpop-motion-enter.fade-in { animation: prayerpop-fade-in 240ms cubic-bezier(0,0,.38,.9) both; }
+#prayer-pop-form-container.prayerpop-motion-enter.gentle-rise,
+.ppfc-panel.prayerpop-motion-enter.gentle-rise,
+.prayer-pop-messenger.prayerpop-motion-enter.gentle-rise { animation: prayerpop-gentle-rise-in 240ms cubic-bezier(0,0,.38,.9) both; }
+#prayer-pop-form-container.prayerpop-motion-enter.soft-scale,
+.ppfc-panel.prayerpop-motion-enter.soft-scale,
+.prayer-pop-messenger.prayerpop-motion-enter.soft-scale { animation: prayerpop-soft-scale-in 240ms cubic-bezier(0,0,.3,1) both; }
+#prayer-pop-form-container.prayerpop-motion-enter.slide-up,
+.ppfc-panel.prayerpop-motion-enter.slide-up,
+.prayer-pop-messenger.prayerpop-motion-enter.slide-up { animation: prayerpop-slide-in 240ms cubic-bezier(0,0,.3,1) both; }
+#prayer-pop-form-container.prayerpop-motion-enter.bounce-in,
+.ppfc-panel.prayerpop-motion-enter.bounce-in,
+.prayer-pop-messenger.prayerpop-motion-enter.bounce-in { animation: prayerpop-pop-in 240ms cubic-bezier(.2,.8,.2,1) both; }
+#prayer-pop-form-container.prayerpop-motion-exit.fade-in,
+.ppfc-panel.prayerpop-motion-exit.fade-in,
+.prayer-pop-messenger.prayerpop-motion-exit.fade-in { animation: prayerpop-fade-out 240ms cubic-bezier(.2,0,1,.9) both; }
+#prayer-pop-form-container.prayerpop-motion-exit.gentle-rise,
+.ppfc-panel.prayerpop-motion-exit.gentle-rise,
+.prayer-pop-messenger.prayerpop-motion-exit.gentle-rise { animation: prayerpop-gentle-rise-out 240ms cubic-bezier(.2,0,1,.9) both; }
+#prayer-pop-form-container.prayerpop-motion-exit.soft-scale,
+.ppfc-panel.prayerpop-motion-exit.soft-scale,
+.prayer-pop-messenger.prayerpop-motion-exit.soft-scale { animation: prayerpop-soft-scale-out 240ms cubic-bezier(.2,0,1,.9) both; }
+#prayer-pop-form-container.prayerpop-motion-exit.slide-up,
+.ppfc-panel.prayerpop-motion-exit.slide-up,
+.prayer-pop-messenger.prayerpop-motion-exit.slide-up { animation: prayerpop-slide-out 240ms cubic-bezier(.2,0,1,.9) both; }
+#prayer-pop-form-container.prayerpop-motion-exit.bounce-in,
+.ppfc-panel.prayerpop-motion-exit.bounce-in,
+.prayer-pop-messenger.prayerpop-motion-exit.bounce-in { animation: prayerpop-pop-out 240ms cubic-bezier(.2,0,1,.9) both; }
 
-#prayer-pop-bubble.slide-up,
-#prayer-pop-form-container.slide-up {
-    animation: prayerpop-slide-up 0.5s forwards;
-}
-
-/* Bounce In Animation */
-@keyframes prayerpop-bounce-in {
-    0% { opacity: 0; transform: scale(0.3); }
-    50% { opacity: 1; transform: scale(1.05); }
-    70% { transform: scale(0.9); }
-    100% { transform: scale(1); }
-}
-
-#prayer-pop-bubble.bounce-in,
-#prayer-pop-form-container.bounce-in {
-    animation: prayerpop-bounce-in 0.5s forwards;
+@media (prefers-reduced-motion: reduce) {
+    #prayer-pop-bubble,
+    #prayer-pop-form-container,
+    .ppfc-panel,
+    .prayer-pop-messenger { animation: none !important; }
 }
 
 /* Bubble Styles */
@@ -365,7 +402,8 @@
 #prayer-pop-form-container {
     position: fixed;
     right: calc(var(--bubble-margin) + var(--bubble-offset-x, 0px));
-    width: 350px;
+    box-sizing: border-box;
+    width: min(360px, calc(100vw - 40px));
     background-color: #ffffff;
     border-radius: var(--global-border-radius);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -374,8 +412,14 @@
     font-size: var(--global-font-size);
     opacity: 1;
     z-index: 999998;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease, height 180ms cubic-bezier(.2, .8, .2, 1);
     
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #prayer-pop-form-container {
+        transition: none;
+    }
 }
 
 #prayer-pop-modal[data-bubble-position="left"] #prayer-pop-form-container {
@@ -383,20 +427,247 @@
     right: auto;
 }
 
-/* Initial Options */
-/* Back Button */
-#prayer-pop-back-button {
-    background: none;
-    border: none;
-    color: var(--global-label-color);
-    font-size: var(--global-font-size);
+.prayer-pop-popup-intro--hero {
+    position: relative;
+	min-height: 0;
+    margin: calc(0px - var(--global-padding)) calc(0px - var(--global-padding)) var(--global-margin);
+	padding-top: 16px;
+	overflow: visible;
+    border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+	background: transparent;
+	color: var(--global-label-color, #172033);
+}
+
+.prayer-pop-popup-intro--hero:not(.prayer-pop-popup-intro--has-image)::before {
+	content: "";
+	position: absolute;
+	inset: 0 0 auto;
+	height: 145px;
+	border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+	background: var(--global-bg-color);
+}
+
+.prayer-pop-popup-intro__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: #000;
+    opacity: 0.35;
+}
+
+.prayer-pop-popup-intro__media {
+    position: absolute;
+	inset: 0 0 auto;
+    width: 100%;
+	height: 145px;
+	overflow: hidden;
+	border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+	background: var(--global-bg-color);
+}
+
+.prayer-pop-popup-intro__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+	transform: scale(1.12);
+}
+
+.prayer-pop-popup-intro__content {
+    position: relative;
+    z-index: 2;
+	display: grid;
+	min-height: 0;
+	margin: 0 14px;
+	padding: 14px;
+    box-sizing: border-box;
+	align-content: end;
+	gap: 10px;
+	border: 1px solid var(--global-border-color, #dfe2e7);
+	border-radius: 14px;
+	background: #fff;
+	box-shadow: 0 10px 30px rgba(23, 32, 51, 0.1);
+}
+
+.prayer-pop-popup-intro__sender {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+}
+
+.prayer-pop-popup-intro__avatar {
+	display: grid;
+	place-items: center;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: var(--global-bg-color);
+	color: var(--global-font-color, #fff);
+	font-size: 23px;
+}
+
+.prayer-pop-popup-intro__sender > span:last-child {
+	display: grid;
+	gap: 1px;
+}
+
+.prayer-pop-popup-intro__sender strong {
+	color: #172033;
+	font-size: calc(var(--global-font-size) * 0.875);
+	font-weight: 500;
+	line-height: 1.25;
+}
+
+.prayer-pop-popup-intro__sender small {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	color: #737b89;
+	font-size: calc(var(--global-font-size) * 0.75);
+}
+
+.prayer-pop-popup-intro__sender small i {
+	display: block;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--global-bg-color);
+}
+
+.prayer-pop-popup-intro__message {
+	margin: 4px 0 0;
+}
+
+.prayer-pop-popup-intro__title {
+    margin: 0;
+	color: #172033;
+    font-family: var(--heading-font-family);
+	font-size: var(--global-font-size);
+    font-weight: var(--heading-font-weight);
+	line-height: 1.35;
+}
+
+.prayer-pop-popup-intro__description {
+	max-width: none;
+	margin: 3px 0 0;
+	color: #4f5663;
+    font-family: var(--global-font-family);
+	font-size: calc(var(--global-font-size) * 0.875);
+    line-height: 1.45;
+}
+
+/* Chat-style home actions remain the same two Free capabilities. */
+#prayer-pop-initial-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--global-margin);
+}
+
+.prayer-pop-option-button {
+	display: grid;
+	grid-template-columns: 34px minmax(0, 1fr) 20px;
+	align-items: center;
+	gap: 11px;
+    width: 100%;
+	padding: 11px 13px;
+	border: 1px solid var(--global-border-color, #dfe2e7);
+	border-radius: 12px;
+	background: #fff;
+	color: #172033;
+    font-family: var(--global-font-family);
+	font-size: calc(var(--global-font-size) * 0.92);
+    font-weight: var(--global-bold-font-weight);
+	text-align: left;
     cursor: pointer;
-    margin-bottom: calc(var(--global-margin));
-    text-align: left;
+	transition: border-color .2s ease, background-color .2s ease, transform .2s ease;
+}
+
+.prayer-pop-option-button:hover {
+	border-color: var(--global-bg-color);
+	background: #f8f9fc;
+	background: color-mix(in srgb, var(--global-bg-color) 4%, #fff);
+	transform: translateY(-1px);
+}
+
+.prayer-pop-option-button:focus-visible {
+	outline: 3px solid rgba(39, 85, 170, 0.24);
+	outline: 3px solid color-mix(in srgb, var(--global-bg-color) 28%, transparent);
+	outline-offset: 2px;
+}
+
+.prayer-pop-option-button__icon {
+	display: grid;
+	place-items: center;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: #eef2fb;
+	background: color-mix(in srgb, var(--global-bg-color) 10%, #fff);
+	color: var(--global-bg-color);
+	font-size: 18px;
+}
+
+.prayer-pop-option-button__label {
+	min-width: 0;
+}
+
+.prayer-pop-option-button__chevron {
+	color: #8a92a0;
+	font-size: 18px;
+}
+
+/* Shared Pro-style icon-only back control and aligned classic header. */
+#prayer-pop-back-button {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid var(--global-border-color, #d5d9e0) !important;
+    border-radius: 50% !important;
+    background: var(--global-textarea-bg-color, #fff) !important;
+    color: var(--global-label-color);
+    cursor: pointer;
 }
 
 #prayer-pop-back-button:hover {
-    text-decoration: underline;
+    color: var(--global-bg-color);
+    border-color: var(--global-bg-color) !important;
+}
+
+#prayer-pop-back-button:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--global-bg-color) 28%, transparent);
+    outline-offset: 2px;
+}
+
+.ppm-classic-screen-header {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 var(--global-margin);
+    padding: 0 0 var(--global-margin);
+    border-bottom: 1px solid var(--global-border-color, #dfe2e7);
+}
+
+.ppm-classic-screen-header #prayer-pop-header,
+.ppm-classic-screen-header .prayer-pop-heading {
+    margin: 0;
+}
+
+.ppm-classic-screen-header .prayer-pop-heading,
+.ppm-classic-screen-header #prayer-pop-header h2 {
+	font-size: calc(var(--global-font-size) * 1.125);
+	line-height: 1.3;
+}
+
+.ppm-classic-screen-header .dashicons {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
 }
 
 /* Form Styling */
@@ -413,7 +684,7 @@
     padding: var(--global-padding);
     border: 1px solid var(--global-border-color);
     border-radius: var(--global-border-radius);
-    font-size: var(--global-font-size);
+	font-size: var(--global-font-size);
     background-color: var(--global-textarea-bg-color);
     color: var(--global-label-color);
     box-sizing: border-box;
@@ -433,7 +704,7 @@
     padding: var(--global-padding);
     border: 1px solid var(--global-border-color);
     border-radius: var(--global-border-radius);
-    font-size: var(--global-font-size);
+	font-size: var(--global-font-size);
     background-color: var(--global-textarea-bg-color);
     box-sizing: border-box;
 }
@@ -446,7 +717,7 @@
     border: none;
     border-radius: var(--global-border-radius);
     padding: var(--global-padding);
-    font-size: var(--global-font-size);
+	font-size: var(--global-font-size);
     font-weight: var(--global-bold-font-weight);
     cursor: pointer;
     text-align: center;
@@ -517,6 +788,11 @@
     margin: 0;
     padding: 0;
     line-height: 1.4;
+}
+
+#prayer-pop-form-wrapper > #prayer-pop-description p {
+	font-size: calc(var(--global-font-size) * 0.9);
+	line-height: 1.45;
 }
 
 /* Adjust form wrapper */
@@ -689,9 +965,9 @@
 #prayer-pop-bubble {
     background-color: var(--bubble-bg-color, var(--global-bg-color));
     border-radius: var(--bubble-border-radius, var(--global-border-radius));
-    transform: scale(var(--prayerpop-bubble-scale, 1)) !important;
+    transform: scale(var(--prayerpop-bubble-scale, 1));
 }
 
 #prayer-pop-bubble:hover {
-    transform: scale(var(--prayerpop-bubble-hover-scale, 1.03)) !important;
+    transform: scale(var(--prayerpop-bubble-hover-scale, 1.03));
 }

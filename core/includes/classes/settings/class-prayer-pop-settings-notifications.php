@@ -97,9 +97,27 @@ class Prayer_Pop_Settings_Notifications {
 		if ( is_array( $input ) ) {
 			$input = wp_unslash( $input );
 		}
-		$sanitized = array();
+		$input     = is_array( $input ) ? $input : array();
+		$existing  = get_option( 'prayer_pop_notification_settings', array() );
+		$sanitized = is_array( $existing ) ? $existing : array();
 		$sanitized['enable_notifications'] = isset( $input['enable_notifications'] ) ? 1 : 0;
-		$sanitized['notification_email']   = isset( $input['notification_email'] ) ? sanitize_email( $input['notification_email'] ) : '';
+
+		// Disabled form controls are not submitted. Preserve their configured values
+		// while notifications are off so re-enabling does not erase the schedule.
+		if ( ! $sanitized['enable_notifications'] ) {
+			return $sanitized;
+		}
+
+		$sanitized['notification_email'] = isset( $input['notification_email'] ) ? sanitize_email( $input['notification_email'] ) : '';
+		if ( ! empty( $sanitized['notification_emails'] ) && is_email( $sanitized['notification_email'] ) ) {
+			$recipients = array_values( array_filter( array_map( 'sanitize_email', preg_split( '/[\s,;]+/', (string) $sanitized['notification_emails'] ) ) ) );
+			if ( empty( $recipients ) ) {
+				$recipients[] = $sanitized['notification_email'];
+			} else {
+				$recipients[0] = $sanitized['notification_email'];
+			}
+			$sanitized['notification_emails'] = implode( "\n", array_unique( $recipients ) );
+		}
 		$allowed_frequencies = array( 'immediately', 'daily', 'weekly' );
 		$sanitized['notification_frequency'] = ( isset( $input['notification_frequency'] ) && in_array( $input['notification_frequency'], $allowed_frequencies, true ) ) ? $input['notification_frequency'] : 'immediately';
 		$time = isset( $input['notification_time'] ) ? sanitize_text_field( $input['notification_time'] ) : '08:00';

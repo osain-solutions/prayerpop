@@ -107,10 +107,14 @@ final class Prayer_Pop {
 	 */
 	public function enqueue_scripts() {
 		// Register all handles first, then enqueue conditionally.
-		wp_register_script( 'prayer-pop-script', PRAYERPOP_PLUGIN_URL . 'assets/js/prayer-pop.js', array( 'jquery' ), PRAYERPOP_VERSION, true );
-		wp_register_style( 'prayer-pop-style', PRAYERPOP_PLUGIN_URL . 'assets/css/prayer-pop.css', array(), PRAYERPOP_VERSION );
-		wp_register_style( 'prayer-pop-form-style', PRAYERPOP_PLUGIN_URL . 'assets/css/prayer-pop-form.css', array(), PRAYERPOP_VERSION );
-		wp_register_script( 'prayer-pop-form-script', PRAYERPOP_PLUGIN_URL . 'assets/js/prayer-pop-form.js', array( 'jquery' ), PRAYERPOP_VERSION, true );
+		$frontend_script_path = PRAYERPOP_PLUGIN_DIR . 'assets/js/prayer-pop.js';
+		$frontend_style_path  = PRAYERPOP_PLUGIN_DIR . 'assets/css/prayer-pop.css';
+		$form_style_path      = PRAYERPOP_PLUGIN_DIR . 'assets/css/prayer-pop-form.css';
+		$form_script_path     = PRAYERPOP_PLUGIN_DIR . 'assets/js/prayer-pop-form.js';
+		wp_register_script( 'prayer-pop-script', PRAYERPOP_PLUGIN_URL . 'assets/js/prayer-pop.js', array( 'jquery' ), file_exists( $frontend_script_path ) ? (string) filemtime( $frontend_script_path ) : PRAYERPOP_VERSION, true );
+		wp_register_style( 'prayer-pop-style', PRAYERPOP_PLUGIN_URL . 'assets/css/prayer-pop.css', array(), file_exists( $frontend_style_path ) ? (string) filemtime( $frontend_style_path ) : PRAYERPOP_VERSION );
+		wp_register_style( 'prayer-pop-form-style', PRAYERPOP_PLUGIN_URL . 'assets/css/prayer-pop-form.css', array(), file_exists( $form_style_path ) ? (string) filemtime( $form_style_path ) : PRAYERPOP_VERSION );
+		wp_register_script( 'prayer-pop-form-script', PRAYERPOP_PLUGIN_URL . 'assets/js/prayer-pop-form.js', array( 'jquery' ), file_exists( $form_script_path ) ? (string) filemtime( $form_script_path ) : PRAYERPOP_VERSION, true );
 
 		$settings     = Prayer_Pop_Defaults::get_settings();
 		$force_render = defined( 'PRAYERPOP_FORCE_BUBBLE' ) && PRAYERPOP_FORCE_BUBBLE;
@@ -140,17 +144,12 @@ final class Prayer_Pop {
 		wp_enqueue_script( 'prayer-pop-form-script' );
 
 		// Retrieve the selected animation from settings using cache.
-		$selected_animation = isset( $styles['bubble_animation'] ) ? $styles['bubble_animation'] : 'fade-in';
-		if ( ! in_array( $selected_animation, array( 'none', 'fade-in', 'slide-up', 'bounce-in' ), true ) ) {
-			$selected_animation = 'fade-in';
-		}
+		$selected_animation = Prayer_Pop_Defaults::get_popup_animation( $styles );
 
 		// Get texts from settings using cache.
 		$texts = Prayer_Pop_Defaults::get_texts();
 		$new_request_button_text = Prayer_Pop_Defaults::get_text( 'text_new_request_button', esc_html__( 'Send One More', 'prayerpop' ) );
 		$success_message = Prayer_Pop_Defaults::get_text( 'text_success_message', esc_html__( 'Thank you for your submission!', 'prayerpop' ) );
-		$list_view_text = Prayer_Pop_Defaults::get_text( 'text_list_view', esc_html__( 'List View', 'prayerpop' ) );
-		$grid_view_text = Prayer_Pop_Defaults::get_text( 'text_grid_view', esc_html__( 'Grid View', 'prayerpop' ) );
 		$anonymous_text = Prayer_Pop_Defaults::get_text( 'text_anonymous', esc_html__( 'Anonymous', 'prayerpop' ) );
 
 			// Use the settings retrieved before the conditional enqueue decision.

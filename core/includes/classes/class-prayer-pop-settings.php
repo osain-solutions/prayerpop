@@ -68,9 +68,6 @@ class Prayer_Pop_Settings {
 		add_action( 'current_screen', array( $this, 'suppress_settings_notices' ), PHP_INT_MAX );
 		add_action( 'in_admin_header', array( $this, 'suppress_settings_notices' ), PHP_INT_MAX );
 		add_action('admin_post_prayer_pop_submit_feedback', array($this, 'handle_submit_feedback'));
-		add_action('wp_ajax_prayer_pop_send_test_email', array(
-			$this, 'handle_send_test_email'
-		));
 	}
 
 	/** Keep Chat in the same relative submenu position as PrayerPop Pro. */
@@ -187,6 +184,7 @@ class Prayer_Pop_Settings {
 		// Enqueue WordPress color picker
 		wp_enqueue_style('wp-color-picker');
 		wp_enqueue_script('wp-color-picker');
+		wp_enqueue_media();
 
 		// Enqueue admin styles
 		wp_enqueue_style(
@@ -219,11 +217,6 @@ class Prayer_Pop_Settings {
 			array(
 				'activeTab' => $active_tab,
 				'nonce' => wp_create_nonce( 'prayer_pop_admin_actions' ),
-				'emailTemplate' => array(
-					'sendLabel'    => __( 'Send Test Email', 'prayerpop' ),
-					'sendingLabel' => __( 'Sending...', 'prayerpop' ),
-					'failedMessage' => __( 'Failed to send test email.', 'prayerpop' ),
-				),
 				'textImport' => array(
 					'nonce'             => wp_create_nonce( 'prayer_pop_import_texts' ),
 					'selectFile'        => __( 'Please select a file to import.', 'prayerpop' ),
@@ -297,15 +290,16 @@ class Prayer_Pop_Settings {
 		$menu_slug = 'prayer-pop';
 		$menu_icon = $this->get_menu_icon_data_uri();
 
-		add_menu_page(
+		$menu_hook = add_menu_page(
 			esc_html__('PrayerPop', 'prayerpop' ),
 			esc_html__('PrayerPop', 'prayerpop' ),
 			'manage_options',
 			$menu_slug,
-			'', // No callback function; we only use submenus.
+			array( $this, 'render_settings_page' ),
 			$menu_icon,
 			60
 		);
+		add_action( 'load-' . $menu_hook, array( $this, 'redirect_to_submissions' ) );
 
 		add_submenu_page(
 			$menu_slug,
@@ -324,6 +318,12 @@ class Prayer_Pop_Settings {
 			'prayer-pop-feedback',
 			array( $this, 'render_feedback_page' )
 		);
+	}
+
+	/** Send the top-level Free menu directly to its primary submissions workflow. */
+	public function redirect_to_submissions() {
+		wp_safe_redirect( admin_url( 'edit.php?post_type=prayer_request' ) );
+		exit;
 	}
 
 	/**
@@ -556,6 +556,7 @@ class Prayer_Pop_Settings {
 				break;
 
 			case 'design':
+				$this->render_field_card( __( 'Popup welcome image', 'prayerpop' ), __( 'Add the image used by the Free popup welcome panel.', 'prayerpop' ), 'prayer-pop-settings-general', 'prayer_pop_general_section', array( 'popup_intro_image_id' ) );
 				$this->render_standard_settings_sections( 'prayer-pop-settings-style' );
 				break;
 
@@ -1132,7 +1133,7 @@ class Prayer_Pop_Settings {
 				<p><strong><?php esc_html_e( 'Use it when:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'You want your team notified automatically instead of checking manually.', 'prayerpop' ); ?></p>
 				<ul>
 					<li><?php esc_html_e( 'Set recipient and frequency (immediate, daily, weekly).', 'prayerpop' ); ?></li>
-					<li><?php esc_html_e( 'Set subject/body in Email Template and run Send Test Email.', 'prayerpop' ); ?></li>
+					<li><?php esc_html_e( 'Set the subject and body in Email Template, then verify delivery with a real notification.', 'prayerpop' ); ?></li>
 				</ul>
 
 				<h3><?php esc_html_e( 'Style Tab', 'prayerpop' ); ?></h3>
@@ -1161,7 +1162,7 @@ class Prayer_Pop_Settings {
 			<section class="prayer-pop-doc-section" id="prayer-pop-doc-troubleshooting">
 				<h2><?php esc_html_e( 'Troubleshooting', 'prayerpop' ); ?></h2>
 				<ul>
-					<li><strong><?php esc_html_e( 'Email delivery issue:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Check Notifications and Email Template settings, then run Send Test Email.', 'prayerpop' ); ?></li>
+					<li><strong><?php esc_html_e( 'Email delivery issue:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Check Notifications and Email Template settings, then verify WordPress mail delivery with your hosting provider.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Bubble visibility issue:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Check General settings, confirm Show PrayerPop Bubble is enabled, then clear cache and reload the frontend.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Website changes are missing:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Clear cache (plugin/server/CDN) and reload the page.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Text import failed:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Use a JSON file exported from PrayerPop that contains top-level "texts" data.', 'prayerpop' ); ?></li>
@@ -1209,54 +1210,6 @@ class Prayer_Pop_Settings {
 			</details>
 		</div>
 		<?php
-	}
-
-	public function handle_send_test_email() {
-		// Verify nonce and capability.
-		check_ajax_referer( 'prayer_pop_admin_actions', '_wpnonce' );
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( esc_html__( 'Permission denied.', 'prayerpop' ) );
-		}
-
-		// Get email settings.
-		$notification_options = get_option( 'prayer_pop_notification_settings', array() );
-		$email_template       = get_option( 'prayer_pop_email_template', array() );
-
-		$admin_email = ! empty( $notification_options['notification_email'] )
-			? sanitize_email( $notification_options['notification_email'] )
-			: get_option( 'admin_email' );
-
-		$subject = ( isset( $email_template['email_subject'] ) && $email_template['email_subject'] )
-			? $email_template['email_subject']
-			: esc_html__( 'Test PrayerPop Email', 'prayerpop' );
-
-		$body = ( isset( $email_template['email_body'] ) && $email_template['email_body'] )
-			? $email_template['email_body']
-			: esc_html__(
-				'This is a test email from PrayerPop. If you received this, email notifications are working!', 'prayerpop' );
-
-		// Replace placeholders with test data.
-		$placeholders = array(
-			'{type}'    => 'Test',
-			'{name}'    => 'Admin',
-			'{message}' => 'This is a test message from PrayerPop.',
-		);
-		$subject      = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $subject );
-		$body         = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $body );
-
-		$sent = wp_mail( $admin_email, $subject, $body );
-
-		if ( $sent ) {
-			wp_send_json_success(
-				sprintf(
-					/* translators: %s: destination email address */
-					esc_html__( 'Test email sent to: %s', 'prayerpop' ),
-					esc_html( $admin_email )
-				)
-			);
-		} else {
-			wp_send_json_error( esc_html__( 'Failed to send test email.', 'prayerpop' ) );
-		}
 	}
 
 	/**

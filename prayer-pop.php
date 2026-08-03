@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: PrayerPop
+ * Plugin Name: PrayerPop – Chat & Prayer Requests
  * Plugin URI: https://prayerpop.eu/
  * Update URI: https://wordpress.org/plugins/prayerpop/
  * Description: Prayer request workflow and simple visitor chat with frontend tools, WordPress inboxes, and email notifications.
@@ -142,6 +142,7 @@ function prayer_pop_activate() {
 		'prayer_pop_general_settings',
 		array(
 			'show_prayer_pop_bubble'    => 1,
+			'popup_intro_image_id'      => 0,
 			'allow_anonymous'           => 1,
 			'require_admin_approval'    => 1,
 			'retention_period'          => 0,
@@ -200,6 +201,7 @@ function prayer_pop_deactivate() {
 	// Clear any scheduled hooks
 	wp_clear_scheduled_hook('prayer_pop_send_daily_notifications');
 	wp_clear_scheduled_hook('prayer_pop_send_weekly_notifications');
+	wp_clear_scheduled_hook('prayer_pop_send_immediate_notification');
 	wp_clear_scheduled_hook('prayer_pop_cleanup_event');
 	
 	// Flush rewrite rules

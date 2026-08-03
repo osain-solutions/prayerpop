@@ -97,7 +97,46 @@ class ListTable {
 	 * @return string
 	 */
 	private function get_submission_list_redirect_url() {
-		return add_query_arg( 'post_type', 'prayer_request', admin_url( 'edit.php' ) );
+		$args = array(
+			'post_type' => 'prayer_request',
+		);
+
+		$key_filters = array(
+			'post_status',
+			'prayer_request_status',
+			'prayer_pop_visibility',
+			'prayer_pop_type',
+			'prayer_pop_stage_ready',
+			'orderby',
+			'order',
+		);
+
+		foreach ( $key_filters as $key ) {
+			if ( isset( $_GET[ $key ] ) ) {
+				$value = sanitize_key( wp_unslash( $_GET[ $key ] ) );
+				if ( '' !== $value ) {
+					$args[ $key ] = $value;
+				}
+			}
+		}
+
+		foreach ( array( 'm', 'paged' ) as $key ) {
+			if ( isset( $_GET[ $key ] ) ) {
+				$value = absint( wp_unslash( $_GET[ $key ] ) );
+				if ( $value > 0 ) {
+					$args[ $key ] = $value;
+				}
+			}
+		}
+
+		if ( isset( $_GET['s'] ) ) {
+			$search = sanitize_text_field( wp_unslash( $_GET['s'] ) );
+			if ( '' !== $search ) {
+				$args['s'] = $search;
+			}
+		}
+
+		return add_query_arg( $args, admin_url( 'edit.php' ) );
 	}
 
     /**
@@ -429,8 +468,17 @@ class ListTable {
 	            }
 	        }
         
-        // Add type class
-        return $classes;
+	        // Add type class
+			if ( 'prayer_request' === $type || '' === $type ) {
+				$classes[] = 'prayerpop-prayer_request';
+			}
+
+			$post_date = get_post_time( 'U', false, $post_id );
+			if ( current_time( 'timestamp' ) - $post_date <= DAY_IN_SECONDS ) {
+				$classes[] = 'prayerpop-new';
+			}
+
+	        return $classes;
     }
 
     /**
@@ -1468,10 +1516,12 @@ class ListTable {
 						NOT EXISTS (
 							SELECT 1 FROM {$meta} pm_release_missing
 							WHERE pm_release_missing.post_id = {$posts}.ID
+							AND pm_release_missing.meta_key = 'prayer_pop_ai_release_at'
 						)
 						OR EXISTS (
 							SELECT 1 FROM {$meta} pm_release_ready
 							WHERE pm_release_ready.post_id = {$posts}.ID
+							AND pm_release_ready.meta_key = 'prayer_pop_ai_release_at'
 							AND CAST(pm_release_ready.meta_value AS UNSIGNED) <= {$now}
 						)
 					)

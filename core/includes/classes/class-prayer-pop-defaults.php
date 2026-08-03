@@ -64,10 +64,31 @@ class Prayer_Pop_Defaults {
 			// Bubble and Main Menu
 			'text_bubble_label'               => __( 'PrayerPop', 'prayerpop' ),
 			'text_bubble_icon_alt'            => __( 'PrayerPop icon', 'prayerpop' ),
-			'text_prayer_request_label'       => __( 'Prayer Request', 'prayerpop' ),
+			'text_prayer_request_label'       => __( 'Prayer request', 'prayerpop' ),
+			'text_chat_button'                => __( 'Send us a message', 'prayerpop' ),
 			'text_back_button'                => __( 'Back', 'prayerpop' ),
+			'text_chat_team_help'             => __( 'The team can also help', 'prayerpop' ),
+			'text_chat_reply_time'            => __( 'Replies within a day', 'prayerpop' ),
+			'text_chat_intro'                 => __( 'We are here to help. Leave a message and we will reply here.', 'prayerpop' ),
+			'text_chat_step_one'              => __( '1 of 3', 'prayerpop' ),
+			'text_chat_step_two'              => __( '2 of 3', 'prayerpop' ),
+			'text_chat_step_three'            => __( '3 of 3', 'prayerpop' ),
+			'text_chat_name_prompt'           => __( 'Before we start, what’s your name?', 'prayerpop' ),
+			'text_chat_name_placeholder'      => __( 'Type your name', 'prayerpop' ),
+			'text_chat_thanks'                => __( 'Thanks,', 'prayerpop' ),
+			'text_chat_email_prompt'          => __( 'Where should we send reply notifications?', 'prayerpop' ),
+			'text_chat_email_placeholder'     => __( 'Email address (optional)', 'prayerpop' ),
+			'text_chat_skip'                  => __( 'Skip for now', 'prayerpop' ),
+			'text_chat_message_prompt'        => __( 'How can we help?', 'prayerpop' ),
+			'text_chat_message_placeholder'   => __( 'Write your message…', 'prayerpop' ),
+			'text_chat_continue_label'        => __( 'Continue', 'prayerpop' ),
+			'text_chat_send_label'            => __( 'Send message', 'prayerpop' ),
+			'text_chat_closed'                => __( 'This conversation is closed.', 'prayerpop' ),
+			'text_chat_new_conversation'       => __( 'Start a new conversation', 'prayerpop' ),
 
 			// Headers and Descriptions
+			'text_popup_intro_title'          => __( 'Hi there, prayer warrior!', 'prayerpop' ),
+			'text_popup_intro_description'    => __( 'Send us a message and we will get back to you.', 'prayerpop' ),
 			'text_prayer_request_header'      => __( 'Submit a Prayer Request', 'prayerpop' ),
 			'text_prayer_request_description' => __( 'Please fill out the form below to submit your prayer request.', 'prayerpop' ),
 
@@ -77,8 +98,6 @@ class Prayer_Pop_Defaults {
 			'text_name_placeholder_required'  => __( 'Your Name', 'prayerpop' ),
 			'text_submit_button'              => __( 'Submit', 'prayerpop' ),
 			'text_submitting_button'          => __( 'Sending...', 'prayerpop' ),
-			'text_public_checkbox_label'      => __( 'Make this public', 'prayerpop' ),
-			'text_ready_to_share_label'       => __( 'Ready to share this from the stage', 'prayerpop' ),
 			'text_anonymous'                  => __( 'Anonymous', 'prayerpop' ),
 			'text_honeypot_label'             => __( 'Leave this field empty', 'prayerpop' ),
 
@@ -105,22 +124,7 @@ class Prayer_Pop_Defaults {
 			'text_time_unit_day_singular'     => __( 'day', 'prayerpop' ),
 			'text_time_unit_day_plural'       => __( 'days', 'prayerpop' ),
 
-			// Prayer Wall
-			'text_i_prayed'                   => __( 'I Prayed', 'prayerpop' ),
-			/* translators: %d: number of people who prayed. */
-			'text_people_prayed'              => __( '%d people have prayed', 'prayerpop' ),
-				'text_celebrate'                  => __( 'Celebrate', 'prayerpop' ),
-				/* translators: %d: number of people who celebrated. */
-				'text_people_celebrated'          => __( '%d people celebrated', 'prayerpop' ),
-				'text_answered_prayer'            => __( 'Answered Prayer', 'prayerpop' ),
-				'text_answered_message_label'     => __( 'Answer Update', 'prayerpop' ),
-				/* translators: %s: relative time string, e.g. "2 hours". */
-				'text_submitted_ago'              => __( 'Submitted %s ago', 'prayerpop' ),
-
-			// View Toggle
-			'text_list_view'                  => __( 'List View', 'prayerpop' ),
-			'text_grid_view'                  => __( 'Grid View', 'prayerpop' ),
-			'text_no_items_found'             => __( 'No items found', 'prayerpop' ),
+			'text_answered_message_label'     => __( 'Answer Update', 'prayerpop' ),
 		);
 	}
 
@@ -136,6 +140,9 @@ class Prayer_Pop_Defaults {
 	public static function get_texts() {
 		if ( self::$texts_cache === null ) {
 			$custom_texts = get_option( 'prayer_pop_texts', array() );
+			if ( isset( $custom_texts['text_prayer_request_label'] ) && 'Prayer Request' === $custom_texts['text_prayer_request_label'] ) {
+				$custom_texts['text_prayer_request_label'] = __( 'Prayer request', 'prayerpop' );
+			}
 			if ( isset( $custom_texts['text_last_prayer_time_message'] ) && in_array( $custom_texts['text_last_prayer_time_message'], array( 'Last prayer request was submitted {time_ago} ago', 'Last prayer request was submitted {time_ago} ago.' ), true ) ) {
 				$custom_texts['text_last_prayer_time_message'] = __( 'Last prayer request: {time_ago} ago', 'prayerpop' );
 			}
@@ -231,6 +238,7 @@ class Prayer_Pop_Defaults {
 				get_option( 'prayer_pop_general_settings', array() ),
 				array(
 					'show_prayer_pop_bubble' => 1,
+					'popup_intro_image_id'   => 0,
 					'allow_anonymous'        => 1,
 					'require_admin_approval' => 1,
 					'retention_period'       => 0,
@@ -258,12 +266,55 @@ class Prayer_Pop_Defaults {
 					'bubble_position'    => 'right',
 					'bubble_offset_x'    => '0px',
 					'bubble_offset_y'    => '0px',
+					'bubble_animation'   => 'gentle-rise',
 					'bubble_icon_color'  => '#ffffff',
 					'bubble_icon_size'   => 170,
 				)
 			);
 		}
 		return self::$styles_cache;
+	}
+
+	/**
+	 * Return the supported popup motion presets.
+	 *
+	 * @return array<int, string>
+	 */
+	public static function get_popup_animation_presets() {
+		return array( 'none', 'fade-in', 'gentle-rise', 'soft-scale', 'slide-up', 'bounce-in' );
+	}
+
+	/**
+	 * Return a normalized popup motion preset.
+	 *
+	 * @param array|null $styles Optional style settings.
+	 * @return string
+	 */
+	public static function get_popup_animation( $styles = null ) {
+		$styles    = is_array( $styles ) ? $styles : self::get_styles();
+		$animation = isset( $styles['bubble_animation'] ) ? sanitize_key( $styles['bubble_animation'] ) : 'gentle-rise';
+
+		return in_array( $animation, self::get_popup_animation_presets(), true ) ? $animation : 'gentle-rise';
+	}
+
+	/** Return safe color tokens for HTML email rendering. */
+	public static function get_email_style_tokens() {
+		$styles = self::get_styles();
+		$color  = static function( $key, $fallback ) use ( $styles ) {
+			$value = isset( $styles[ $key ] ) ? sanitize_hex_color( (string) $styles[ $key ] ) : false;
+			return $value ? $value : $fallback;
+		};
+
+		return array(
+			'primary'      => $color( 'global_bg_color', '#2755aa' ),
+			'primary_text' => $color( 'global_font_color', '#ffffff' ),
+			'border'       => $color( 'global_border_color', '#d7ddea' ),
+			'surface'      => $color( 'global_textarea_bg_color', '#f8fafc' ),
+			'text'         => $color( 'global_label_color', '#1f2937' ),
+			'muted'        => '#5f6b7a',
+			'page'         => '#f3f5fb',
+			'card'         => '#ffffff',
+		);
 	}
 
 	/**
@@ -292,8 +343,29 @@ class Prayer_Pop_Defaults {
 		return array(
 			'text_bubble_label'               => 'PrayerPop',
 			'text_bubble_icon_alt'            => 'PrayerPop icon',
-			'text_prayer_request_label'       => 'Prayer Request',
+			'text_prayer_request_label'       => 'Prayer request',
+			'text_chat_button'                => 'Send us a message',
 			'text_back_button'                => 'Back',
+			'text_chat_team_help'             => 'The team can also help',
+			'text_chat_reply_time'            => 'Replies within a day',
+			'text_chat_intro'                 => 'We are here to help. Leave a message and we will reply here.',
+			'text_chat_step_one'              => '1 of 3',
+			'text_chat_step_two'              => '2 of 3',
+			'text_chat_step_three'            => '3 of 3',
+			'text_chat_name_prompt'           => 'Before we start, what’s your name?',
+			'text_chat_name_placeholder'      => 'Type your name',
+			'text_chat_thanks'                => 'Thanks,',
+			'text_chat_email_prompt'          => 'Where should we send reply notifications?',
+			'text_chat_email_placeholder'     => 'Email address (optional)',
+			'text_chat_skip'                  => 'Skip for now',
+			'text_chat_message_prompt'        => 'How can we help?',
+			'text_chat_message_placeholder'   => 'Write your message…',
+			'text_chat_continue_label'        => 'Continue',
+			'text_chat_send_label'            => 'Send message',
+			'text_chat_closed'                => 'This conversation is closed.',
+			'text_chat_new_conversation'       => 'Start a new conversation',
+			'text_popup_intro_title'          => 'Hi there, prayer warrior!',
+			'text_popup_intro_description'    => 'Send us a message and we will get back to you.',
 			'text_prayer_request_header'      => 'Submit a Prayer Request',
 			'text_prayer_request_description' => 'Please fill out the form below to submit your prayer request.',
 			'text_message_placeholder'        => 'Enter your message...',
@@ -301,8 +373,6 @@ class Prayer_Pop_Defaults {
 			'text_name_placeholder_required'  => 'Your Name',
 			'text_submit_button'              => 'Submit',
 			'text_submitting_button'          => 'Sending...',
-			'text_public_checkbox_label'      => 'Make this public',
-			'text_ready_to_share_label'       => 'Ready to share this from the stage',
 			'text_anonymous'                  => 'Anonymous',
 			'text_honeypot_label'             => 'Leave this field empty',
 			'text_success_message'            => 'Thank you for your submission!',
@@ -322,16 +392,7 @@ class Prayer_Pop_Defaults {
 			'text_time_unit_hour_plural'      => 'hours',
 			'text_time_unit_day_singular'     => 'day',
 			'text_time_unit_day_plural'       => 'days',
-			'text_i_prayed'                   => 'I Prayed',
-			'text_people_prayed'              => '%d people have prayed',
-				'text_celebrate'                  => 'Celebrate',
-				'text_people_celebrated'          => '%d people celebrated',
-				'text_answered_prayer'            => 'Answered Prayer',
-				'text_answered_message_label'     => 'Answer Update',
-				'text_submitted_ago'              => 'Submitted %s ago',
-			'text_list_view'                  => 'List View',
-			'text_grid_view'                  => 'Grid View',
-			'text_no_items_found'             => 'No items found',
+			'text_answered_message_label'     => 'Answer Update',
 		);
 	}
 }

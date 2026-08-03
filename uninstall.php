@@ -45,6 +45,10 @@ $prayer_pop_options_to_delete = array(
 	'prayer_pop_last_prayer_time',
 	'prayer_pop_last_notification_time',
 	'prayer_pop_migrated_post_type',
+	'prayer_pop_migrated_publish_status',
+	'prayer_pop_migrated_viewed_status',
+	'prayer_pop_active_tab',
+	'prayer_pop_show_welcome_modal',
 	'prayer_pop_chat_settings',
 );
 
@@ -68,6 +72,7 @@ if ( ! $prayer_pop_preserve_shared_data ) {
 	// Clear shared scheduled hooks only when no other PrayerPop edition remains.
 	wp_clear_scheduled_hook( 'prayer_pop_send_daily_notifications' );
 	wp_clear_scheduled_hook( 'prayer_pop_send_weekly_notifications' );
+	wp_clear_scheduled_hook( 'prayer_pop_send_immediate_notification' );
 	wp_clear_scheduled_hook( 'prayer_pop_cleanup_event' );
 }
 
