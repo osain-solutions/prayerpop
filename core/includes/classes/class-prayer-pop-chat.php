@@ -37,6 +37,7 @@ class Prayer_Pop_Chat {
 		// chat controller can bind directly to both the panel and launch button.
 		add_action( 'wp_footer', array( $this, 'render_frontend' ), 15 );
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+		add_action( 'admin_post_prayer_pop_save_free_chat_initial_message', array( $this, 'save_initial_message' ) );
 		add_action( 'admin_init', array( $this, 'add_privacy_policy_content' ) );
 		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_privacy_exporter' ) );
 		add_filter( 'wp_privacy_personal_data_erasers', array( $this, 'register_privacy_eraser' ) );
@@ -60,6 +61,55 @@ class Prayer_Pop_Chat {
 			$settings['notification_email'] = ! empty( $emails ) ? reset( $emails ) : '';
 		}
 		return wp_parse_args( $settings, self::defaults() );
+	}
+
+	/** Inline markup deliberately supported in the team opening message. */
+	private static function initial_message_allowed_html() {
+		return array(
+			'strong' => array(),
+			'em'     => array(),
+			'br'     => array(),
+		);
+	}
+
+	/** Sanitize and bound the administrator-authored opening message. */
+	private static function sanitize_initial_opening_message( $message ) {
+		return self::truncate( trim( wp_kses( (string) $message, self::initial_message_allowed_html() ) ), 2000 );
+	}
+
+	/** Resolve Free's single opening message, preserving the existing text fallback. */
+	private static function initial_opening_message() {
+		$stored = get_option( self::SETTINGS_OPTION, array() );
+		$stored = is_array( $stored ) ? $stored : array();
+		if ( array_key_exists( 'initial_opening_message', $stored ) ) {
+			return self::sanitize_initial_opening_message( $stored['initial_opening_message'] );
+		}
+
+		$texts = Prayer_Pop_Defaults::get_texts();
+		$title = trim( (string) ( $texts['text_popup_intro_title'] ?? '' ) );
+		$description = trim( (string) ( $texts['text_popup_intro_description'] ?? '' ) );
+		if ( '' === $title && '' === $description ) {
+			return '';
+		}
+
+		return '<strong>' . esc_html( $title ) . "</strong>\n" . esc_html( $description );
+	}
+
+	/** Save Free's opening message. Automatic follow-ups remain exclusive to Pro. */
+	public function save_initial_message() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You are not allowed to update PrayerPop Chat.', 'prayerpop' ) );
+		}
+		check_admin_referer( 'prayer_pop_free_chat_initial_message' );
+
+		$stored = get_option( self::SETTINGS_OPTION, array() );
+		$stored = is_array( $stored ) ? $stored : array();
+		$message = isset( $_POST['initial_opening_message'] ) && is_string( $_POST['initial_opening_message'] ) ? wp_unslash( $_POST['initial_opening_message'] ) : '';
+		$stored['initial_opening_message'] = self::sanitize_initial_opening_message( $message );
+		update_option( self::SETTINGS_OPTION, $stored, false );
+
+		wp_safe_redirect( add_query_arg( 'prayer_pop_chat_initial_message', 'saved', admin_url( 'admin.php?page=prayer-pop-chat' ) ) );
+		exit;
 	}
 
 	/** Create or repair the minimal compatible chat tables. */
@@ -139,6 +189,11 @@ class Prayer_Pop_Chat {
 		$sanitized['enabled']            = empty( $input['enabled'] ) ? 0 : 1;
 		$sanitized['team_name']          = isset( $input['team_name'] ) ? self::truncate( sanitize_text_field( $input['team_name'] ), 100 ) : __( 'PrayerPop', 'prayerpop' );
 		$sanitized['notification_email'] = $email;
+		if ( array_key_exists( 'initial_opening_message', $input ) ) {
+			$sanitized['initial_opening_message'] = self::sanitize_initial_opening_message( $input['initial_opening_message'] );
+		} elseif ( array_key_exists( 'initial_opening_message', $existing ) ) {
+			$sanitized['initial_opening_message'] = self::sanitize_initial_opening_message( $existing['initial_opening_message'] );
+		}
 
 		if ( ! empty( $sanitized['notification_emails'] ) ) {
 			$emails = array_values( array_filter( array_map( 'sanitize_email', preg_split( '/[\s,;]+/', (string) $sanitized['notification_emails'] ) ) ) );
@@ -288,13 +343,24 @@ class Prayer_Pop_Chat {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'prayerpop' ) );
 		}
 		$settings      = self::settings();
+		$opening_message = self::initial_opening_message();
 		$settings_open = isset( $_GET['settings-updated'] ) && 'true' === sanitize_key( wp_unslash( $_GET['settings-updated'] ) );
 		?>
 		<div class="wrap ppm-admin-wrap">
+			<?php if ( isset( $_GET['prayer_pop_chat_initial_message'] ) && 'saved' === sanitize_key( wp_unslash( $_GET['prayer_pop_chat_initial_message'] ) ) ) : ?><div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Initial Chat message updated.', 'prayerpop' ); ?></p></div><?php endif; ?>
 			<header class="ppm-workspace-header">
 				<div><span class="ppm-workspace-mark"><span class="dashicons dashicons-format-chat" aria-hidden="true"></span></span><div><h1><?php esc_html_e( 'PrayerPop Chat', 'prayerpop' ); ?></h1><p><?php esc_html_e( 'Talk with your website visitors in one place.', 'prayerpop' ); ?></p></div></div>
-				<button type="button" class="ppm-settings-link" id="ppfc-settings-toggle" aria-controls="ppfc-settings" aria-expanded="<?php echo $settings_open ? 'true' : 'false'; ?>"><span class="dashicons dashicons-admin-generic" aria-hidden="true"></span><?php esc_html_e( 'Chat settings', 'prayerpop' ); ?></button>
+				<div class="ppm-workspace-actions"><button type="button" class="ppm-settings-link ppm-initial-messages-trigger" aria-haspopup="dialog" aria-controls="ppm-initial-messages-dialog"><span class="dashicons dashicons-format-chat" aria-hidden="true"></span><?php esc_html_e( 'Initial message', 'prayerpop' ); ?></button><button type="button" class="ppm-settings-link" id="ppfc-settings-toggle" aria-controls="ppfc-settings" aria-expanded="<?php echo $settings_open ? 'true' : 'false'; ?>"><span class="dashicons dashicons-admin-generic" aria-hidden="true"></span><?php esc_html_e( 'Chat settings', 'prayerpop' ); ?></button></div>
 			</header>
+			<div id="ppm-initial-messages-dialog" class="ppm-initial-messages-dialog" role="dialog" aria-modal="true" aria-labelledby="ppm-initial-messages-title" hidden>
+				<form class="ppm-initial-messages-card" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<input type="hidden" name="action" value="prayer_pop_save_free_chat_initial_message">
+					<?php wp_nonce_field( 'prayer_pop_free_chat_initial_message' ); ?>
+					<header><div><h2 id="ppm-initial-messages-title"><?php esc_html_e( 'Initial Chat message', 'prayerpop' ); ?></h2><p><?php esc_html_e( 'Set the team message shown before a visitor starts their first conversation.', 'prayerpop' ); ?></p></div><button type="button" class="ppm-initial-messages-close" aria-label="<?php esc_attr_e( 'Close initial message editor', 'prayerpop' ); ?>">&times;</button></header>
+					<div class="ppm-initial-messages-fields"><label for="ppm-initial-opening-message"><strong><?php esc_html_e( 'Opening message', 'prayerpop' ); ?></strong><span><?php esc_html_e( 'Shown as one team message before a visitor starts their first conversation.', 'prayerpop' ); ?></span><textarea id="ppm-initial-opening-message" name="initial_opening_message" rows="5" maxlength="2000"><?php echo esc_textarea( $opening_message ); ?></textarea></label><p class="ppm-initial-messages-format"><span class="dashicons dashicons-editor-code" aria-hidden="true"></span><?php esc_html_e( 'Formatting: use <strong>bold text</strong>, <em>italic text</em>, or a new line. Other HTML is removed.', 'prayerpop' ); ?></p></div>
+					<footer><button type="button" class="button button-secondary ppm-initial-messages-close ppm-initial-messages-cancel"><?php esc_html_e( 'Cancel', 'prayerpop' ); ?></button><button type="submit" class="button button-primary ppm-initial-messages-save"><?php esc_html_e( 'Save initial message', 'prayerpop' ); ?></button></footer>
+				</form>
+			</div>
 			<form method="post" action="options.php" class="ppfc-settings" id="ppfc-settings"<?php echo $settings_open ? '' : ' hidden'; ?>>
 				<?php settings_fields( 'prayer_pop_chat_settings_group' ); ?>
 				<label class="ppfc-enable"><input type="checkbox" name="<?php echo esc_attr( self::SETTINGS_OPTION ); ?>[enabled]" value="1" <?php checked( ! empty( $settings['enabled'] ) ); ?>> <span><?php esc_html_e( 'Enable Chat', 'prayerpop' ); ?></span></label>
@@ -359,17 +425,15 @@ class Prayer_Pop_Chat {
 		$texts = Prayer_Pop_Defaults::get_texts();
 		$position = isset( $styles['bubble_position'] ) && 'left' === $styles['bubble_position'] ? 'left' : 'right';
 		$with_bubble = ! empty( $general['show_prayer_pop_bubble'] );
-		$intro_content = array(
-			'enabled'     => '' !== trim( (string) $texts['text_popup_intro_title'] ) || '' !== trim( (string) $texts['text_popup_intro_description'] ),
-			'title'       => (string) $texts['text_popup_intro_title'],
-			'description' => (string) $texts['text_popup_intro_description'],
-		);
+		$avatar      = ! empty( $settings['profile_image_id'] ) ? wp_get_attachment_image_url( absint( $settings['profile_image_id'] ), 'thumbnail' ) : '';
+		$opening_message = self::initial_opening_message();
+		$opening_markup  = wp_kses( nl2br( $opening_message ), self::initial_message_allowed_html() );
 		?>
 		<section id="ppfc-panel" class="ppfc-panel<?php echo $with_bubble ? ' ppfc-with-bubble' : ''; ?>" data-position="<?php echo esc_attr( $position ); ?>" data-rest-root="<?php echo esc_url( rest_url( 'prayerpop/v1/chat/' ) ); ?>" data-error-message="<?php esc_attr_e( 'Something went wrong. Please try again.', 'prayerpop' ); ?>" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="ppfc-title" tabindex="-1" hidden>
 			<header class="ppfc-chat-header"><button type="button" class="ppfc-back" aria-label="<?php esc_attr_e( 'Back to options', 'prayerpop' ); ?>"><span class="dashicons dashicons-arrow-left-alt2" aria-hidden="true"></span></button><span class="ppfc-team"><span class="dashicons dashicons-groups ppfc-team-icon" aria-hidden="true"></span><strong id="ppfc-title"><?php echo esc_html( $settings['team_name'] ); ?></strong></span><button type="button" class="ppfc-close" aria-label="<?php esc_attr_e( 'Close', 'prayerpop' ); ?>">&times;</button></header>
 			<div class="ppfc-start">
 				<p class="ppfc-chat-intro"><?php echo esc_html( $texts['text_chat_intro'] ); ?></p>
-				<?php if ( $intro_content['enabled'] ) : ?><div class="ppfc-agent-welcome"><div><strong><?php echo esc_html( $intro_content['title'] ); ?></strong><p><?php echo esc_html( $intro_content['description'] ); ?></p></div><small><?php echo esc_html( $settings['team_name'] ); ?></small></div><?php endif; ?>
+				<?php if ( '' !== $opening_message ) : ?><div class="ppfc-agent-welcome"><?php if ( $avatar ) : ?><img class="ppfc-agent-avatar" src="<?php echo esc_url( $avatar ); ?>" alt=""><?php else : ?><span class="ppfc-agent-avatar dashicons dashicons-groups" aria-hidden="true"></span><?php endif; ?><span class="ppfc-agent-welcome-content"><span class="ppfc-agent-welcome-bubble"><?php echo $opening_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- restricted markup only. ?></span><small><?php echo esc_html( $settings['team_name'] ); ?></small></span></div><?php endif; ?>
 				<form class="ppfc-start-form">
 					<section class="ppfc-onboarding-step is-active" data-step="name"><span class="ppfc-step-count"><?php echo esc_html( $texts['text_chat_step_one'] ); ?></span><div class="ppfc-step-prompt"><?php echo esc_html( $texts['text_chat_name_prompt'] ); ?></div><label class="screen-reader-text" for="ppfc-visitor-name"><?php echo esc_html( $texts['text_chat_name_prompt'] ); ?></label><div class="ppfc-step-control"><input id="ppfc-visitor-name" name="name" maxlength="100" autocomplete="name" placeholder="<?php echo esc_attr( $texts['text_chat_name_placeholder'] ); ?>" required><button type="button" class="ppfc-step-next" data-next="email" aria-label="<?php echo esc_attr( $texts['text_chat_continue_label'] ); ?>">&rarr;</button></div></section>
 					<section class="ppfc-onboarding-step" data-step="email" hidden><div class="ppfc-step-toolbar"><button type="button" class="ppfc-step-back" data-back="name" aria-label="<?php esc_attr_e( 'Previous step', 'prayerpop' ); ?>"><span class="dashicons dashicons-arrow-left-alt2" aria-hidden="true"></span></button><span class="ppfc-step-count"><?php echo esc_html( $texts['text_chat_step_two'] ); ?></span><button type="button" class="ppfc-step-skip"><?php echo esc_html( $texts['text_chat_skip'] ); ?></button></div><div class="ppfc-step-prompt"><?php echo esc_html( $texts['text_chat_thanks'] ); ?> <strong class="ppfc-visitor-name-preview"></strong>. <?php echo esc_html( $texts['text_chat_email_prompt'] ); ?></div><label class="screen-reader-text" for="ppfc-visitor-email"><?php echo esc_html( $texts['text_chat_email_prompt'] ); ?></label><div class="ppfc-step-control"><input id="ppfc-visitor-email" name="email" type="email" maxlength="190" autocomplete="email" placeholder="<?php echo esc_attr( $texts['text_chat_email_placeholder'] ); ?>"><button type="button" class="ppfc-step-next" data-next="message" aria-label="<?php echo esc_attr( $texts['text_chat_continue_label'] ); ?>">&rarr;</button></div></section>
@@ -377,7 +441,7 @@ class Prayer_Pop_Chat {
 					<input class="ppfc-website" name="website" tabindex="-1" autocomplete="off"><input name="started_at" type="hidden" value="<?php echo esc_attr( time() ); ?>">
 				</form>
 			</div>
-			<div class="ppfc-conversation" hidden><div class="ppfc-messages" aria-live="polite"><?php if ( $intro_content['enabled'] ) : ?><div class="ppfc-thread-welcome"><div><strong><?php echo esc_html( $intro_content['title'] ); ?></strong><p><?php echo esc_html( $intro_content['description'] ); ?></p></div><small><?php echo esc_html( $settings['team_name'] ); ?></small></div><?php endif; ?></div><p class="ppfc-closed" hidden><?php echo esc_html( $texts['text_chat_closed'] ); ?> <button type="button"><?php echo esc_html( $texts['text_chat_new_conversation'] ); ?></button></p><form class="ppfc-composer"><textarea rows="1" maxlength="2000" required aria-label="<?php echo esc_attr( $texts['text_chat_message_placeholder'] ); ?>" placeholder="<?php echo esc_attr( $texts['text_chat_message_placeholder'] ); ?>"></textarea><button type="submit" aria-label="<?php echo esc_attr( $texts['text_chat_send_label'] ); ?>">&uarr;</button></form></div>
+			<div class="ppfc-conversation" hidden><div class="ppfc-messages" aria-live="polite"><?php if ( '' !== $opening_message ) : ?><div class="ppfc-thread-welcome"><?php if ( $avatar ) : ?><img class="ppfc-agent-avatar" src="<?php echo esc_url( $avatar ); ?>" alt=""><?php else : ?><span class="ppfc-agent-avatar dashicons dashicons-groups" aria-hidden="true"></span><?php endif; ?><span class="ppfc-agent-welcome-content"><span class="ppfc-agent-welcome-bubble"><?php echo $opening_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- restricted markup only. ?></span><small><?php echo esc_html( $settings['team_name'] ); ?></small></span></div><?php endif; ?></div><p class="ppfc-closed" hidden><?php echo esc_html( $texts['text_chat_closed'] ); ?> <button type="button"><?php echo esc_html( $texts['text_chat_new_conversation'] ); ?></button></p><form class="ppfc-composer"><textarea rows="1" maxlength="2000" required aria-label="<?php echo esc_attr( $texts['text_chat_message_placeholder'] ); ?>" placeholder="<?php echo esc_attr( $texts['text_chat_message_placeholder'] ); ?>"></textarea><button type="submit" aria-label="<?php echo esc_attr( $texts['text_chat_send_label'] ); ?>">&uarr;</button></form></div>
 			<p class="ppfc-error" role="alert" hidden></p>
 		</section>
 		<?php

@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Prayer_Pop_Upgrades {
 	const OPTION_KEY     = 'prayer_pop_free_schema_version';
-	const SCHEMA_VERSION = '1.6.0';
+	const SCHEMA_VERSION = '1.6.1';
 
 	/**
 	 * Register the lightweight upgrade check for administrator requests.

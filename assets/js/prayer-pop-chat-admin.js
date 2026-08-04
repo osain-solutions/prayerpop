@@ -7,6 +7,35 @@
     var threadTimer;
     var settingsToggle = document.getElementById('ppfc-settings-toggle');
     var settingsPanel = document.getElementById('ppfc-settings');
+    var initialMessageTrigger = document.querySelector('.ppm-initial-messages-trigger');
+    var initialMessageDialog = document.getElementById('ppm-initial-messages-dialog');
+    var initialMessageLastFocus = null;
+
+    function closeInitialMessageEditor() {
+        if (!initialMessageDialog) return;
+        initialMessageDialog.hidden = true;
+        initialMessageDialog.setAttribute('aria-hidden', 'true');
+        if (initialMessageLastFocus && typeof initialMessageLastFocus.focus === 'function') initialMessageLastFocus.focus();
+    }
+
+    if (initialMessageTrigger && initialMessageDialog) {
+        initialMessageTrigger.addEventListener('click', function () {
+            initialMessageLastFocus = document.activeElement;
+            initialMessageDialog.hidden = false;
+            initialMessageDialog.setAttribute('aria-hidden', 'false');
+            var field = initialMessageDialog.querySelector('textarea');
+            if (field) field.focus();
+        });
+        initialMessageDialog.querySelectorAll('.ppm-initial-messages-close').forEach(function (button) {
+            button.addEventListener('click', closeInitialMessageEditor);
+        });
+        initialMessageDialog.addEventListener('click', function (event) {
+            if (event.target === initialMessageDialog) closeInitialMessageEditor();
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !initialMessageDialog.hidden) closeInitialMessageEditor();
+        });
+    }
 
     if (settingsToggle && settingsPanel) {
         settingsToggle.addEventListener('click', function () {

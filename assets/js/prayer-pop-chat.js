@@ -16,13 +16,146 @@
     var current = null;
     var lastMessageId = 0;
     var pollTimer = null;
+    var backgroundStatusTimer = null;
+    var bubble = null;
+    var conversationHydration = null;
     var lastFocusedElement = null;
     var panelOpening = false;
     var panelClosing = false;
-    var classicPanelHeight = 0;
+    var classicRouteTransition = null;
 
     function panelIsOpen() {
         return !panel.hidden && panel.getAttribute('aria-hidden') !== 'true';
+    }
+
+    function syncBubbleUnread() {
+        if (!bubble) return;
+        var badge = bubble.querySelector('.prayer-pop-chat-unread-badge');
+        if (!badge) return;
+        var unread = current ? Number(current.visitor_unread || 0) : 0;
+        badge.textContent = unread > 99 ? '99+' : (unread || '');
+        badge.hidden = !(unread > 0 && !panelIsOpen() && bubble.getAttribute('aria-expanded') !== 'true');
+    }
+
+    function markCurrentRead() {
+        if (!current || !current.visitor_unread) return;
+        var conversationId = Number(current.id);
+        request('read', {method: 'POST', body: JSON.stringify({conversation_id: conversationId})}).then(function () {
+            if (current && Number(current.id) === conversationId) {
+                current.visitor_unread = 0;
+                syncBubbleUnread();
+            }
+        }).catch(function () {});
+    }
+
+    // Poll only returning visitors, while their Chat panel is closed, so new
+    // team replies can be shown on the launcher without background traffic for
+    // visitors who have never started a conversation.
+    function scheduleBackgroundStatus() {
+        clearTimeout(backgroundStatusTimer);
+        if (!bubble || !current || panelIsOpen()) return;
+        backgroundStatusTimer = window.setTimeout(function () {
+            if (document.hidden) {
+                scheduleBackgroundStatus();
+                return;
+            }
+            request('conversation').then(function (payload) {
+                current = payload.conversation || null;
+                syncBubbleUnread();
+            }).catch(function () {}).finally(scheduleBackgroundStatus);
+        }, 15000);
+    }
+
+    function classicPanelHost() {
+        return panel.classList.contains('ppfc-classic-chat-embedded') ? document.getElementById('prayer-pop-form-container') : null;
+    }
+
+    function mountClassicPanel() {
+        var host = document.getElementById('prayer-pop-form-container');
+        if (!host) return;
+
+        host.classList.add('ppfc-classic-chat-host');
+        panel.classList.add('ppfc-classic-chat-embedded');
+        panel.setAttribute('role', 'region');
+        panel.removeAttribute('aria-modal');
+        if (panel.parentNode !== host) host.appendChild(panel);
+    }
+
+    /*
+     * Classic Popup and Chat are two views of the same surface.  This helper
+     * is deliberately the only owner of that surface's temporary dimensions:
+     * lock the current height, make the view change, measure the new height,
+     * then animate to it on the following frame.  Keeping those four phases
+     * together avoids a second script or a late network response replacing the
+     * height half way through a route change.
+     */
+    function transitionClassicHost(host, updateView, complete) {
+        if (!host) {
+            if (typeof updateView === 'function') updateView();
+            if (typeof complete === 'function') complete();
+            return;
+        }
+
+        if (classicRouteTransition) classicRouteTransition();
+
+        var sourceHeight = Math.max(0, host.getBoundingClientRect().height);
+        var originalHeight = host.style.height;
+        var originalMaxHeight = host.style.maxHeight;
+        var originalOverflow = host.style.overflow;
+        var originalTransition = host.style.transition;
+        var frame = 0;
+        var timer = 0;
+        var finished = false;
+
+        var finish = function () {
+            if (finished) return;
+            finished = true;
+            if (frame) window.cancelAnimationFrame(frame);
+            window.clearTimeout(timer);
+            host.removeEventListener('transitionend', onTransitionEnd);
+            host.style.height = originalHeight;
+            host.style.maxHeight = originalMaxHeight;
+            host.style.overflow = originalOverflow;
+            host.style.transition = originalTransition;
+            if (classicRouteTransition === finish) classicRouteTransition = null;
+            if (typeof complete === 'function') complete();
+        };
+
+        var onTransitionEnd = function (event) {
+            if (event.target === host && event.propertyName === 'height') finish();
+        };
+
+        classicRouteTransition = finish;
+        host.style.overflow = 'hidden';
+        host.style.maxHeight = sourceHeight + 'px';
+        host.style.height = sourceHeight + 'px';
+
+        if (typeof updateView === 'function') updateView();
+
+        // The active Chat class supplies its real target height. Temporarily
+        // release our source-height lock solely to read that final layout.
+        host.style.height = '';
+        host.style.maxHeight = '';
+        var targetHeight = Math.max(0, host.getBoundingClientRect().height);
+        host.style.height = sourceHeight + 'px';
+        host.style.maxHeight = Math.max(sourceHeight, targetHeight) + 'px';
+
+        var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reducedMotion || Math.abs(targetHeight - sourceHeight) <= 1) {
+            finish();
+            return;
+        }
+
+        host.style.transition = 'height 220ms cubic-bezier(.2, .8, .2, 1)';
+        host.addEventListener('transitionend', onTransitionEnd);
+        // Force the browser to commit the source height before changing it.
+        void host.offsetHeight;
+        frame = window.requestAnimationFrame(function () {
+            frame = 0;
+            if (finished) return;
+            host.style.height = targetHeight + 'px';
+        });
+        timer = window.setTimeout(finish, 300);
     }
 
     function focusableElements() {
@@ -61,6 +194,9 @@
     function request(path, options) {
         options = options || {};
         options.credentials = 'same-origin';
+        // Chat data is live state. Do not permit an intermediary or browser cache
+        // to satisfy a poll with an older response.
+        options.cache = 'no-store';
         options.headers = Object.assign({'Content-Type': 'application/json'}, options.headers || {});
         return fetch(cfg.root + path, options).then(function (response) {
             return response.json().then(function (payload) {
@@ -95,25 +231,75 @@
         box.hidden = false;
     }
 
-    function renderMessages(messages, append) {
+    function teamMessageAvatar() {
+        var avatar = panel.querySelector('.ppfc-thread-welcome .ppfc-agent-avatar, .ppfc-agent-welcome .ppfc-agent-avatar');
+        if (avatar && avatar.tagName === 'IMG' && avatar.getAttribute('src')) {
+            return '<img class="ppfc-agent-avatar ppfc-message-team-avatar" src="' + escapeHtml(avatar.getAttribute('src')) + '" alt="">';
+        }
+        return '<span class="ppfc-agent-avatar ppfc-message-team-avatar dashicons dashicons-groups" aria-hidden="true"></span>';
+    }
+
+    function teamMessageName() {
+        var title = panel.querySelector('#ppfc-title');
+        return title ? title.textContent.trim() : '';
+    }
+
+    function messageMinute(value) {
+        var normalized = String(value || '').replace(' ', 'T');
+        var date = new Date(normalized + (normalized.indexOf('Z') === -1 ? 'Z' : ''));
+        return isNaN(date.getTime()) ? String(value || '').slice(0, 16) : String(Math.floor(date.getTime() / 60000));
+    }
+
+    function isNearMessageBottom(box) {
+        // scrollTop is subpixel-precise, while scrollHeight and clientHeight are
+        // rounded. A small tolerance preserves the expected follow behaviour.
+        return (box.scrollHeight - box.clientHeight - box.scrollTop) <= 32;
+    }
+
+    function renderMessages(messages, append, options) {
+        options = options || {};
+        messages = Array.isArray(messages) ? messages : [];
         var box = panel.querySelector('.ppfc-messages');
+        var scrollTop = box.scrollTop;
+        var shouldFollow = !!options.forceScroll || isNearMessageBottom(box);
+        var changed = false;
         if (!append) {
+            changed = box.querySelectorAll('.ppfc-message').length > 0;
             box.querySelectorAll('.ppfc-message').forEach(function (message) { message.remove(); });
             lastMessageId = 0;
         }
-        (messages || []).forEach(function (message) {
+        var rendered = box.querySelectorAll('.ppfc-message');
+        var previous = rendered.length ? rendered[rendered.length - 1] : null;
+        messages.forEach(function (message) {
             if (box.querySelector('[data-message-id="' + Number(message.id) + '"]')) return;
             var item = document.createElement('div');
             item.className = 'ppfc-message ppfc-message-' + (message.sender_type === 'admin' ? 'admin' : 'visitor');
             item.dataset.messageId = message.id;
-            item.innerHTML = '<div>' + escapeHtml(message.message).replace(/\n/g, '<br>') + '</div><time datetime="' + escapeHtml(message.created_at) + '">' + escapeHtml(formatMessageTime(message.created_at)) + '</time>';
+            if (message.sender_type === 'admin') {
+                item.innerHTML = teamMessageAvatar() + '<span class="ppfc-agent-welcome-content ppfc-message-team-content"><span class="ppfc-agent-welcome-bubble">' + escapeHtml(message.message).replace(/\n/g, '<br>') + '</span><small>' + escapeHtml(teamMessageName()) + '</small><time datetime="' + escapeHtml(message.created_at) + '">' + escapeHtml(formatMessageTime(message.created_at)) + '</time></span>';
+            } else {
+                item.innerHTML = '<div>' + escapeHtml(message.message).replace(/\n/g, '<br>') + '</div><time datetime="' + escapeHtml(message.created_at) + '">' + escapeHtml(formatMessageTime(message.created_at)) + '</time>';
+            }
+            item.dataset.senderType = message.sender_type;
+            item.dataset.messageMinute = messageMinute(message.created_at);
+            if (previous && previous.dataset.senderType === item.dataset.senderType && previous.dataset.messageMinute === item.dataset.messageMinute) {
+                item.classList.add('ppfc-message-grouped');
+                var previousTime = previous.querySelector('time');
+                if (previousTime) previousTime.hidden = true;
+            }
             box.appendChild(item);
+            changed = true;
+            previous = item;
             lastMessageId = Math.max(lastMessageId, Number(message.id));
         });
-        box.scrollTop = box.scrollHeight;
+        if (!changed) return;
+        window.requestAnimationFrame(function () {
+            box.scrollTop = shouldFollow ? box.scrollHeight : scrollTop;
+        });
     }
 
-    function applyConversation(payload) {
+    function applyConversation(payload, options) {
+        options = options || {};
         current = payload.conversation || null;
         var start = panel.querySelector('.ppfc-start');
         var conversation = panel.querySelector('.ppfc-conversation');
@@ -121,6 +307,7 @@
             start.hidden = false;
             conversation.hidden = true;
             setOnboardingStep('name');
+            syncBubbleUnread();
             return;
         }
         start.hidden = true;
@@ -128,18 +315,27 @@
         var closed = current.status === 'closed';
         conversation.querySelector('.ppfc-closed').hidden = !closed;
         conversation.querySelector('.ppfc-composer').hidden = closed;
-        if (payload.messages) renderMessages(payload.messages, false);
-        if (current.visitor_unread) {
-            request('read', {method: 'POST', body: JSON.stringify({conversation_id: current.id})}).catch(function () {});
-        }
+        if (payload.messages) renderMessages(payload.messages, false, {forceScroll: !!options.forceScroll});
+        syncBubbleUnread();
+        if (panelIsOpen()) markCurrentRead();
         schedulePoll();
     }
 
     function loadConversation() {
         return request('conversation').then(function (payload) {
             if (!payload.conversation) return applyConversation(payload);
-            return request('messages?conversation_id=' + Number(payload.conversation.id)).then(applyConversation);
+            return request('messages?conversation_id=' + Number(payload.conversation.id)).then(function (messages) {
+                applyConversation(messages, {forceScroll: true});
+            });
         }).catch(showError);
+    }
+
+    function hydrateConversation() {
+        if (conversationHydration) return conversationHydration;
+        conversationHydration = loadConversation().finally(function () {
+            conversationHydration = null;
+        });
+        return conversationHydration;
     }
 
     function schedulePoll() {
@@ -152,8 +348,38 @@
                 var closed = current.status === 'closed';
                 panel.querySelector('.ppfc-closed').hidden = !closed;
                 panel.querySelector('.ppfc-composer').hidden = closed;
+                syncBubbleUnread();
+                markCurrentRead();
             }).catch(function () {}).finally(schedulePoll);
         }, 5000);
+    }
+
+    function revealPanel(options) {
+        options = options || {};
+        panel.classList.remove('ppfc-route-transition');
+        panel.style.removeProperty('height');
+        panel.hidden = false;
+        panel.setAttribute('aria-hidden', 'false');
+
+        if (!options.embeddedClassic && window.PrayerPopMotion) {
+            window.PrayerPopMotion.enter(panel);
+        }
+
+        var bubble = document.getElementById('prayer-pop-bubble');
+        if (bubble) bubble.setAttribute('aria-expanded', 'true');
+        document.body.classList.add('ppfc-open');
+        panelOpening = false;
+		// An explicit open always starts at the latest message. Polling itself
+		// preserves the visitor's position once the conversation is open.
+		if (current) {
+			window.requestAnimationFrame(function () {
+				var messages = panel.querySelector('.ppfc-messages');
+				if (messages) messages.scrollTop = messages.scrollHeight;
+			});
+        }
+        schedulePoll();
+        markCurrentRead();
+        focusPanel();
     }
 
     function openPanel(options) {
@@ -161,50 +387,25 @@
         options = options || {};
         panelOpening = true;
         lastFocusedElement = document.activeElement;
-        loadConversation().finally(function () {
-            if (typeof options.beforeReveal === 'function') options.beforeReveal();
 
-            panel.classList.toggle('ppfc-route-transition', !!options.transitionFromHeight);
-            panel.style.removeProperty('height');
-            panel.hidden = false;
-            panel.setAttribute('aria-hidden', 'false');
-
-            if (!options.transitionFromHeight && window.PrayerPopMotion) {
-                window.PrayerPopMotion.enter(panel);
+        // Resolve the visitor's existing conversation while the Popup remains
+        // visible. The first Chat frame is therefore always the right screen,
+        // never the empty onboarding screen followed by a late replacement.
+        hydrateConversation().finally(function () {
+            var host = options.embeddedClassic ? classicPanelHost() : null;
+            if (host) {
+                transitionClassicHost(host, function () {
+                    var modal = document.getElementById('prayer-pop-modal');
+                    if (modal) {
+                        modal.style.display = 'block';
+                        modal.setAttribute('aria-hidden', 'false');
+                    }
+                    host.classList.add('ppfc-classic-chat-active');
+                    revealPanel({embeddedClassic: true});
+                });
+                return;
             }
-
-            if (options.transitionFromHeight) {
-                var targetHeight = panel.getBoundingClientRect().height;
-                var sourceHeight = Math.max(0, options.transitionFromHeight);
-                var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                panel.style.height = targetHeight + 'px';
-
-                if (!reduceMotion && typeof panel.animate === 'function' && Math.abs(targetHeight - sourceHeight) > 1) {
-                    panel.animate(
-                        [
-                            {height: sourceHeight + 'px'},
-                            {height: targetHeight + 'px'}
-                        ],
-                        {
-                            duration: 220,
-                            easing: 'cubic-bezier(.2, .8, .2, 1)'
-                        }
-                    );
-                } else if (!reduceMotion) {
-                    panel.style.height = sourceHeight + 'px';
-                    panel.offsetHeight;
-                    window.requestAnimationFrame(function () {
-                        panel.style.height = targetHeight + 'px';
-                    });
-                }
-            }
-
-            var bubble = document.getElementById('prayer-pop-bubble');
-            if (bubble) bubble.setAttribute('aria-expanded', 'true');
-            document.body.classList.add('ppfc-open');
-            panelOpening = false;
-            schedulePoll();
-            focusPanel();
+            revealPanel();
         });
     }
 
@@ -213,14 +414,30 @@
         options = options && options.immediate ? options : {};
         panelClosing = true;
         var finish = function () {
+            var host = classicPanelHost();
             panel.hidden = true;
             panel.setAttribute('aria-hidden', 'true');
             panel.classList.remove('ppfc-route-transition');
             panel.style.removeProperty('height');
+            var embedded = host && host.classList.contains('ppfc-classic-chat-active');
+            if (embedded) {
+                host.classList.remove('ppfc-classic-chat-active');
+                host.style.removeProperty('height');
+                var modal = document.getElementById('prayer-pop-modal');
+                if (modal && options.revealClassic) {
+                    modal.style.display = 'block';
+                    modal.setAttribute('aria-hidden', 'false');
+                } else if (modal) {
+                    modal.style.display = 'none';
+                    modal.setAttribute('aria-hidden', 'true');
+                }
+            }
             var bubble = document.getElementById('prayer-pop-bubble');
-            if (bubble) bubble.setAttribute('aria-expanded', 'false');
+            if (bubble) bubble.setAttribute('aria-expanded', embedded && options.revealClassic ? 'true' : 'false');
             document.body.classList.remove('ppfc-open');
             clearTimeout(pollTimer);
+            syncBubbleUnread();
+            scheduleBackgroundStatus();
             var previousFocusIsVisible = lastFocusedElement
                 && lastFocusedElement !== document.body
                 && document.contains(lastFocusedElement)
@@ -235,87 +452,64 @@
         else window.PrayerPopMotion.exit(panel, finish);
     }
 
-    function restoreClassicPopup(previousHeight) {
-        closePanel({immediate: true});
+    function restoreClassicPopup() {
         var options = document.getElementById('prayer-pop-initial-options');
         var form = document.getElementById('prayer-pop-form-wrapper');
         var modal = document.getElementById('prayer-pop-modal');
         var container = document.getElementById('prayer-pop-form-container');
         var bubble = document.getElementById('prayer-pop-bubble');
-        if (options) options.style.display = '';
-        var intro = document.getElementById('prayer-pop-popup-intro');
-        if (intro) intro.style.display = '';
-        if (form) form.style.display = 'none';
-		if (container) container.classList.remove('none', 'fade-in', 'gentle-rise', 'soft-scale', 'slide-up', 'bounce-in');
-        if (modal) {
-            modal.style.display = 'block';
-            modal.setAttribute('aria-hidden', 'false');
+        var host = classicPanelHost();
+
+        if (!host) {
+            closePanel({immediate: true, revealClassic: true});
+            return;
         }
-        if (bubble) bubble.setAttribute('aria-expanded', 'true');
 
-        if (container && previousHeight > 0) {
-            var targetHeight = classicPanelHeight || container.getBoundingClientRect().height;
-            var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            container.style.height = targetHeight + 'px';
-
-            if (!reduceMotion && typeof container.animate === 'function' && Math.abs(previousHeight - targetHeight) > 1) {
-                var animation = container.animate(
-                    [
-                        {height: previousHeight + 'px'},
-                        {height: targetHeight + 'px'}
-                    ],
-                    {
-                        duration: 220,
-                        easing: 'cubic-bezier(.2, .8, .2, 1)'
-                    }
-                );
-                animation.finished.catch(function () {}).finally(function () {
-                    container.style.removeProperty('height');
-                });
-            } else {
-                container.style.removeProperty('height');
+        transitionClassicHost(host, function () {
+            panel.hidden = true;
+            panel.setAttribute('aria-hidden', 'true');
+            panel.classList.remove('ppfc-route-transition');
+            panel.style.removeProperty('height');
+            host.classList.remove('ppfc-classic-chat-active');
+            if (options) options.style.display = '';
+            var intro = document.getElementById('prayer-pop-popup-intro');
+            if (intro) intro.style.display = '';
+            if (form) form.style.display = 'none';
+            if (container) container.classList.remove('none', 'fade-in', 'gentle-rise', 'soft-scale', 'slide-up', 'bounce-in');
+            if (modal) {
+                modal.style.display = 'block';
+                modal.setAttribute('aria-hidden', 'false');
             }
-        }
-
-        window.setTimeout(function () {
-            var target = options && options.querySelector('button:not([hidden])');
-            if (!target) target = container;
-            if (target && typeof target.focus === 'function') target.focus();
-        }, 0);
+            if (bubble) bubble.setAttribute('aria-expanded', 'true');
+            document.body.classList.remove('ppfc-open');
+            clearTimeout(pollTimer);
+            syncBubbleUnread();
+            scheduleBackgroundStatus();
+            panelOpening = false;
+            panelClosing = false;
+        }, function () {
+            window.setTimeout(function () {
+                var target = options && options.querySelector('button:not([hidden])');
+                if (!target) target = container;
+                if (target && typeof target.focus === 'function') target.focus();
+            }, 0);
+        });
     }
 
     function returnToClassicPopup() {
-        var currentHeight = panel.getBoundingClientRect().height;
-        restoreClassicPopup(currentHeight);
+        restoreClassicPopup();
     }
 
     function openFromClassicPopup(event) {
         event.preventDefault();
         event.stopImmediatePropagation();
 
-        var modal = document.getElementById('prayer-pop-modal');
-        var bubble = document.getElementById('prayer-pop-bubble');
-        var intro = document.getElementById('prayer-pop-popup-intro');
-        var options = document.getElementById('prayer-pop-initial-options');
-        var form = document.getElementById('prayer-pop-form-wrapper');
-        var container = document.getElementById('prayer-pop-form-container');
-		panel.classList.remove('fade-in', 'gentle-rise', 'soft-scale', 'slide-up', 'bounce-in');
-        var sourceHeight = container ? container.getBoundingClientRect().height : 0;
-        classicPanelHeight = sourceHeight;
-
-        openPanel({
-            transitionFromHeight: sourceHeight,
-            beforeReveal: function () {
-                if (modal) {
-                    modal.style.display = 'none';
-                    modal.setAttribute('aria-hidden', 'true');
-                }
-                if (intro) intro.style.display = '';
-                if (options) options.style.display = '';
-                if (form) form.style.display = 'none';
-            }
-        });
+        var container = classicPanelHost();
+        panel.classList.remove('fade-in', 'gentle-rise', 'soft-scale', 'slide-up', 'bounce-in');
+        openPanel({embeddedClassic: !!container});
     }
+
+    mountClassicPanel();
 
     panel.querySelector('.ppfc-back').addEventListener('click', returnToClassicPopup);
     panel.querySelector('.ppfc-close').addEventListener('click', closePanel);
@@ -324,7 +518,7 @@
         button.addEventListener('click', openFromClassicPopup, true);
     });
 
-    var bubble = document.getElementById('prayer-pop-bubble');
+    bubble = document.getElementById('prayer-pop-bubble');
     if (bubble) {
         bubble.addEventListener('click', function (event) {
             if (!panelIsOpen()) return;
@@ -395,7 +589,7 @@
         })}).then(function (payload) {
             form.reset();
 			form.elements.started_at.value = Math.floor(Date.now() / 1000);
-            applyConversation(payload);
+            applyConversation(payload, {forceScroll: true});
         }).catch(showError).finally(function () { button.disabled = false; });
     });
 
@@ -452,7 +646,7 @@
         button.disabled = true;
         request('messages', {method: 'POST', body: JSON.stringify({conversation_id: current.id, message: textarea.value})}).then(function (payload) {
             textarea.value = '';
-            applyConversation(payload);
+            applyConversation(payload, {forceScroll: true});
         }).catch(showError).finally(function () { button.disabled = false; });
     });
 
@@ -462,6 +656,13 @@
 		startForm.reset();
 		startForm.elements.started_at.value = Math.floor(Date.now() / 1000);
         applyConversation({conversation: null});
+    });
+
+    // Warm the Chat state while the page is loading so opening the Popup does
+    // not briefly expose a wrong empty state for returning visitors.
+    hydrateConversation().finally(function () {
+        syncBubbleUnread();
+        scheduleBackgroundStatus();
     });
 
     if (new URLSearchParams(window.location.search).get('prayerpop_chat') === 'open') openPanel();

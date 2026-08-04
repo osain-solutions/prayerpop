@@ -44,6 +44,35 @@
 	transition: height 180ms cubic-bezier(.2, .8, .2, 1);
 }
 
+/* Classic Popup swaps Chat into the existing popup host so the visitor sees
+ * one continuous surface rather than a second panel opening on top of it. */
+#prayer-pop-form-container.ppfc-classic-chat-host {
+	transition: transform 0.3s ease, opacity 0.3s ease, height 220ms cubic-bezier(.2, .8, .2, 1);
+}
+
+#prayer-pop-form-container.ppfc-classic-chat-host.ppfc-classic-chat-active {
+	height: min(520px, calc(100vh - var(--bubble-height, 60px) - var(--bubble-margin, 20px) - var(--bubble-offset-y, 0px) - 28px));
+	max-height: min(520px, calc(100vh - var(--bubble-height, 60px) - var(--bubble-margin, 20px) - var(--bubble-offset-y, 0px) - 28px));
+	padding: 0;
+	overflow: hidden;
+}
+
+#prayer-pop-form-container.ppfc-classic-chat-host.ppfc-classic-chat-active > :not(.ppfc-panel) {
+	visibility: hidden;
+}
+
+#prayer-pop-form-container .ppfc-panel.ppfc-classic-chat-embedded {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	width: 100%;
+	height: 100%;
+	max-height: none;
+	border: 0;
+	border-radius: inherit;
+	box-shadow: none;
+}
+
 .ppfc-panel > .ppfc-chat-header {
     display: grid;
     grid-template-columns: 36px minmax(0, 1fr) 36px;
@@ -163,38 +192,63 @@
 
 .ppfc-agent-welcome,
 .ppfc-thread-welcome {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
 	justify-self: start;
-	max-width: 82%;
+	max-width: none;
 	margin: 0 0 6px;
 }
 
-.ppfc-agent-welcome > div,
-.ppfc-thread-welcome > div {
+.ppfc-agent-welcome-content {
+	display: grid;
+	gap: 4px;
+	min-width: 0;
+	max-width: 82%;
+}
+
+.ppfc-agent-welcome-bubble {
+	display: block;
 	padding: 12px 14px;
 	border-radius: 18px 18px 18px 6px;
 	background: #e9ebef;
 }
 
-.ppfc-agent-welcome strong,
-.ppfc-thread-welcome strong {
+.ppfc-agent-welcome-bubble strong {
 	display: block;
 	margin-bottom: 4px;
 	font-size: 14px;
 }
 
-.ppfc-agent-welcome p,
-.ppfc-thread-welcome p {
+.ppfc-agent-welcome-bubble > span {
+	display: block;
 	margin: 0;
 	font-size: 14px;
 	line-height: 1.45;
 }
 
-.ppfc-agent-welcome small,
-.ppfc-thread-welcome small {
+.ppfc-agent-welcome-content small {
 	display: block;
-	margin: 5px 5px 0;
+	margin: 0;
+	padding: 0 5px;
 	color: #747b88;
 	font-size: 11px;
+}
+
+.ppfc-agent-avatar {
+	display: grid;
+	place-items: center;
+	flex: 0 0 28px;
+	width: 28px;
+	height: 28px;
+	margin-top: 10px;
+	border: 0;
+	border-radius: 50%;
+	background: var(--bubble-bg-color, var(--global-bg-color, #0048a6));
+	color: var(--global-font-color, #fff);
+	font-size: 15px;
+	line-height: 28px;
+	object-fit: cover;
 }
 
 .ppfc-start-form {
@@ -523,4 +577,77 @@
 	.ppfc-conversation {
 		padding: 0;
 	}
+}
+
+@media (max-width: 600px) {
+	#prayer-pop-form-container .ppfc-panel.ppfc-classic-chat-embedded {
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: inherit;
+	}
+}
+
+/* Match the team-message treatment: avatar, incoming bubble, and one metadata row. */
+.ppfc-message.ppfc-message-admin {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	align-self: flex-start;
+	gap: 8px;
+	width: auto;
+	max-width: 100%;
+	text-align: left;
+}
+
+.ppfc-message-admin .ppfc-message-team-avatar {
+	margin-top: 10px;
+}
+
+.ppfc-message-admin .ppfc-message-team-content {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	column-gap: 8px;
+	row-gap: 4px;
+	min-width: 0;
+	max-width: 82%;
+}
+
+.ppfc-message-admin .ppfc-message-team-content .ppfc-agent-welcome-bubble {
+	grid-column: 1 / -1;
+	width: fit-content;
+	max-width: 250px;
+	box-sizing: border-box;
+	font-size: inherit;
+	overflow-wrap: anywhere;
+}
+
+.ppfc-message-admin .ppfc-message-team-content small,
+.ppfc-message-admin .ppfc-message-team-content time {
+	display: block;
+	margin: 0;
+	padding: 0 5px;
+	color: #747b88;
+	font-size: 11px;
+	line-height: 1.2;
+}
+
+.ppfc-message-admin .ppfc-message-team-content small {
+	grid-column: 1;
+}
+
+.ppfc-message-admin .ppfc-message-team-content time {
+	grid-column: 2;
+	align-self: center;
+	padding-left: 0;
+	white-space: nowrap;
+}
+
+/* Consecutive messages from the same sender in one minute form one group. */
+.ppfc-message.ppfc-message-grouped {
+	margin-top: -10px;
+}
+
+.ppfc-message-admin.ppfc-message-grouped .ppfc-message-team-avatar {
+	visibility: hidden;
 }

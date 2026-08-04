@@ -65,6 +65,74 @@ jQuery(document).ready(function($) {
             selected: selectedAnimation
         };
     }());
+
+    /*
+     * Shared shell-height transition for every PrayerPop surface that swaps
+     * content in place. Keeping the larger of the two heights as an inline
+     * max-height while animating prevents CSS caps from collapsing a taller
+     * outgoing screen before a downward transition can be painted.
+     */
+    window.PrayerPopPanelTransition = window.PrayerPopPanelTransition || (function () {
+        var activeTransitions = new WeakMap();
+
+        function reduced() {
+            return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        }
+
+        function betweenHeights(element, sourceHeight, targetHeight, complete) {
+            if (!element) {
+                if (typeof complete === 'function') complete();
+                return;
+            }
+
+            var existing = activeTransitions.get(element);
+            if (existing) existing.finish();
+
+            sourceHeight = Math.max(0, Number(sourceHeight) || 0);
+            targetHeight = Math.max(0, Number(targetHeight) || 0);
+            if (!sourceHeight) sourceHeight = element.getBoundingClientRect().height;
+            if (!targetHeight) targetHeight = sourceHeight;
+
+            var originalHeight = element.style.height;
+            var originalMaxHeight = element.style.maxHeight;
+            var originalOverflow = element.style.overflow;
+            var originalTransition = element.style.transition;
+            var finished = false;
+            var finish = function () {
+                if (finished) return;
+                finished = true;
+                if (activeTransitions.get(element) && activeTransitions.get(element).finish === finish) {
+                    activeTransitions.delete(element);
+                }
+                element.style.height = originalHeight;
+                element.style.maxHeight = originalMaxHeight;
+                element.style.overflow = originalOverflow;
+                element.style.transition = originalTransition;
+                if (typeof complete === 'function') complete();
+            };
+
+            activeTransitions.set(element, {finish: finish});
+            element.style.overflow = 'hidden';
+            element.style.maxHeight = Math.max(sourceHeight, targetHeight) + 'px';
+            element.style.height = sourceHeight + 'px';
+
+            if (reduced() || Math.abs(targetHeight - sourceHeight) <= 1) {
+                element.style.height = targetHeight + 'px';
+                finish();
+                return;
+            }
+
+            element.style.transition = 'height 220ms cubic-bezier(.2, .8, .2, 1)';
+            void element.offsetHeight;
+            window.requestAnimationFrame(function () {
+                if (finished) return;
+                element.style.height = targetHeight + 'px';
+                window.setTimeout(finish, 250);
+            });
+        }
+
+        return {betweenHeights: betweenHeights};
+    }());
     var lastTimeInterval;
     
     function keepFirstById(id) {
@@ -141,13 +209,16 @@ jQuery(document).ready(function($) {
         container.style.overflow = 'hidden';
     }
 
-    function finishPopupHeightTransition() {
+    function finishPopupHeightTransition(targetHeight) {
         if (popupHeightStart === null) return;
         var container = document.getElementById('prayer-pop-form-container');
         if (!container) return;
 
-        container.style.height = 'auto';
-        var targetHeight = container.getBoundingClientRect().height;
+        if (!Number.isFinite(Number(targetHeight))) {
+            container.style.height = 'auto';
+            targetHeight = container.getBoundingClientRect().height;
+        }
+        targetHeight = Math.max(0, Number(targetHeight) || 0);
         container.style.height = popupHeightStart + 'px';
         void container.offsetHeight;
         popupHeightFrame = window.requestAnimationFrame(function () {
@@ -161,6 +232,13 @@ jQuery(document).ready(function($) {
         }, 220);
         popupHeightStart = null;
     }
+
+    // Make the existing Classic Popup transition lifecycle available to the
+    // embedded Chat screen, just as it is to Prayer Request, Testimony, and FAQ.
+    window.PrayerPopLegacyPanelTransition = {
+        begin: beginPopupHeightTransition,
+        finish: finishPopupHeightTransition
+    };
 
     // When rendered inside Theme Builder content, move floating UI to <body>
     // to avoid parent transforms breaking fixed positioning.

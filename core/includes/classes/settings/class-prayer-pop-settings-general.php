@@ -139,11 +139,33 @@ class Prayer_Pop_Settings_General {
 	 * Retention field.
 	 */
 	public function retention_period_callback() {
-		$options = get_option( 'prayer_pop_general_settings', array() );
-		$value   = isset( $options['retention_period'] ) ? absint( $options['retention_period'] ) : 0;
+		$options   = get_option( 'prayer_pop_general_settings', array() );
+		$retention = isset( $options['retention_period'] ) ? absint( $options['retention_period'] ) : 0;
+		$periods   = array(
+			'7'   => esc_html__( '7 days', 'prayerpop' ),
+			'30'  => esc_html__( '30 days', 'prayerpop' ),
+			'90'  => esc_html__( '90 days', 'prayerpop' ),
+			'180' => esc_html__( '180 days', 'prayerpop' ),
+			'360' => esc_html__( '360 days', 'prayerpop' ),
+			'720' => esc_html__( '720 days', 'prayerpop' ),
+		);
 
-		echo '<input type="number" min="0" step="1" class="small-text" name="prayer_pop_general_settings[retention_period]" value="' . esc_attr( $value ) . '"> ';
-		echo esc_html__( 'days', 'prayerpop' );
-		echo '<p class="description">' . esc_html__( '0 disables automatic retention cleanup.', 'prayerpop' ) . '</p>';
+		// Keep an existing custom period intact until the site owner deliberately chooses a standard option.
+		if ( $retention && ! isset( $periods[ (string) $retention ] ) ) {
+			$periods[ (string) $retention ] = sprintf(
+				/* translators: %d: custom retention period in days. */
+				esc_html__( '%d days (custom)', 'prayerpop' ),
+				$retention
+			);
+		}
+
+		$periods['0'] = esc_html__( 'Forever', 'prayerpop' );
+
+		echo '<select name="prayer_pop_general_settings[retention_period]">';
+		foreach ( $periods as $value => $label ) {
+			echo '<option value="' . esc_attr( $value ) . '" ' . selected( $retention, $value, false ) . '>' . esc_html( $label ) . '</option>';
+		}
+		echo '</select>';
+		echo '<p class="description">' . esc_html__( 'Sets how long submissions are kept before automatic cleanup. Approved items are archived first, then archived items are removed after the retention window. Choose "Forever" to disable automatic deletion.', 'prayerpop' ) . '</p>';
 	}
 }

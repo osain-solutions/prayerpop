@@ -193,6 +193,38 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+/* Unread Chat replies remain visible on the launcher while its panel is closed. */
+#prayer-pop-bubble .prayer-pop-chat-unread-badge {
+    position: absolute;
+    z-index: 2;
+    top: -7px;
+    right: -7px;
+    display: grid;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 5px;
+    box-sizing: border-box;
+    place-items: center;
+    border: 2px solid var(--bubble-bg-color, var(--global-bg-color, #2755aa));
+    border-radius: 999px;
+    background: #fff;
+    color: var(--bubble-bg-color, var(--global-bg-color, #2755aa));
+    box-shadow: 0 2px 7px rgba(15, 23, 42, .2);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    pointer-events: none;
+}
+
+#prayer-pop-bubble[data-bubble-position="left"] .prayer-pop-chat-unread-badge {
+    right: auto;
+    left: -7px;
+}
+
+#prayer-pop-bubble .prayer-pop-chat-unread-badge[hidden] {
+    display: none;
+}
+
 /* Chat Bubble Icon */
 #prayer-pop-icon {
     font-size: var(--global-font-size);
@@ -482,9 +514,9 @@
 	min-height: 0;
 	margin: 0 14px;
 	padding: 14px;
-    box-sizing: border-box;
+	box-sizing: border-box;
 	align-content: end;
-	gap: 10px;
+	gap: 6px;
 	border: 1px solid var(--global-border-color, #dfe2e7);
 	border-radius: 14px;
 	background: #fff;
@@ -495,6 +527,10 @@
 	display: flex;
 	align-items: center;
 	gap: 9px;
+}
+
+.prayer-pop-popup-intro--hero .prayer-pop-popup-intro__sender strong {
+	font-weight: 600;
 }
 
 .prayer-pop-popup-intro__avatar {
@@ -510,14 +546,16 @@
 
 .prayer-pop-popup-intro__sender > span:last-child {
 	display: grid;
+	align-content: center;
 	gap: 1px;
 }
 
 .prayer-pop-popup-intro__sender strong {
+	margin: 10px 0 0;
 	color: #172033;
 	font-size: calc(var(--global-font-size) * 0.875);
 	font-weight: 500;
-	line-height: 1.25;
+	line-height: 0.7;
 }
 
 .prayer-pop-popup-intro__sender small {
@@ -536,17 +574,21 @@
 	background: var(--global-bg-color);
 }
 
-.prayer-pop-popup-intro__message {
-	margin: 4px 0 0;
+.prayer-pop-popup-intro--hero .prayer-pop-popup-intro__message {
+	margin: 0;
 }
 
 .prayer-pop-popup-intro__title {
-    margin: 0;
+	margin: 0;
 	color: #172033;
-    font-family: var(--heading-font-family);
+	font-family: var(--heading-font-family);
 	font-size: var(--global-font-size);
     font-weight: var(--heading-font-weight);
 	line-height: 1.35;
+}
+
+.prayer-pop-popup-intro--hero .prayer-pop-popup-intro__title {
+	font-size: 22px;
 }
 
 .prayer-pop-popup-intro__description {

@@ -3,7 +3,7 @@ Contributors: osain
 Tags: prayer, church, ministry, notifications
 Requires at least: 5.8
 Tested up to: 7.0
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -194,6 +194,15 @@ No. The free plugin focuses on prayer requests and simple visitor chat. Public [
 * Submission posts remain in WordPress after uninstall unless you delete them manually.
 
 == Changelog ==
+
+= 1.6.1 =
+* Added an editable Chat opening message in the Chat inbox.
+* Added team profile images to team replies and an unread reply count on the closed PrayerPop launcher.
+* Improved Chat transitions, message grouping, refresh behaviour, and scroll preservation for returning visitors.
+* Improved Chat message styling so team replies use a consistent profile, message bubble, sender name, and timestamp treatment.
+* Improved Chat and Language & Text settings with clearer controls, search, and expandable text groups.
+* Fixed shared Chat, text, design, and notification settings being overwritten when switching between PrayerPop Free and Pro.
+* Fixed uninstall handling so shared Chat data is preserved while the other PrayerPop edition remains installed.
 
 = 1.6.0 =
 * Added a simple PrayerPop Chat with one classic visitor layout and a shared WordPress inbox.

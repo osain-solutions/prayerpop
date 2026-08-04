@@ -158,6 +158,7 @@ $bubble_style_attr = sprintf(
 				</span>
 	        <?php endif; ?>
 	    </div>
+	<span class="prayer-pop-chat-unread-badge" aria-hidden="true" hidden></span>
 </div>
 
 <!-- PrayerPop Form Modal -->
