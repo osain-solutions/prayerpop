@@ -142,6 +142,7 @@ class Prayer_Pop_Settings {
 	public function sanitize_active_tab( $tab ) {
 		$aliases = array(
 			'general'       => 'popup',
+			'submissions'   => 'popup',
 			'notifications' => 'notifications-email',
 			'style'         => 'design',
 			'text'          => 'language-text',
@@ -154,7 +155,6 @@ class Prayer_Pop_Settings {
 
 		$allowed_tabs = array(
 			'popup',
-			'submissions',
 			'notifications-email',
 			'design',
 			'language-text',
@@ -430,8 +430,7 @@ class Prayer_Pop_Settings {
 		update_option( 'prayer_pop_active_tab', $active_tab );
 
 		$tabs = array(
-			'popup'              => array( 'icon' => 'welcome-widgets-menus', 'label' => __( 'Popup', 'prayerpop' ) ),
-			'submissions'        => array( 'icon' => 'feedback', 'label' => __( 'Submissions', 'prayerpop' ) ),
+			'popup'              => array( 'icon' => 'welcome-widgets-menus', 'label' => __( 'Popup & Submissions', 'prayerpop' ) ),
 			'notifications-email'=> array( 'icon' => 'email', 'label' => __( 'Notifications & Email', 'prayerpop' ) ),
 			'design'             => array( 'icon' => 'admin-appearance', 'label' => __( 'Design', 'prayerpop' ) ),
 			'language-text'      => array( 'icon' => 'translation', 'label' => __( 'Language & Text', 'prayerpop' ) ),
@@ -440,8 +439,7 @@ class Prayer_Pop_Settings {
 		);
 
 		$tab_descriptions = array(
-			'popup'               => __( 'Control whether the PrayerPop bubble appears for visitors.', 'prayerpop' ),
-			'submissions'         => __( 'Configure the prayer-request submission rules available in PrayerPop Free.', 'prayerpop' ),
+			'popup'               => __( 'Choose the visitor experience: prayer-request submissions only, or submissions with PrayerPop Chat.', 'prayerpop' ),
 			'notifications-email' => __( 'Set who receives prayer request alerts, when they are sent, and how the email is written.', 'prayerpop' ),
 			'design'              => __( 'Customize the PrayerPop color, typography, position, and bubble icon.', 'prayerpop' ),
 			'language-text'       => __( 'Search and customize all visitor-facing wording included in PrayerPop Free.', 'prayerpop' ),
@@ -536,9 +534,7 @@ class Prayer_Pop_Settings {
 		switch ( $tab_id ) {
 			case 'popup':
 				$this->render_field_card( __( 'Bubble', 'prayerpop' ), __( 'Choose whether the PrayerPop entry point is visible on the front end.', 'prayerpop' ), 'prayer-pop-settings-general', 'prayer_pop_general_section', array( 'show_prayer_pop_bubble' ) );
-				break;
-
-			case 'submissions':
+				$this->render_field_card( __( 'PrayerPop Chat', 'prayerpop' ), __( 'Enable conversations when your team wants to reply to visitors. Turn this off to use a clean prayer-request submission form only.', 'prayerpop' ), 'prayer-pop-settings-general', 'prayer_pop_general_section', array( 'enable_prayerpop_chat' ) );
 				$this->render_field_card( __( 'Submission rules', 'prayerpop' ), __( 'Configure visitor options. PrayerPop Free holds every new request for manual admin approval before it is actioned.', 'prayerpop' ), 'prayer-pop-settings-general', 'prayer_pop_general_section', array( 'allow_anonymous' ) );
 				break;
 

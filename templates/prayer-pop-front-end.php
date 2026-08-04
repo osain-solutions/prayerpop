@@ -29,7 +29,9 @@ $popup_intro_image_url = $popup_intro_image_id ? wp_get_attachment_image_url( $p
 $popup_intro_image_alt = $popup_intro_image_id ? (string) get_post_meta( $popup_intro_image_id, '_wp_attachment_image_alt', true ) : '';
 $popup_intro_classes   = 'prayer-pop-popup-intro prayer-pop-popup-intro--hero' . ( $popup_intro_image_url ? ' prayer-pop-popup-intro--has-image' : '' );
 $popup_intro_text_enabled = '' !== trim( (string) $texts['text_popup_intro_title'] ) || '' !== trim( (string) $texts['text_popup_intro_description'] );
-$has_popup_intro          = $popup_intro_image_url || $popup_intro_text_enabled;
+// The welcome panel is part of the Chat experience. Submission-only sites use
+// the clean request form, without Chat greeting text or welcome media.
+$has_popup_intro          = $chat_enabled && ( $popup_intro_image_url || $popup_intro_text_enabled );
 
 // Update name placeholder based on anonymous setting
 $name_placeholder = $allow_anonymous ? 

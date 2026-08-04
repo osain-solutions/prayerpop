@@ -177,17 +177,26 @@ class Prayer_Pop_Chat {
 	/** Register the three intentionally small settings. */
 	public function register_settings() {
 		register_setting( 'prayer_pop_chat_settings_group', self::SETTINGS_OPTION, array( $this, 'sanitize_settings' ) );
+		// Free keeps the public Chat switch with its Popup and submission settings.
+		register_setting( 'prayer_pop_settings_group', self::SETTINGS_OPTION, array( $this, 'sanitize_settings' ) );
+		add_settings_field(
+			'enable_prayerpop_chat',
+			esc_html__( 'Enable PrayerPop Chat', 'prayerpop' ),
+			array( $this, 'enabled_setting_callback' ),
+			'prayer-pop-settings-general',
+			'prayer_pop_general_section'
+		);
 	}
 
 	public function sanitize_settings( $input ) {
 		$input = is_array( $input ) ? $input : array();
 		$existing = get_option( self::SETTINGS_OPTION, array() );
 		$sanitized = is_array( $existing ) ? $existing : array();
-		$email = isset( $input['notification_email'] ) ? sanitize_email( $input['notification_email'] ) : '';
+		$email = isset( $input['notification_email'] ) ? sanitize_email( $input['notification_email'] ) : ( isset( $existing['notification_email'] ) ? sanitize_email( $existing['notification_email'] ) : '' );
 		$email = is_email( $email ) ? $email : sanitize_email( get_option( 'admin_email' ) );
 
 		$sanitized['enabled']            = empty( $input['enabled'] ) ? 0 : 1;
-		$sanitized['team_name']          = isset( $input['team_name'] ) ? self::truncate( sanitize_text_field( $input['team_name'] ), 100 ) : __( 'PrayerPop', 'prayerpop' );
+		$sanitized['team_name']          = isset( $input['team_name'] ) ? self::truncate( sanitize_text_field( $input['team_name'] ), 100 ) : ( isset( $existing['team_name'] ) ? self::truncate( sanitize_text_field( $existing['team_name'] ), 100 ) : __( 'PrayerPop', 'prayerpop' ) );
 		$sanitized['notification_email'] = $email;
 		if ( array_key_exists( 'initial_opening_message', $input ) ) {
 			$sanitized['initial_opening_message'] = self::sanitize_initial_opening_message( $input['initial_opening_message'] );
@@ -206,6 +215,21 @@ class Prayer_Pop_Chat {
 		}
 
 		return $sanitized;
+	}
+
+	/** Render the public Chat toggle inside the unified Free settings page. */
+	public function enabled_setting_callback() {
+		$enabled = ! empty( self::settings()['enabled'] );
+		?>
+		<div class="prayer-pop-toggle-wrapper">
+			<label class="prayer-pop-toggle-switch">
+				<input type="checkbox" id="prayer_pop_chat_settings_enabled" name="<?php echo esc_attr( self::SETTINGS_OPTION ); ?>[enabled]" value="1" <?php checked( $enabled ); ?>>
+				<span class="prayer-pop-toggle-slider"></span>
+				<span class="toggle-status"><?php echo $enabled ? esc_html__( 'On', 'prayerpop' ) : esc_html__( 'Off', 'prayerpop' ); ?></span>
+			</label>
+			<p class="description"><?php esc_html_e( 'Let visitors start Chat conversations and let administrators reply from PrayerPop → Chat. Turn this off to use PrayerPop only for prayer-request submissions.', 'prayerpop' ); ?></p>
+		</div>
+		<?php
 	}
 
 	/** Explain the locally stored Chat data to site owners. */
