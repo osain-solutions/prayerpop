@@ -184,10 +184,11 @@ class Prayer_Pop_Ajax {
                         'post_status'  => $post_status,
                         'post_date'    => $current_time,
                         'post_date_gmt' => get_gmt_from_date( $current_time ),
-                ) );
+                ), true );
 
-		// Check for errors in post creation
-		if ( is_wp_error( $post_id ) ) {
+		// Do not continue with metadata, notifications, or a success response
+		// unless WordPress created a real post.
+		if ( is_wp_error( $post_id ) || (int) $post_id <= 0 ) {
 			wp_send_json_error( esc_html__( 'Failed to submit your request. Please try again.', 'prayerpop' ) );
 		}
 
@@ -330,27 +331,30 @@ class Prayer_Pop_Ajax {
 	}
 
 	/**
-	 * Resolve client IP from trusted server headers.
+	 * Resolve the client IP without trusting spoofable forwarding headers.
+	 *
+	 * A host using a reverse proxy can opt in by returning the trusted proxy's
+	 * IP address or CIDR range from `prayer_pop_trusted_proxy_ranges`. Forwarded
+	 * headers are ignored unless the direct peer is in that allow-list.
 	 *
 	 * @return string
 	 */
 	private function get_client_ip() {
-		$candidates = array(
-			'HTTP_CF_CONNECTING_IP',
-			'HTTP_X_FORWARDED_FOR',
-			'REMOTE_ADDR',
-		);
+		$remote = isset( $_SERVER['REMOTE_ADDR'] ) ? trim( (string) wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		if ( ! filter_var( $remote, FILTER_VALIDATE_IP ) ) {
+			return '';
+		}
 
-		foreach ( $candidates as $server_key ) {
+		if ( ! $this->is_trusted_proxy( $remote ) ) {
+			return $remote;
+		}
+
+		foreach ( array( 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR' ) as $server_key ) {
 			if ( empty( $_SERVER[ $server_key ] ) ) {
 				continue;
 			}
 
-			$raw = sanitize_text_field( wp_unslash( (string) $_SERVER[ $server_key ] ) );
-			if ( '' === $raw ) {
-				continue;
-			}
-
+			$raw = trim( (string) wp_unslash( $_SERVER[ $server_key ] ) );
 			if ( 'HTTP_X_FORWARDED_FOR' === $server_key ) {
 				$parts = explode( ',', $raw );
 				$raw   = trim( (string) $parts[0] );
@@ -361,13 +365,74 @@ class Prayer_Pop_Ajax {
 			}
 		}
 
-		return '';
+		return $remote;
+	}
+
+	/**
+	 * Check whether the direct peer is an explicitly trusted reverse proxy.
+	 *
+	 * @param string $ip Direct peer IP address.
+	 * @return bool
+	 */
+	private function is_trusted_proxy( $ip ) {
+		$ranges = apply_filters( 'prayer_pop_trusted_proxy_ranges', array(), $ip );
+		if ( ! is_array( $ranges ) ) {
+			return false;
+		}
+
+		foreach ( $ranges as $range ) {
+			$range = trim( (string) $range );
+			if ( '' !== $range && $this->ip_matches_cidr( $ip, $range ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Match an IPv4 or IPv6 address against one exact address or CIDR range.
+	 *
+	 * @param string $ip IP address.
+	 * @param string $range Exact IP address or CIDR range.
+	 * @return bool
+	 */
+	private function ip_matches_cidr( $ip, $range ) {
+		if ( $ip === $range ) {
+			return true;
+		}
+
+		$parts = explode( '/', $range, 2 );
+		if ( 2 !== count( $parts ) || ! ctype_digit( $parts[1] ) ) {
+			return false;
+		}
+
+		$address = inet_pton( $ip );
+		$network = inet_pton( $parts[0] );
+		$bits    = (int) $parts[1];
+		if ( false === $address || false === $network || strlen( $address ) !== strlen( $network ) || $bits < 0 || $bits > ( strlen( $address ) * 8 ) ) {
+			return false;
+		}
+
+		$whole_bytes = (int) floor( $bits / 8 );
+		$remaining   = $bits % 8;
+		if ( $whole_bytes && substr( $address, 0, $whole_bytes ) !== substr( $network, 0, $whole_bytes ) ) {
+			return false;
+		}
+
+		if ( 0 === $remaining ) {
+			return true;
+		}
+
+		$mask = ( 0xFF << ( 8 - $remaining ) ) & 0xFF;
+		return ( ord( $address[ $whole_bytes ] ) & $mask ) === ( ord( $network[ $whole_bytes ] ) & $mask );
 	}
 
 	/**
 	 * Schedule immediate notification if enabled (asynchronous).
 	 */
 	private function schedule_immediate_notification( $post_id, $type, $name, $message ) {
+		unset( $type, $name, $message );
 		// Get notification settings
 		$notification_options = get_option( 'prayer_pop_notification_settings', array() );
 		
@@ -380,19 +445,10 @@ class Prayer_Pop_Ajax {
 			return;
 		}
 
-		// Schedule the email to be sent asynchronously.
-		// Note: wp_schedule_single_event expects a numerically indexed array of arguments
-		// that will be passed positionally to the callback (send_immediate_notification).
-		wp_schedule_single_event(
-			time(),
-			'prayer_pop_send_immediate_notification',
-			array(
-				absint( $post_id ),
-				sanitize_text_field( $type ),
-				sanitize_text_field( $name ),
-				wp_kses_post( $message ),
-			)
-		);
+		$result = Prayer_Pop_Notification_Scheduler::queue_immediate_notification( $post_id );
+		if ( is_wp_error( $result ) ) {
+			error_log( 'PrayerPop: immediate notification queued for recovery after scheduling failure: ' . $result->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		}
 	}
 
 	/**
@@ -431,7 +487,7 @@ class Prayer_Pop_Ajax {
 	/**
 	 * Validate user-provided submission name.
 	 *
-	 * Name field must contain a person name only (no sentences, promo text, or famous persona names).
+	 * Accept culturally diverse names while enforcing a safe display format.
 	 *
 	 * @param string $name Raw submitted name.
 	 * @return true|WP_Error
@@ -450,75 +506,14 @@ class Prayer_Pop_Ajax {
 			);
 		}
 
-		$comparison = $this->normalize_name_for_comparison( $name );
-
-		$famous_name_patterns = array(
-			'/\bvladimir\s+putin\b/u',
-			'/\b(?:joseph|joosep)\s*f\s+(?:stalin|sdaalin)\b/u',
-			'/\bstalin\p{L}{0,4}\b/u',
-			'/\bsdaalin\p{L}{0,4}\b/u',
-			'/\bhitler\p{L}{0,4}\b/u',
-			'/\bputin\p{L}{0,4}\b/u',
-			'/\bmafia\p{L}{0,4}\b/u',
-			'/\bcartel\p{L}{0,4}\b/u',
-			'/\btaliban\p{L}{0,4}\b/u',
-			'/\bisis\p{L}{0,4}\b/u',
-			'/\bleonardo\s+dicaprio\b/u',
-			'/\bed\s+sheeran\b/u',
-		);
-		foreach ( $famous_name_patterns as $pattern ) {
-			if ( preg_match( $pattern, $comparison ) ) {
-				return new WP_Error(
-					'invalid_name_famous',
-					$this->get_invalid_name_error_text()
-				);
-			}
-		}
-
-		$tokens = preg_split( '/\s+/u', $comparison, -1, PREG_SPLIT_NO_EMPTY );
-		if ( empty( $tokens ) || count( $tokens ) > 4 ) {
+		if ( ! preg_match( '/\p{L}/u', $name ) ) {
 			return new WP_Error(
-				'invalid_name_tokens',
-				$this->get_invalid_name_error_text()
-			);
-		}
-
-		$sentence_markers = array(
-			'i', 'my', 'me', 'our', 'we', 'please', 'need', 'want', 'pray', 'prayer', 'for', 'because', 'is', 'am', 'and',
-			'neighbor', 'neighbour', 'crazy', 'money', 'help',
-			'palun', 'palvetage', 'palve', 'tahan', 'vajan', 'minu', 'meie', 'on', 'et', 'aga', 'kuna', 'eest',
-		);
-		$marker_hits      = array_intersect( $sentence_markers, $tokens );
-		if ( count( $marker_hits ) >= 1 && count( $tokens ) >= 2 ) {
-			return new WP_Error(
-				'invalid_name_content',
-				$this->get_invalid_name_error_text()
-			);
-		}
-
-		$letters_total = preg_match_all( '/\p{L}/u', $name, $all_letters );
-		$upper_total   = preg_match_all( '/\p{Lu}/u', $name, $upper_letters );
-		if ( $letters_total >= 6 && $upper_total >= 5 && ( $upper_total / $letters_total ) > 0.8 && count( $tokens ) >= 2 ) {
-			return new WP_Error(
-				'invalid_name_shouting',
+				'invalid_name_format',
 				$this->get_invalid_name_error_text()
 			);
 		}
 
 		return true;
-	}
-
-	/**
-	 * Normalize name for content checks (lowercase, spaces only).
-	 *
-	 * @param string $name Raw name.
-	 * @return string
-	 */
-	private function normalize_name_for_comparison( $name ) {
-		$name = function_exists( 'mb_strtolower' ) ? mb_strtolower( (string) $name, 'UTF-8' ) : strtolower( (string) $name );
-		$name = preg_replace( "/[.'-]+/u", ' ', $name );
-		$name = preg_replace( '/\s+/u', ' ', (string) $name );
-		return trim( (string) $name );
 	}
 
 	/**

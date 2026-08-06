@@ -1086,7 +1086,7 @@ class ListTable {
                 wp_send_json_error( array( 'message' => esc_html__( 'Submission text cannot be empty.', 'prayerpop' ) ), 400 );
             }
 
-            wp_update_post(
+			$this->update_submission_post_or_fail(
                 array(
                     'ID'           => $post_id,
                     'post_content' => $text_value_input,
@@ -1116,7 +1116,7 @@ class ListTable {
 			update_post_meta( $post_id, 'prayer_pop_type', $value );
 			if ( false ) {
 				if ( 'answered' === $current_status ) {
-					wp_update_post(
+					$this->update_submission_post_or_fail(
 						array(
 							'ID'          => $post_id,
 							'post_status' => 'approved',
@@ -1149,7 +1149,7 @@ class ListTable {
 			}
 
 			if ( ! in_array( $current_status, array( 'archived', 'trash' ), true ) ) {
-				wp_update_post(
+				$this->update_submission_post_or_fail(
 					array(
 						'ID'          => $post_id,
 						'post_status' => 'pending',
@@ -1177,7 +1177,7 @@ class ListTable {
 				if ( 'archived' === $value ) {
 					if ( ! in_array( $current_status, array( 'archived', 'trash' ), true ) ) {
 						update_post_meta( $post_id, \Prayer_Pop_Run::PRE_ARCHIVE_STATUS_META_KEY, sanitize_key( $current_status ) );
-						wp_update_post(
+						$this->update_submission_post_or_fail(
 							array(
 								'ID'          => $post_id,
 								'post_status' => 'archived',
@@ -1186,7 +1186,7 @@ class ListTable {
 						update_post_meta( $post_id, \Prayer_Pop_Run::ARCHIVED_AT_META_KEY, current_time( 'timestamp' ) );
 					}
 				} else {
-					wp_update_post(
+					$this->update_submission_post_or_fail(
 						array(
 							'ID'          => $post_id,
 							'post_status' => $value,
@@ -1222,7 +1222,7 @@ class ListTable {
 				if ( 'archived' === $value ) {
 					if ( ! in_array( $current_status, array( 'archived', 'trash' ), true ) ) {
 						update_post_meta( $post_id, \Prayer_Pop_Run::PRE_ARCHIVE_STATUS_META_KEY, sanitize_key( $current_status ) );
-						wp_update_post(
+						$this->update_submission_post_or_fail(
 							array(
 								'ID'          => $post_id,
 								'post_status' => 'archived',
@@ -1231,7 +1231,7 @@ class ListTable {
 						update_post_meta( $post_id, \Prayer_Pop_Run::ARCHIVED_AT_META_KEY, current_time( 'timestamp' ) );
 					}
 				} else {
-					wp_update_post(
+					$this->update_submission_post_or_fail(
 						array(
 							'ID'          => $post_id,
 							'post_status' => 'pending',
@@ -1251,6 +1251,21 @@ class ListTable {
 		}
 
 		wp_send_json_success( array( 'message' => esc_html__( 'Submission updated.', 'prayerpop' ) ) );
+	}
+
+	/**
+	 * Update a submission or return a truthful AJAX failure response.
+	 *
+	 * @param array $post_data Post fields for wp_update_post().
+	 * @return int
+	 */
+	private function update_submission_post_or_fail( $post_data ) {
+		$result = \Prayer_Pop_Run::update_submission_post( $post_data );
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => esc_html__( 'Could not update the submission. Please try again.', 'prayerpop' ) ), 500 );
+		}
+
+		return (int) $result;
 	}
 
 	/**

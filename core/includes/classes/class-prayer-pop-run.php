@@ -109,6 +109,26 @@ class Prayer_Pop_Run {
 		return current_user_can( self::get_manage_submissions_capability() );
 	}
 
+	/**
+	 * Update a PrayerPop submission and return a usable post ID or WP_Error.
+	 *
+	 * @param array $post_data Post fields for wp_update_post().
+	 * @return int|WP_Error
+	 */
+	public static function update_submission_post( $post_data ) {
+		$post_id = isset( $post_data['ID'] ) ? absint( $post_data['ID'] ) : 0;
+		if ( $post_id <= 0 || 'prayer_request' !== get_post_type( $post_id ) ) {
+			return new WP_Error( 'invalid_submission', __( 'Invalid submission.', 'prayerpop' ) );
+		}
+
+		$result = wp_update_post( $post_data, true );
+		if ( is_wp_error( $result ) || (int) $result <= 0 ) {
+			return is_wp_error( $result ) ? $result : new WP_Error( 'submission_update_failed', __( 'Could not update the submission.', 'prayerpop' ) );
+		}
+
+		return (int) $result;
+	}
+
     /**
      * Constructor
      */
@@ -163,6 +183,8 @@ class Prayer_Pop_Run {
 		add_action( 'prayer_pop_send_daily_notifications', array( $this, 'send_daily_notifications' ) );
 		add_action( 'prayer_pop_send_weekly_notifications', array( $this, 'send_weekly_notifications' ) );
 		add_action( 'prayer_pop_send_immediate_notification', array( $this, 'send_immediate_notification' ), 10, 4 );
+		add_action( 'prayer_pop_process_notification_outbox', array( $this, 'process_immediate_notification_outbox' ) );
+		add_action( 'init', array( 'Prayer_Pop_Notification_Scheduler', 'ensure_outbox_worker_scheduled' ), 20 );
 		add_action( 'transition_post_status', array( $this, 'refresh_last_public_submission_time_on_status_change' ), 10, 3 );
         
         // Register custom cron schedules
@@ -1301,12 +1323,15 @@ class Prayer_Pop_Run {
 	                    continue;
 	                }
 
-	                wp_update_post(
+	                $update_result = self::update_submission_post(
 	                    array(
 	                        'ID'          => $post_id,
 	                        'post_status' => 'approved',
 	                    )
 	                );
+	                if ( is_wp_error( $update_result ) ) {
+	                    continue;
+	                }
 	                delete_post_meta( $post_id, self::ARCHIVED_AT_META_KEY );
 	                delete_post_meta( $post_id, self::PRE_ARCHIVE_STATUS_META_KEY );
 	                delete_post_meta( $post_id, self::PRIVATE_REVIEWED_META_KEY );
@@ -1325,12 +1350,15 @@ class Prayer_Pop_Run {
 	                    continue;
 	                }
 
-	                wp_update_post(
+	                $update_result = self::update_submission_post(
 	                    array(
 	                        'ID'          => $post_id,
 	                        'post_status' => 'declined',
 	                    )
 	                );
+	                if ( is_wp_error( $update_result ) ) {
+	                    continue;
+	                }
 	                delete_post_meta( $post_id, self::ARCHIVED_AT_META_KEY );
 	                delete_post_meta( $post_id, self::PRE_ARCHIVE_STATUS_META_KEY );
 	                delete_post_meta( $post_id, self::PRIVATE_REVIEWED_META_KEY );
@@ -1383,12 +1411,15 @@ class Prayer_Pop_Run {
 	                    continue;
 	                }
 
-	                wp_update_post(
+	                $update_result = self::update_submission_post(
 	                    array(
 	                        'ID'          => $post_id,
 	                        'post_status' => 'answered',
 	                    )
 	                );
+	                if ( is_wp_error( $update_result ) ) {
+	                    continue;
+	                }
 	                update_post_meta( $post_id, self::ANSWERED_AT_META_KEY, current_time( 'timestamp' ) );
 	                if ( isset( $bulk_answered_messages_map[ $post_id ] ) ) {
 	                    update_post_meta( $post_id, self::ANSWERED_MESSAGE_META_KEY, $bulk_answered_messages_map[ $post_id ] );
@@ -1425,15 +1456,7 @@ class Prayer_Pop_Run {
 	                $text_input  = isset( $payload_row['submission'] ) ? trim( sanitize_textarea_field( (string) $payload_row['submission'] ) ) : '';
 
 	                $is_anonymous = ( '' === $name_input );
-	                if ( $is_anonymous ) {
-	                    update_post_meta( $post_id, 'prayer_pop_name', \Prayer_Pop_Defaults::ANONYMOUS_NAME_MARKER );
-	                    update_post_meta( $post_id, \Prayer_Pop_Defaults::ANONYMOUS_FLAG_META_KEY, '1' );
-	                    $title_value = \Prayer_Pop_Defaults::get_anonymous_text();
-	                } else {
-	                    update_post_meta( $post_id, 'prayer_pop_name', $name_input );
-	                    update_post_meta( $post_id, \Prayer_Pop_Defaults::ANONYMOUS_FLAG_META_KEY, '0' );
-	                    $title_value = $name_input;
-	                }
+	                $title_value  = $is_anonymous ? \Prayer_Pop_Defaults::get_anonymous_text() : $name_input;
 
 	                $post_update = array(
 	                    'ID'         => $post_id,
@@ -1443,7 +1466,12 @@ class Prayer_Pop_Run {
 	                    $post_update['post_content'] = $text_input;
 	                }
 
-	                wp_update_post( $post_update );
+	                $update_result = self::update_submission_post( $post_update );
+	                if ( is_wp_error( $update_result ) ) {
+	                    continue;
+	                }
+	                update_post_meta( $post_id, 'prayer_pop_name', $is_anonymous ? \Prayer_Pop_Defaults::ANONYMOUS_NAME_MARKER : $name_input );
+	                update_post_meta( $post_id, \Prayer_Pop_Defaults::ANONYMOUS_FLAG_META_KEY, $is_anonymous ? '1' : '0' );
 	                $updated_count++;
 	            }
 
@@ -1633,12 +1661,15 @@ class Prayer_Pop_Run {
             exit;
         }
 
-	        wp_update_post(
+	        $update_result = self::update_submission_post(
 	            array(
 	                'ID'          => $post_id,
 	                'post_status' => 'approved',
 	            )
 	        );
+	        if ( is_wp_error( $update_result ) ) {
+	            wp_die( esc_html__( 'Could not update this submission. Please try again.', 'prayerpop' ) );
+	        }
 	        delete_post_meta( $post_id, self::ARCHIVED_AT_META_KEY );
 	        delete_post_meta( $post_id, self::PRE_ARCHIVE_STATUS_META_KEY );
 	        delete_post_meta( $post_id, self::PRIVATE_REVIEWED_META_KEY );
@@ -1707,12 +1738,15 @@ class Prayer_Pop_Run {
             exit;
         }
 
-	        wp_update_post(
+	        $update_result = self::update_submission_post(
 	            array(
 	                'ID'          => $post_id,
 	                'post_status' => 'declined',
 	            )
 	        );
+	        if ( is_wp_error( $update_result ) ) {
+	            wp_die( esc_html__( 'Could not update this submission. Please try again.', 'prayerpop' ) );
+	        }
 	        delete_post_meta( $post_id, self::ARCHIVED_AT_META_KEY );
 	        delete_post_meta( $post_id, self::PRE_ARCHIVE_STATUS_META_KEY );
 	        delete_post_meta( $post_id, self::PRIVATE_REVIEWED_META_KEY );
@@ -1767,12 +1801,15 @@ class Prayer_Pop_Run {
 	            }
 	        }
 
-	        wp_update_post(
+	        $update_result = self::update_submission_post(
 	            array(
 	                'ID'          => $post_id,
 	                'post_status' => 'answered',
 	            )
 	        );
+	        if ( is_wp_error( $update_result ) ) {
+	            wp_die( esc_html__( 'Could not update this submission. Please try again.', 'prayerpop' ) );
+	        }
 	        update_post_meta( $post_id, self::ANSWERED_AT_META_KEY, current_time( 'timestamp' ) );
 	        delete_post_meta( $post_id, self::ARCHIVED_AT_META_KEY );
 	        delete_post_meta( $post_id, self::PRE_ARCHIVE_STATUS_META_KEY );
@@ -1807,12 +1844,15 @@ class Prayer_Pop_Run {
 	            'prayer_request' === get_post_meta( $post_id, 'prayer_pop_type', true ) &&
 	            'answered' === get_post_status( $post_id )
 	        ) {
-	            wp_update_post(
+	            $update_result = self::update_submission_post(
 	                array(
 	                    'ID'          => $post_id,
 	                    'post_status' => 'approved',
 	                )
 	            );
+	            if ( is_wp_error( $update_result ) ) {
+	                wp_die( esc_html__( 'Could not update this submission. Please try again.', 'prayerpop' ) );
+	            }
 	            delete_post_meta( $post_id, self::ANSWERED_AT_META_KEY );
 	        }
 
@@ -1940,7 +1980,9 @@ class Prayer_Pop_Run {
             wp_die( esc_html__( 'You do not have permission to perform this action.', 'prayerpop' ) );
         }
 
-        $this->archive_submission( $post_id );
+		if ( ! $this->archive_submission( $post_id ) ) {
+			wp_die( esc_html__( 'Could not archive this submission. Please try again.', 'prayerpop' ) );
+		}
 
         $redirect_to = $this->clean_submission_redirect_url();
         $redirect_to = add_query_arg( 'prayer_pop_notice', 'archived', $redirect_to );
@@ -1973,12 +2015,15 @@ class Prayer_Pop_Run {
 	            $allowed_statuses = array( 'pending', 'approved', 'answered', 'declined' );
             $restore_status = in_array( $previous_status, $allowed_statuses, true ) ? $previous_status : $fallback_status;
 
-            wp_update_post(
-                array(
-                    'ID'          => $post_id,
-                    'post_status' => $restore_status,
-                )
-            );
+			$update_result = self::update_submission_post(
+				array(
+					'ID'          => $post_id,
+					'post_status' => $restore_status,
+				)
+			);
+			if ( is_wp_error( $update_result ) ) {
+				wp_die( esc_html__( 'Could not restore this submission. Please try again.', 'prayerpop' ) );
+			}
             delete_post_meta( $post_id, self::ARCHIVED_AT_META_KEY );
             delete_post_meta( $post_id, self::PRE_ARCHIVE_STATUS_META_KEY );
         }
@@ -2824,84 +2869,154 @@ class Prayer_Pop_Run {
 
         update_post_meta( $post_id, self::PRE_ARCHIVE_STATUS_META_KEY, sanitize_key( $current_status ) );
 
-        wp_update_post(
-            array(
-                'ID'          => $post_id,
-                'post_status' => 'archived',
-            )
-        );
+		$update_result = self::update_submission_post(
+			array(
+				'ID'          => $post_id,
+				'post_status' => 'archived',
+			)
+		);
+		if ( is_wp_error( $update_result ) ) {
+			return false;
+		}
 
         $archive_timestamp = null === $archived_time ? current_time( 'timestamp' ) : absint( $archived_time );
         update_post_meta( $post_id, self::ARCHIVED_AT_META_KEY, $archive_timestamp );
         return true;
     }
 
-    /**
-     * Send immediate notification (called by scheduled event).
-     */
-    public function send_immediate_notification( $post_id, $type, $name, $message ) {
-        // Additional security check: verify post exists and user can manage options
-        if ( ! get_post( $post_id ) ) {
-            return;
-        }
+	/** Process due immediate-notification jobs, including interrupted work. */
+	public function process_immediate_notification_outbox() {
+		$query = new WP_Query(
+			array(
+				'post_type'              => 'prayer_request',
+				'post_status'            => 'any',
+				'posts_per_page'         => 100,
+				'fields'                 => 'ids',
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'meta_query'             => array(
+					array(
+						'key'     => Prayer_Pop_Notification_Scheduler::OUTBOX_STATE_META,
+						'value'   => array( 'pending', 'processing' ),
+						'compare' => 'IN',
+					),
+				),
+			)
+		);
 
-        // Get notification settings
-        $notification_options = get_option( 'prayer_pop_notification_settings', array() );
-        
-        // Double-check notifications are still enabled
-        if ( ! isset( $notification_options['enable_notifications'] ) || ! $notification_options['enable_notifications'] ) {
-            return;
-        }
+		foreach ( $query->posts as $post_id ) {
+			$state = (string) get_post_meta( $post_id, Prayer_Pop_Notification_Scheduler::OUTBOX_STATE_META, true );
+			$lock  = absint( get_post_meta( $post_id, '_prayer_pop_immediate_notification_lock', true ) );
+			if ( 'processing' === $state && $lock && $lock < ( time() - ( 10 * MINUTE_IN_SECONDS ) ) ) {
+				update_post_meta( $post_id, Prayer_Pop_Notification_Scheduler::OUTBOX_STATE_META, 'pending' );
+				$state = 'pending';
+			}
+			if ( 'pending' === $state && absint( get_post_meta( $post_id, Prayer_Pop_Notification_Scheduler::OUTBOX_NEXT_ATTEMPT_META, true ) ) <= time() ) {
+				$this->send_immediate_notification( $post_id );
+			}
+		}
+	}
 
-        if ( ! isset( $notification_options['notification_frequency'] ) || $notification_options['notification_frequency'] !== 'immediately' ) {
-            return;
-        }
+	/** Send one claimed immediate notification job. Legacy cron arguments are ignored. */
+	public function send_immediate_notification( $post_id, $type = '', $name = '', $message = '' ) {
+		unset( $type, $name, $message );
+		$post_id = absint( $post_id );
+		if ( $post_id <= 0 || ! get_post( $post_id ) ) {
+			return;
+		}
 
-        // Get email settings with validation
-        $admin_email = ! empty( $notification_options['notification_email'] ) ? 
-            sanitize_email( $notification_options['notification_email'] ) : 
-            get_option( 'admin_email' );
+		$state = (string) get_post_meta( $post_id, Prayer_Pop_Notification_Scheduler::OUTBOX_STATE_META, true );
+		if ( in_array( $state, array( 'sent', 'failed', 'cancelled' ), true ) || ! $this->claim_immediate_notification( $post_id ) ) {
+			return;
+		}
 
-        // Validate email address
-        if ( ! is_email( $admin_email ) ) {
-            return;
-        }
+		$notification_options = get_option( 'prayer_pop_notification_settings', array() );
+		if ( empty( $notification_options['enable_notifications'] ) || 'immediately' !== ( $notification_options['notification_frequency'] ?? '' ) ) {
+			$this->finish_immediate_notification( $post_id, 'cancelled', __( 'Immediate notifications are disabled.', 'prayerpop' ) );
+			return;
+		}
 
-        // Get email template
-        $email_template = get_option( 'prayer_pop_email_template', array() );
-        $subject = isset( $email_template['email_subject'] ) && ! empty( $email_template['email_subject'] ) ? 
-            $email_template['email_subject'] : 
-            __( 'New PrayerPop Submission', 'prayerpop' );
+		$admin_email = ! empty( $notification_options['notification_email'] ) ? sanitize_email( $notification_options['notification_email'] ) : get_option( 'admin_email' );
+		if ( ! is_email( $admin_email ) ) {
+			$this->finish_immediate_notification( $post_id, 'failed', __( 'No valid notification recipient is configured.', 'prayerpop' ) );
+			return;
+		}
 
-        $body_template = isset( $email_template['email_body'] ) && ! empty( $email_template['email_body'] ) ? 
-            $email_template['email_body'] : 
-            __( "Type: {type}\nName: {name}\nMessage:\n{message}", "prayerpop" );
+		$email_template = get_option( 'prayer_pop_email_template', array() );
+		$subject        = ! empty( $email_template['email_subject'] ) ? $email_template['email_subject'] : __( 'New PrayerPop Submission', 'prayerpop' );
+		$body_template  = ! empty( $email_template['email_body'] ) ? $email_template['email_body'] : __( "Type: {type}\nName: {name}\nMessage:\n{message}", 'prayerpop' );
+		$type           = sanitize_key( (string) get_post_meta( $post_id, 'prayer_pop_type', true ) );
+		$placeholders   = array(
+			'{type}'          => 'prayer_request' === $type ? __( 'Prayer Request', 'prayerpop' ) : __( 'Testimony', 'prayerpop' ),
+			'{name}'          => Prayer_Pop_Defaults::get_submission_display_name( $post_id ),
+			'{message}'       => (string) get_post_field( 'post_content', $post_id ),
+			'{pending_count}' => absint( $this->get_pending_submission_count() ),
+			'{admin_url}'     => admin_url( 'edit.php?post_type=prayer_request' ),
+			'{site_url}'      => home_url(),
+			'{site_name}'     => wp_strip_all_tags( get_bloginfo( 'name' ) ),
+		);
+		$subject = substr( str_replace( array_keys( $placeholders ), array_values( $placeholders ), $subject ), 0, 998 );
+		$body    = substr( str_replace( array_keys( $placeholders ), array_values( $placeholders ), $body_template ), 0, 50000 );
 
-        $pending_count = $this->get_pending_submission_count();
+		$mail_errors = array();
+		$mail_failed = static function( $error ) use ( &$mail_errors ) {
+			if ( $error instanceof WP_Error ) {
+				$mail_errors[] = $error->get_error_message();
+			}
+		};
+		add_action( 'wp_mail_failed', $mail_failed );
+		$sent = wp_mail( $admin_email, $subject, $body );
+		remove_action( 'wp_mail_failed', $mail_failed );
 
-        // Prepare placeholders with enhanced variables and additional security
-        $placeholders = array(
-            '{type}' => $type === 'prayer_request' ? __( 'Prayer Request', 'prayerpop' ) : __( 'Testimony', 'prayerpop' ),
-            '{name}' => $name ?: __( 'Anonymous', 'prayerpop' ),
-            '{message}' => $message,
-            '{pending_count}' => absint( $pending_count ),
-            '{admin_url}' => admin_url( 'edit.php?post_type=prayer_request' ),
-            '{site_url}' => home_url(),
-            '{site_name}' => wp_strip_all_tags( get_bloginfo( 'name' ) )
-        );
+		if ( $sent ) {
+			$this->finish_immediate_notification( $post_id, 'sent' );
+			return;
+		}
 
-        // Replace placeholders with sanitized content
-        $subject = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $subject );
-        $body = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $body_template );
+		$this->retry_immediate_notification( $post_id, $mail_errors ? implode( ' | ', array_unique( $mail_errors ) ) : __( 'wp_mail returned false.', 'prayerpop' ) );
+	}
 
-        // Additional security: limit subject and body length to prevent potential issues
-        $subject = substr( $subject, 0, 998 ); // Email subject length limit
-        $body = substr( $body, 0, 50000 ); // Reasonable email body limit
+	private function claim_immediate_notification( $post_id ) {
+		$lock_key = '_prayer_pop_immediate_notification_lock';
+		$lock     = absint( get_post_meta( $post_id, $lock_key, true ) );
+		if ( $lock && $lock >= ( time() - ( 10 * MINUTE_IN_SECONDS ) ) ) {
+			return false;
+		}
+		if ( $lock ) {
+			delete_post_meta( $post_id, $lock_key );
+		}
+		if ( ! add_post_meta( $post_id, $lock_key, time(), true ) ) {
+			return false;
+		}
+		update_post_meta( $post_id, Prayer_Pop_Notification_Scheduler::OUTBOX_STATE_META, 'processing' );
+		return true;
+	}
 
-        // Send email with error handling
-        $mail_sent = wp_mail( $admin_email, $subject, $body );
-        
-	    }
+	private function finish_immediate_notification( $post_id, $state, $error = '' ) {
+		update_post_meta( $post_id, Prayer_Pop_Notification_Scheduler::OUTBOX_STATE_META, $state );
+		if ( '' !== $error ) {
+			update_post_meta( $post_id, '_prayer_pop_immediate_notification_last_error', $error );
+		} else {
+			delete_post_meta( $post_id, '_prayer_pop_immediate_notification_last_error' );
+		}
+		delete_post_meta( $post_id, '_prayer_pop_immediate_notification_lock' );
+	}
+
+	private function retry_immediate_notification( $post_id, $error ) {
+		$attempts = absint( get_post_meta( $post_id, '_prayer_pop_immediate_notification_attempts', true ) ) + 1;
+		update_post_meta( $post_id, '_prayer_pop_immediate_notification_attempts', $attempts );
+		if ( $attempts >= 5 ) {
+			$this->finish_immediate_notification( $post_id, 'failed', $error );
+			return;
+		}
+
+		$next_attempt = time() + min( 6 * HOUR_IN_SECONDS, 5 * MINUTE_IN_SECONDS * (int) pow( 2, $attempts - 1 ) );
+		update_post_meta( $post_id, Prayer_Pop_Notification_Scheduler::OUTBOX_STATE_META, 'pending' );
+		update_post_meta( $post_id, Prayer_Pop_Notification_Scheduler::OUTBOX_NEXT_ATTEMPT_META, $next_attempt );
+		update_post_meta( $post_id, '_prayer_pop_immediate_notification_last_error', $error );
+		delete_post_meta( $post_id, '_prayer_pop_immediate_notification_lock' );
+		wp_schedule_single_event( $next_attempt, Prayer_Pop_Notification_Scheduler::IMMEDIATE_HOOK, array( $post_id ), true );
+	}
 
     /**
      * Send daily notifications

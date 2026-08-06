@@ -10,6 +10,41 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Prayer_Pop_Notification_Scheduler {
 	const DAILY_HOOK  = 'prayer_pop_send_daily_notifications';
 	const WEEKLY_HOOK = 'prayer_pop_send_weekly_notifications';
+	const IMMEDIATE_HOOK = 'prayer_pop_send_immediate_notification';
+	const OUTBOX_WORKER_HOOK = 'prayer_pop_process_notification_outbox';
+	const OUTBOX_STATE_META = '_prayer_pop_immediate_notification_state';
+	const OUTBOX_NEXT_ATTEMPT_META = '_prayer_pop_immediate_notification_next_attempt';
+
+	/** Queue an immediate submission notification in durable post meta. */
+	public static function queue_immediate_notification( $post_id ) {
+		$post_id = absint( $post_id );
+		if ( $post_id <= 0 || ! get_post( $post_id ) ) {
+			return new WP_Error( 'invalid_submission', __( 'The submission could not be queued for notification.', 'prayerpop' ) );
+		}
+
+		update_post_meta( $post_id, self::OUTBOX_STATE_META, 'pending' );
+		update_post_meta( $post_id, self::OUTBOX_NEXT_ATTEMPT_META, time() );
+		delete_post_meta( $post_id, '_prayer_pop_immediate_notification_last_error' );
+		self::ensure_outbox_worker_scheduled();
+
+		$result = wp_schedule_single_event( time(), self::IMMEDIATE_HOOK, array( $post_id ), true );
+		if ( is_wp_error( $result ) || ! $result ) {
+			$error = is_wp_error( $result ) ? $result->get_error_message() : __( 'WordPress could not schedule the notification event.', 'prayerpop' );
+			update_post_meta( $post_id, '_prayer_pop_immediate_notification_last_error', $error );
+			return new WP_Error( 'notification_schedule_failed', $error );
+		}
+
+		return true;
+	}
+
+	/** Ensure an hourly worker can recover queued or retried notifications. */
+	public static function ensure_outbox_worker_scheduled() {
+		if ( wp_next_scheduled( self::OUTBOX_WORKER_HOOK ) ) {
+			return true;
+		}
+
+		return (bool) wp_schedule_event( time() + MINUTE_IN_SECONDS, 'hourly', self::OUTBOX_WORKER_HOOK );
+	}
 
 	/**
 	 * Replace existing notification events with the next event requested by settings.
@@ -20,6 +55,7 @@ class Prayer_Pop_Notification_Scheduler {
 	public static function sync( $settings ) {
 		wp_clear_scheduled_hook( self::DAILY_HOOK );
 		wp_clear_scheduled_hook( self::WEEKLY_HOOK );
+		self::ensure_outbox_worker_scheduled();
 
 		return self::ensure_scheduled( $settings );
 	}

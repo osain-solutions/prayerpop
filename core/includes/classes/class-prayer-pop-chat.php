@@ -12,12 +12,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Prayer_Pop_Chat {
 	const SETTINGS_OPTION = 'prayer_pop_chat_settings';
 	const SCHEMA_OPTION   = 'prayer_pop_chat_schema_version';
-	const SCHEMA_VERSION  = '1';
+	const SCHEMA_VERSION  = '2';
 	const COOKIE_NAME     = 'prayerpop_chat_token';
 	const RATE_LIMIT      = 10;
 
 	/** @var Prayer_Pop_Chat|null */
 	private static $instance = null;
+
+	/** @var Prayer_Pop_Chat_Storage|null */
+	private $storage = null;
 
 	/** Initialize the singleton. */
 	public static function init() {
@@ -38,6 +41,7 @@ class Prayer_Pop_Chat {
 		add_action( 'wp_footer', array( $this, 'render_frontend' ), 15 );
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		add_action( 'admin_post_prayer_pop_save_free_chat_initial_message', array( $this, 'save_initial_message' ) );
+		add_action( 'prayer_pop_cleanup_event', array( $this, 'delete_expired_conversations' ) );
 		add_action( 'admin_init', array( $this, 'add_privacy_policy_content' ) );
 		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_privacy_exporter' ) );
 		add_filter( 'wp_privacy_personal_data_erasers', array( $this, 'register_privacy_eraser' ) );
@@ -49,7 +53,26 @@ class Prayer_Pop_Chat {
 			'enabled'            => 0,
 			'team_name'          => __( 'PrayerPop', 'prayerpop' ),
 			'notification_email' => sanitize_email( get_option( 'admin_email' ) ),
+			'retention_days'     => 365,
 		);
+	}
+
+	/** Allowed retention periods. A value of zero explicitly keeps conversations indefinitely. */
+	private static function retention_options() {
+		return array(
+			30  => __( '30 days', 'prayerpop' ),
+			90  => __( '90 days', 'prayerpop' ),
+			180 => __( '180 days', 'prayerpop' ),
+			365 => __( '1 year', 'prayerpop' ),
+			730 => __( '2 years', 'prayerpop' ),
+			0   => __( 'Keep indefinitely', 'prayerpop' ),
+		);
+	}
+
+	/** Accept only a deliberate, supported Chat retention period. */
+	private static function sanitize_retention_days( $value ) {
+		$value = absint( $value );
+		return array_key_exists( $value, self::retention_options() ) ? $value : self::defaults()['retention_days'];
 	}
 
 	/** Sanitized settings merged with defaults. */
@@ -138,7 +161,7 @@ class Prayer_Pop_Chat {
 			KEY visitor_token_hash (visitor_token_hash),
 			KEY status_last_message (status,last_message_at),
 			KEY visitor_email (visitor_email)
-		) {$charset};" );
+		) ENGINE=InnoDB {$charset};" );
 
 		dbDelta( "CREATE TABLE {$messages} (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -151,10 +174,29 @@ class Prayer_Pop_Chat {
 			PRIMARY KEY  (id),
 			KEY conversation_messages (conversation_id,id),
 			KEY unread_messages (conversation_id,read_at)
-		) {$charset};" );
+		) ENGINE=InnoDB {$charset};" );
+
+		self::upgrade_chat_tables_to_innodb();
 
 		add_option( self::SETTINGS_OPTION, self::defaults(), '', false );
 		update_option( self::SCHEMA_OPTION, self::SCHEMA_VERSION, false );
+	}
+
+	/** Ensure existing chat tables can provide the atomic writes this feature requires. */
+	private static function upgrade_chat_tables_to_innodb() {
+		global $wpdb;
+		foreach ( array( self::conversations_table(), self::messages_table() ) as $table ) {
+			$status = $wpdb->get_row( $wpdb->prepare( 'SHOW TABLE STATUS WHERE Name = %s', $table ) );
+			if ( ! $status || empty( $status->Engine ) || 'innodb' === strtolower( $status->Engine ) ) {
+				continue;
+			}
+			$escaped_table = esc_sql( $table );
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- The table name is generated internally from $wpdb->prefix and escaped above.
+			$upgraded = $wpdb->query( "ALTER TABLE {$escaped_table} ENGINE=InnoDB" );
+			if ( false === $upgraded && defined( 'WP_DEBUG' ) && WP_DEBUG && $wpdb->last_error ) {
+				error_log( 'PrayerPop Chat table engine upgrade failed: ' . sanitize_text_field( $wpdb->last_error ) );
+			}
+		}
 	}
 
 	/** Repair the schema after an update. */
@@ -172,6 +214,14 @@ class Prayer_Pop_Chat {
 	private static function messages_table() {
 		global $wpdb;
 		return $wpdb->prefix . 'prayerpop_chat_messages';
+	}
+
+	/** Keep all transactional database writes behind one dedicated storage boundary. */
+	private function storage() {
+		if ( null === $this->storage ) {
+			$this->storage = new Prayer_Pop_Chat_Storage( self::conversations_table(), self::messages_table() );
+		}
+		return $this->storage;
 	}
 
 	/** Register the three intentionally small settings. */
@@ -198,6 +248,7 @@ class Prayer_Pop_Chat {
 		$sanitized['enabled']            = empty( $input['enabled'] ) ? 0 : 1;
 		$sanitized['team_name']          = isset( $input['team_name'] ) ? self::truncate( sanitize_text_field( $input['team_name'] ), 100 ) : ( isset( $existing['team_name'] ) ? self::truncate( sanitize_text_field( $existing['team_name'] ), 100 ) : __( 'PrayerPop', 'prayerpop' ) );
 		$sanitized['notification_email'] = $email;
+		$sanitized['retention_days']     = self::sanitize_retention_days( $input['retention_days'] ?? ( $existing['retention_days'] ?? self::defaults()['retention_days'] ) );
 		if ( array_key_exists( 'initial_opening_message', $input ) ) {
 			$sanitized['initial_opening_message'] = self::sanitize_initial_opening_message( $input['initial_opening_message'] );
 		} elseif ( array_key_exists( 'initial_opening_message', $existing ) ) {
@@ -229,6 +280,15 @@ class Prayer_Pop_Chat {
 			</label>
 			<p class="description"><?php esc_html_e( 'Let visitors start Chat conversations and let administrators reply from PrayerPop → Chat. Turn this off to use PrayerPop only for prayer-request submissions.', 'prayerpop' ); ?></p>
 		</div>
+		<p>
+			<label for="prayer_pop_chat_retention_days"><strong><?php esc_html_e( 'Chat conversation retention', 'prayerpop' ); ?></strong></label><br>
+			<select id="prayer_pop_chat_retention_days" name="<?php echo esc_attr( self::SETTINGS_OPTION ); ?>[retention_days]">
+				<?php foreach ( self::retention_options() as $days => $label ) : ?>
+					<option value="<?php echo esc_attr( $days ); ?>" <?php selected( absint( self::settings()['retention_days'] ), $days ); ?>><?php echo esc_html( $label ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<span class="description"><?php esc_html_e( 'PrayerPop permanently removes Chat conversations after this period of inactivity. Choose “Keep indefinitely” only when your retention policy requires it.', 'prayerpop' ); ?></span>
+		</p>
 		<?php
 	}
 
@@ -237,7 +297,7 @@ class Prayer_Pop_Chat {
 		if ( function_exists( 'wp_add_privacy_policy_content' ) ) {
 			wp_add_privacy_policy_content(
 				__( 'PrayerPop Chat', 'prayerpop' ),
-				wp_kses_post( __( 'When PrayerPop Chat is enabled, the visitor name, email address, messages, conversation status, and message timestamps are stored in this website’s WordPress database. A random private browser token is stored as an HttpOnly cookie so the visitor can return to the conversation. New-message and reply notifications are sent through the website’s configured WordPress email system.', 'prayerpop' ) )
+				wp_kses_post( __( 'When PrayerPop Chat is enabled, the visitor name, email address, messages, conversation status, and message timestamps are stored in this website’s WordPress database. A random private browser token is stored as an HttpOnly cookie so the visitor can return to the conversation. New-message and reply notifications are sent through the website’s configured WordPress email system. Chat conversations are permanently removed after the retention period chosen in PrayerPop settings, measured from their last activity. WordPress privacy requests can locate Chat records when the visitor supplied an email address.', 'prayerpop' ) )
 			);
 		}
 	}
@@ -271,8 +331,8 @@ class Prayer_Pop_Chat {
 		$rows = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$data = array();
 		foreach ( $rows as $row ) {
-			$messages = $this->messages_for( $row->id );
-			$message_text = implode( "\n\n", array_map( static function( $message ) { return $message['sender_type'] . ': ' . $message['message']; }, $messages ) );
+			$messages = $this->privacy_messages_for( $row->id );
+			$message_text = implode( "\n\n", array_map( static function( $message ) { return $message->sender_type . ' (' . $message->created_at . '): ' . $message->message; }, $messages ) );
 			$data[] = array(
 				'group_id'    => 'prayerpop-chat',
 				'group_label' => __( 'PrayerPop Chat conversations', 'prayerpop' ),
@@ -289,6 +349,14 @@ class Prayer_Pop_Chat {
 		return array( 'data' => $data, 'done' => count( $rows ) < 20 );
 	}
 
+	/** Read all messages for a privacy export without applying the inbox pagination limit. */
+	private function privacy_messages_for( $conversation_id ) {
+		global $wpdb;
+		$table = esc_sql( self::messages_table() );
+		$sql   = $wpdb->prepare( "SELECT sender_type, message, created_at FROM {$table} WHERE conversation_id = %d ORDER BY id ASC", absint( $conversation_id ) );
+		return $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared immediately above with an internally generated table name.
+	}
+
 	/** Permanently erase conversations associated with an email address. */
 	public function erase_personal_data( $email_address, $page = 1 ) {
 		global $wpdb;
@@ -299,11 +367,37 @@ class Prayer_Pop_Chat {
 		$table = esc_sql( self::conversations_table() );
 		$sql = $wpdb->prepare( "SELECT id FROM {$table} WHERE visitor_email=%s ORDER BY id ASC LIMIT 20", $email );
 		$ids = array_map( 'absint', $wpdb->get_col( $sql ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$removed = false;
+		$failed  = false;
 		foreach ( $ids as $id ) {
-			$wpdb->delete( self::messages_table(), array( 'conversation_id' => $id ), array( '%d' ) );
-			$wpdb->delete( self::conversations_table(), array( 'id' => $id ), array( '%d' ) );
+			if ( $this->delete_conversation_records( $id ) ) {
+				$removed = true;
+			} else {
+				$failed = true;
+			}
 		}
-		return array( 'items_removed' => ! empty( $ids ), 'items_retained' => false, 'messages' => array(), 'done' => count( $ids ) < 20 );
+		return array(
+			'items_removed'  => $removed,
+			'items_retained' => $failed,
+			'messages'       => $failed ? array( __( 'One or more Chat conversations could not be erased. Please retry the request or check the database error log.', 'prayerpop' ) ) : array(),
+			'done'           => count( $ids ) < 20 || $failed,
+		);
+	}
+
+	/** Remove inactive conversations in bounded batches during PrayerPop's daily cleanup. */
+	public function delete_expired_conversations() {
+		global $wpdb;
+		$retention_days = absint( self::settings()['retention_days'] );
+		if ( 0 === $retention_days ) {
+			return;
+		}
+		$table  = esc_sql( self::conversations_table() );
+		$cutoff = gmdate( 'Y-m-d H:i:s', time() - ( $retention_days * DAY_IN_SECONDS ) );
+		$sql    = $wpdb->prepare( "SELECT id FROM {$table} WHERE updated_at < %s ORDER BY id ASC LIMIT 100", $cutoff );
+		$ids    = array_map( 'absint', $wpdb->get_col( $sql ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared immediately above with an internally generated table name.
+		foreach ( $ids as $id ) {
+			$this->delete_conversation_records( $id );
+		}
 	}
 
 	/** Add the shared inbox below PrayerPop. */
@@ -550,9 +644,8 @@ class Prayer_Pop_Chat {
 		if ( ! $token ) {
 			$token = hash( 'sha256', wp_generate_password( 64, true, true ) . wp_rand() );
 		}
-		global $wpdb;
 		$now = current_time( 'mysql', true );
-		$wpdb->insert( self::conversations_table(), array(
+		$id = $this->storage()->create_conversation( array(
 			'visitor_token_hash'       => hash( 'sha256', $token ),
 			'visitor_token_expires_at' => gmdate( 'Y-m-d H:i:s', time() + YEAR_IN_SECONDS ),
 			'visitor_name'             => $name,
@@ -564,17 +657,15 @@ class Prayer_Pop_Chat {
 			'last_message_at'          => $now,
 			'created_at'               => $now,
 			'updated_at'               => $now,
-		) );
-		$id = (int) $wpdb->insert_id;
+		), $message );
 		if ( ! $id ) {
 			return new WP_Error( 'chat_storage', __( 'The conversation could not be created.', 'prayerpop' ), array( 'status' => 500 ) );
 		}
-		if ( ! $this->insert_message( $id, 'visitor', 0, $message ) ) {
-			$wpdb->delete( self::conversations_table(), array( 'id' => $id ), array( '%d' ) );
-			return new WP_Error( 'chat_storage', __( 'The message could not be saved.', 'prayerpop' ), array( 'status' => 500 ) );
+		$conversation = $this->get_conversation( $id );
+		if ( ! $conversation ) {
+			return new WP_Error( 'chat_storage', __( 'The conversation could not be created.', 'prayerpop' ), array( 'status' => 500 ) );
 		}
 		$this->email_admin( $name, $message, $id );
-		$conversation = $this->get_conversation( $id );
 		$response = rest_ensure_response( array( 'conversation' => $this->format_conversation( $conversation ), 'messages' => $this->messages_for( $id ) ) );
 		$response->header( 'Set-Cookie', $this->cookie_header( $token ) );
 		return $response;
@@ -619,10 +710,9 @@ class Prayer_Pop_Chat {
 		if ( '' === $message || $this->limited() ) {
 			return new WP_Error( 'invalid_message', __( 'Enter a message and try again.', 'prayerpop' ), array( 'status' => 400 ) );
 		}
-		if ( ! $this->insert_message( $conversation->id, 'visitor', 0, $message ) ) {
+		if ( ! $this->store_message_and_touch( $conversation->id, 'visitor', 0, $message ) ) {
 			return new WP_Error( 'chat_storage', __( 'The message could not be saved.', 'prayerpop' ), array( 'status' => 500 ) );
 		}
-		$this->touch( $conversation->id, 'visitor', $message );
 		$this->email_admin( $conversation->visitor_name, $message, $conversation->id );
 		return rest_ensure_response( array( 'conversation' => $this->format_conversation( $this->get_conversation( $conversation->id ) ), 'messages' => $this->messages_for( $conversation->id ) ) );
 	}
@@ -644,18 +734,12 @@ class Prayer_Pop_Chat {
 	}
 
 	private function insert_message( $id, $type, $user_id, $message ) {
-		global $wpdb;
-		$wpdb->insert( self::messages_table(), array( 'conversation_id' => absint( $id ), 'sender_type' => $type, 'sender_user_id' => absint( $user_id ), 'message' => $message, 'created_at' => current_time( 'mysql', true ) ) );
-		return (int) $wpdb->insert_id;
+		return $this->storage()->insert_message( $id, $type, $user_id, $message );
 	}
 
-	private function touch( $id, $sender, $message ) {
-		global $wpdb;
-		$table  = esc_sql( self::conversations_table() );
-		$column = 'admin' === $sender ? 'visitor_unread' : 'admin_unread';
-		$now = current_time( 'mysql', true );
-		$sql = $wpdb->prepare( "UPDATE {$table} SET {$column}={$column}+1,last_sender=%s,last_message_excerpt=%s,last_message_at=%s,updated_at=%s WHERE id=%d", $sender, self::truncate( $message, 255 ), $now, $now, absint( $id ) );
-		$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	/** Persist a visible message and its conversation summary as one operation. */
+	private function store_message_and_touch( $id, $type, $user_id, $message ) {
+		return $this->storage()->append_message( $id, $type, $user_id, $message, self::truncate( $message, 255 ) );
 	}
 
 	private function messages_for( $id, $after = 0 ) {
@@ -705,10 +789,9 @@ class Prayer_Pop_Chat {
 		if ( ! $conversation || 'open' !== $conversation->status || '' === $message ) {
 			return new WP_Error( 'invalid_message', __( 'Reopen the conversation and enter a reply.', 'prayerpop' ), array( 'status' => 400 ) );
 		}
-		if ( ! $this->insert_message( $conversation->id, 'admin', get_current_user_id(), $message ) ) {
+		if ( ! $this->store_message_and_touch( $conversation->id, 'admin', get_current_user_id(), $message ) ) {
 			return new WP_Error( 'chat_storage', __( 'The reply could not be saved.', 'prayerpop' ), array( 'status' => 500 ) );
 		}
-		$this->touch( $conversation->id, 'admin', $message );
 		$this->email_visitor( $conversation, $message );
 		return rest_ensure_response( array( 'conversation' => $this->format_conversation( $this->get_conversation( $conversation->id ) ), 'messages' => $this->messages_for( $conversation->id ) ) );
 	}
@@ -739,17 +822,19 @@ class Prayer_Pop_Chat {
 
 	/** Permanently delete a conversation and all of its messages. */
 	public function admin_delete( WP_REST_Request $request ) {
-		global $wpdb;
 		$id = absint( $request['id'] );
 		if ( ! $this->get_conversation( $id ) ) {
 			return new WP_Error( 'not_found', __( 'Conversation not found.', 'prayerpop' ), array( 'status' => 404 ) );
 		}
-		$wpdb->delete( self::messages_table(), array( 'conversation_id' => $id ), array( '%d' ) );
-		$deleted = $wpdb->delete( self::conversations_table(), array( 'id' => $id ), array( '%d' ) );
-		if ( false === $deleted ) {
+		if ( ! $this->delete_conversation_records( $id ) ) {
 			return new WP_Error( 'delete_failed', __( 'The conversation could not be deleted.', 'prayerpop' ), array( 'status' => 500 ) );
 		}
 		return rest_ensure_response( array( 'success' => true ) );
+	}
+
+	/** Delete conversation children and parent as a single committed operation. */
+	private function delete_conversation_records( $id ) {
+		return $this->storage()->delete_conversation( $id );
 	}
 
 	private function email_html( $title, $name, $message, $url, $button ) {

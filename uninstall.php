@@ -73,6 +73,7 @@ if ( ! $prayer_pop_preserve_shared_data ) {
 	wp_clear_scheduled_hook( 'prayer_pop_send_daily_notifications' );
 	wp_clear_scheduled_hook( 'prayer_pop_send_weekly_notifications' );
 	wp_clear_scheduled_hook( 'prayer_pop_send_immediate_notification' );
+	wp_clear_scheduled_hook( 'prayer_pop_process_notification_outbox' );
 	wp_clear_scheduled_hook( 'prayer_pop_cleanup_event' );
 }
 

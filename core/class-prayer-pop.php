@@ -55,7 +55,6 @@ final class Prayer_Pop {
 		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/class-prayer-pop-settings.php';
 		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/class-prayer-pop-run.php';
 		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/class-prayer-pop-ajax.php';
-		require_once PRAYERPOP_PLUGIN_DIR . 'src/Admin/ListTable.php';
 	}
 
 	/**
@@ -91,6 +90,7 @@ final class Prayer_Pop {
 	 */
 	public function init_admin_components() {
 		if ( is_admin() ) {
+			require_once PRAYERPOP_PLUGIN_DIR . 'src/Admin/ListTable.php';
 			new \PrayerPop\Admin\ListTable();
 		}
 	}

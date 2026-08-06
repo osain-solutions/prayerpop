@@ -65,8 +65,6 @@ class Prayer_Pop_Settings {
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
 		add_action('admin_footer-prayer-pop_page_prayer-pop-settings', array($this, 'render_frontend_overlay_preview'));
 		add_action('admin_notices', array($this, 'show_settings_messages'));
-		add_action( 'current_screen', array( $this, 'suppress_settings_notices' ), PHP_INT_MAX );
-		add_action( 'in_admin_header', array( $this, 'suppress_settings_notices' ), PHP_INT_MAX );
 		add_action('admin_post_prayer_pop_submit_feedback', array($this, 'handle_submit_feedback'));
 	}
 
@@ -98,27 +96,6 @@ class Prayer_Pop_Settings {
 		}
 
 		$submenu['prayer-pop'] = array_values( array_merge( $ordered_items, $remaining ) );
-	}
-
-	/**
-	 * Keep the PrayerPop settings screen free from notices registered by other plugins.
-	 *
-	 * PrayerPop's own save-status message is restored after the notice hooks are cleared.
-	 *
-	 * @return void
-	 */
-	public function suppress_settings_notices() {
-		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
-		if ( 'prayer-pop-settings' !== $page ) {
-			return;
-		}
-
-		remove_all_actions( 'admin_notices' );
-		remove_all_actions( 'all_admin_notices' );
-		remove_all_actions( 'network_admin_notices' );
-		remove_all_actions( 'user_admin_notices' );
-
-		add_action( 'admin_notices', array( $this, 'show_settings_messages' ) );
 	}
 
 	/**
@@ -1038,6 +1015,7 @@ class Prayer_Pop_Settings {
 				<p><?php esc_html_e( 'PrayerPop is bubble-first. Follow these steps to collect and review prayer requests.', 'prayerpop' ); ?></p>
 				<ol>
 					<li><?php esc_html_e( 'Open General settings and confirm Show PrayerPop Bubble is enabled.', 'prayerpop' ); ?></li>
+					<li><?php esc_html_e( 'Choose whether to enable PrayerPop Chat. Leave it off when you want visitors to use prayer-request submissions only.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Choose whether visitors may leave the name field empty.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Set the retention period if old approved or answered requests should be archived and later cleaned up.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'In Notifications, set your recipient email and schedule, then send a test email.', 'prayerpop' ); ?></li>
@@ -1046,16 +1024,17 @@ class Prayer_Pop_Settings {
 					<li><?php esc_html_e( 'Visit the frontend of your site, click the bubble, and submit a test prayer request.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Open PrayerPop -> Submissions and process the test request.', 'prayerpop' ); ?></li>
 				</ol>
-				<div class="prayer-pop-doc-note is-tip"><strong><?php esc_html_e( 'Note:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'The global bubble opens the prayer request form on your site.', 'prayerpop' ); ?></div>
+				<div class="prayer-pop-doc-note is-tip"><strong><?php esc_html_e( 'Note:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'With PrayerPop Chat turned off, the global bubble opens the prayer-request form only. With Chat turned on, visitors can also start a conversation.', 'prayerpop' ); ?></div>
 			</section>
 
 			<hr />
 
 			<section class="prayer-pop-doc-section" id="prayer-pop-doc-bubble">
 				<h2><?php esc_html_e( 'Using the PrayerPop Bubble', 'prayerpop' ); ?></h2>
-				<p><?php esc_html_e( 'The bubble is the frontend entry point. When enabled, it appears on your site and opens the prayer request form.', 'prayerpop' ); ?></p>
+				<p><?php esc_html_e( 'The bubble is the frontend entry point. When enabled, it appears on your site and opens the prayer-request form. If you enable PrayerPop Chat, it also gives visitors a way to start a conversation.', 'prayerpop' ); ?></p>
 				<ul>
-					<li><?php esc_html_e( 'Visitors submit one prayer request message and an optional name.', 'prayerpop' ); ?></li>
+					<li><?php esc_html_e( 'With Chat turned off, visitors submit one prayer request message and an optional name.', 'prayerpop' ); ?></li>
+					<li><?php esc_html_e( 'With Chat turned on, visitors can send messages to your team as well as submit prayer requests.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Submissions are saved as prayer requests in WordPress admin.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Every new request starts in Pending Action so an admin can review it.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'The form includes honeypot, minimum-submit-time, rate-limit, and cooldown protection.', 'prayerpop' ); ?></li>
@@ -1068,7 +1047,7 @@ class Prayer_Pop_Settings {
 			<section class="prayer-pop-doc-section" id="prayer-pop-doc-managing-submissions">
 				<h2><?php esc_html_e( 'Managing Submissions', 'prayerpop' ); ?></h2>
 				<p><?php esc_html_e( 'This is where your church team will spend most time. New submissions appear in WordPress -> Submissions.', 'prayerpop' ); ?></p>
-				<p><?php esc_html_e( 'Usually this is handled by administrators or trusted team members with PrayerPop permissions.', 'prayerpop' ); ?></p>
+				<p><?php esc_html_e( 'Usually WordPress administrators handle this work in PrayerPop Free.', 'prayerpop' ); ?></p>
 
 				<h3><?php esc_html_e( 'What happens when someone submits', 'prayerpop' ); ?></h3>
 				<ul>
@@ -1115,10 +1094,12 @@ class Prayer_Pop_Settings {
 				<p><?php esc_html_e( 'Use this section to find the right setting quickly. Each tab description explains what it does and when to use it.', 'prayerpop' ); ?></p>
 
 				<h3><?php esc_html_e( 'General Tab', 'prayerpop' ); ?></h3>
-				<p><strong><?php esc_html_e( 'What it does:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Controls the prayer request workflow.', 'prayerpop' ); ?></p>
-				<p><strong><?php esc_html_e( 'Use it when:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'You want to show or hide the bubble, allow anonymous names, or set the retention period.', 'prayerpop' ); ?></p>
+				<p><strong><?php esc_html_e( 'What it does:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Controls the prayer-request and Chat workflow.', 'prayerpop' ); ?></p>
+				<p><strong><?php esc_html_e( 'Use it when:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'You want to show or hide the bubble, choose submissions only or Chat, allow anonymous names, or set retention.', 'prayerpop' ); ?></p>
 				<ul>
-					<li><strong><?php esc_html_e( 'Show PrayerPop Bubble:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Shows the floating frontend bubble that opens the prayer request form.', 'prayerpop' ); ?></li>
+					<li><strong><?php esc_html_e( 'Show PrayerPop Bubble:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Shows the floating frontend bubble. It opens the prayer-request form and, when enabled, PrayerPop Chat.', 'prayerpop' ); ?></li>
+					<li><strong><?php esc_html_e( 'Enable PrayerPop Chat:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Lets visitors start Chat conversations. Turn it off for a clean prayer-request submission form only. Existing Chat records remain stored until you delete them or the Chat retention rule removes them.', 'prayerpop' ); ?></li>
+					<li><strong><?php esc_html_e( 'Chat conversation retention:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Permanently removes inactive Chat conversations after the chosen period. The default is one year. Choose Keep indefinitely only when your data-retention policy requires it.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Anonymous submissions:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Allows visitors to leave the name field empty.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Admin review:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Every request starts in Pending Action for review.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Retention period:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Older approved/answered submissions move to archive first. Later, archived submissions can be auto-deleted based on this time window.', 'prayerpop' ); ?></li>
@@ -1130,6 +1111,8 @@ class Prayer_Pop_Settings {
 				<ul>
 					<li><?php esc_html_e( 'Set recipient and frequency (immediate, daily, weekly).', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Set the subject and body in Email Template, then verify delivery with a real notification.', 'prayerpop' ); ?></li>
+					<li><?php esc_html_e( 'PrayerPop queues immediate alerts and retries failed work. It cannot fix an unavailable mail service, so keep your WordPress mail service working and send a test after changes.', 'prayerpop' ); ?></li>
+					<li><?php esc_html_e( 'Daily and weekly alerts run through WordPress cron. On a low-traffic site, ask your host or developer to run WordPress cron from the server so scheduled alerts run on time.', 'prayerpop' ); ?></li>
 				</ul>
 
 				<h3><?php esc_html_e( 'Style Tab', 'prayerpop' ); ?></h3>
@@ -1159,6 +1142,7 @@ class Prayer_Pop_Settings {
 				<h2><?php esc_html_e( 'Troubleshooting', 'prayerpop' ); ?></h2>
 				<ul>
 					<li><strong><?php esc_html_e( 'Email delivery issue:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Check Notifications and Email Template settings, then verify WordPress mail delivery with your hosting provider.', 'prayerpop' ); ?></li>
+					<li><strong><?php esc_html_e( 'Chat is not available to visitors:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Open Settings, turn on Enable PrayerPop Chat, save the setting, clear page or CDN caches, and reload the website.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Bubble visibility issue:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Check General settings, confirm Show PrayerPop Bubble is enabled, then clear cache and reload the frontend.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Website changes are missing:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Clear cache (plugin/server/CDN) and reload the page.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Text import failed:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Use a JSON file exported from PrayerPop that contains top-level "texts" data.', 'prayerpop' ); ?></li>
@@ -1174,12 +1158,15 @@ class Prayer_Pop_Settings {
 							<li><?php esc_html_e( 'Submissions are stored as WordPress posts (post type: prayer_request) with related meta fields.', 'prayerpop' ); ?></li>
 							<li><?php esc_html_e( 'Main stored fields include: message, name (or anonymous marker), submission type, public marker, moderation status, and answered-prayer note when used.', 'prayerpop' ); ?></li>
 							<li><?php esc_html_e( 'Notification settings can store one admin email address for alerts.', 'prayerpop' ); ?></li>
+							<li><?php esc_html_e( 'When PrayerPop Chat is enabled, it stores visitor names, optional email addresses, messages, conversation status, and message times in WordPress database tables. It sends new-message and reply notices through your WordPress email service.', 'prayerpop' ); ?></li>
+							<li><?php esc_html_e( 'Use Tools -> Export Personal Data or Tools -> Erase Personal Data for a visitor who gave an email address. PrayerPop can export or erase matching Chat conversations.', 'prayerpop' ); ?></li>
 							<li><?php esc_html_e( 'No external analytics or ad trackers are added by PrayerPop itself.', 'prayerpop' ); ?></li>
 						</ul>
 
 					<h3><?php esc_html_e( 'Cookies & Browser Storage Used by PrayerPop', 'prayerpop' ); ?></h3>
 					<ul>
 						<li><?php esc_html_e( 'Local anti-spam and cooldown tracking is used to limit repeated submissions.', 'prayerpop' ); ?></li>
+						<li><code>prayerpop_chat_token</code> - <?php esc_html_e( 'A private HttpOnly, SameSite browser credential lets a visitor return to a Chat conversation. WordPress stores only a hash of this credential.', 'prayerpop' ); ?></li>
 					</ul>
 
 					<h3><?php esc_html_e( 'Retention & Deletion (Practical)', 'prayerpop' ); ?></h3>
@@ -1187,7 +1174,11 @@ class Prayer_Pop_Settings {
 						<li><?php esc_html_e( 'Approved/Answered items older than the retention window are archived first.', 'prayerpop' ); ?></li>
 						<li><?php esc_html_e( 'Archived items are deleted only after they have also stayed archived for the full retention window.', 'prayerpop' ); ?></li>
 						<li><?php esc_html_e( 'Retention set to Forever (0) keeps submissions stored during automatic cleanup.', 'prayerpop' ); ?></li>
+						<li><?php esc_html_e( 'Chat retention is separate from submission retention. PrayerPop permanently removes each inactive Chat conversation after the Chat retention period you choose.', 'prayerpop' ); ?></li>
 					</ul>
+
+					<h3><?php esc_html_e( 'Hosting Behind a Reverse Proxy', 'prayerpop' ); ?></h3>
+					<p><?php esc_html_e( 'PrayerPop uses the direct connection address for rate limiting by default. If your site runs behind a reverse proxy or CDN, ask your developer to add only your trusted proxy ranges through the prayer_pop_trusted_proxy_ranges filter before PrayerPop uses forwarded visitor IP headers.', 'prayerpop' ); ?></p>
 
 					<h3><?php esc_html_e( 'Uninstall Behavior', 'prayerpop' ); ?></h3>
 					<ul>

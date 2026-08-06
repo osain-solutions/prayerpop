@@ -4,3 +4,8 @@ Thumbs.db
 .vscode/
 *.log
 node_modules/
+/phpunit.xml
+/phpunit.xml.dist
+/tests/
+/coverage/
+/.phpunit.result.cache

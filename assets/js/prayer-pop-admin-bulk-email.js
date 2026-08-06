@@ -685,9 +685,17 @@
 				if (answerMessage === null) {
 					return;
 				}
-				var targetUrl = new URL(link.href, window.location.origin);
-				targetUrl.searchParams.set('answered_message', answerMessage);
-				window.location.href = targetUrl.toString();
+					var targetUrl = new URL(link.href, window.location.origin);
+					if (targetUrl.origin !== window.location.origin || !/^https?:$/.test(targetUrl.protocol)) {
+						return;
+					}
+					targetUrl.searchParams.set('answered_message', answerMessage);
+					var navigationLink = document.createElement('a');
+					navigationLink.href = targetUrl.toString();
+					navigationLink.style.display = 'none';
+					document.body.appendChild(navigationLink);
+					navigationLink.click();
+					navigationLink.remove();
 			});
 		});
 	}

@@ -3,7 +3,7 @@ Contributors: osain
 Tags: prayer, church, ministry, notifications
 Requires at least: 5.8
 Tested up to: 7.0
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -58,10 +58,12 @@ The free plugin focuses on two essentials: collecting and reviewing prayer reque
 * Admin replies plus close, reopen, and permanent deletion controls
 * Email alerts for new visitor messages and team replies
 * Secure visitor sessions that let people return to their conversation in the same browser
+* A Chat switch that shows a prayer-request-only bubble when you turn Chat off
 
 **Notifications and settings**
 
 * Email notifications with immediate, daily, or weekly scheduling
+* Recovery for queued immediate notifications when WordPress cannot start the first send
 * Required admin review for incoming requests
 * Retention period cleanup controls
 * Primary color, global font family, bubble position, bubble animation, and bubble icon settings
@@ -108,8 +110,8 @@ See the full [PrayerPop Features](https://prayerpop.eu/features/) page or the [s
 5. In Text Customization, edit the visible form labels and messages if needed.
 6. Visit the frontend of your site and click the [PrayerPop](https://prayerpop.eu/) bubble to test a prayer request.
 7. Review incoming requests in `PrayerPop -> Submissions`.
-8. To use chat, open `PrayerPop -> Chat`, enable Chat, and confirm the team name and notification email.
-9. Send a test message from the frontend and reply from the Chat inbox.
+8. To use Chat, open `PrayerPop -> Chat`, enable Chat, and confirm the team name and notification email. To use prayer requests only, turn Chat off in `PrayerPop -> Settings`; the visitor bubble then opens the prayer-request form straight away.
+9. Send a test message from the frontend and reply from the Chat inbox when Chat is on.
 
 == Screenshots ==
 
@@ -155,6 +157,10 @@ Yes. Open `PrayerPop -> Settings -> Style`.
 
 Yes. Free includes one simple classic chat layout, a shared WordPress inbox, email notifications, conversation history, unread indicators, and close/reopen controls. It does not include internal notes, priorities, categories, assignments, FAQ tabs, or advanced chat layouts.
 
+= What happens when I turn Chat off? =
+
+PrayerPop stops showing Chat to visitors and opens the prayer-request form from the bubble. It also rejects new public Chat requests. PrayerPop keeps existing conversations until the chosen Chat retention period ends, you erase them through WordPress privacy tools, or you remove them yourself.
+
 = Where can I contact support? =
 
 For questions, bugs, [feature requests](https://prayerpop.eu/contact/), or [support](https://prayerpop.eu/contact/), use the [PrayerPop contact page](https://prayerpop.eu/contact/).
@@ -186,7 +192,16 @@ No. The free plugin focuses on prayer requests and simple visitor chat. Public [
 
 * Retention period is configurable in General settings.
 * Older approved or answered items can be archived first and cleaned later.
-* Chat conversations remain until they are erased through WordPress privacy tools or removed during uninstall. Closing a conversation does not delete it.
+* Chat permanently removes conversations after the Chat retention period you choose, counted from the last activity. The default period is 365 days. Choose `Keep indefinitely` only when your own data policy calls for it.
+* Closing a conversation does not delete it.
+
+= Privacy requests =
+
+WordPress administrators can use `Tools -> Export Personal Data` and `Tools -> Erase Personal Data` to find or erase Chat records when a visitor gave an email address. Review the PrayerPop text in WordPress's Privacy Policy guide and add it to your site's privacy policy where needed.
+
+= Reverse-proxy hosting =
+
+PrayerPop uses the direct visitor IP address for rate limits by default. If your site uses a trusted reverse proxy, a developer can add its IP addresses or CIDR ranges through `prayer_pop_trusted_proxy_ranges`. Do not trust forwarded IP headers without that setting.
 
 = Uninstall =
 
@@ -195,14 +210,18 @@ No. The free plugin focuses on prayer requests and simple visitor chat. Public [
 
 == Changelog ==
 
-= 1.6.1 =
-* Added an editable Chat opening message in the Chat inbox.
-* Added team profile images to team replies and an unread reply count on the closed PrayerPop launcher.
-* Improved Chat transitions, message grouping, refresh behaviour, and scroll preservation for returning visitors.
-* Improved Chat message styling so team replies use a consistent profile, message bubble, sender name, and timestamp treatment.
-* Improved Chat and Language & Text settings with clearer controls, search, and expandable text groups.
-* Fixed shared Chat, text, design, and notification settings being overwritten when switching between PrayerPop Free and Pro.
-* Fixed uninstall handling so shared Chat data is preserved while the other PrayerPop edition remains installed.
+= 1.6.2 =
+* Improved the visitor Chat experience, with clearer message grouping, steadier scrolling, better refresh behaviour, team profile images, and an unread reply count on the launcher.
+* Added an editable opening message in the Chat inbox.
+* Added Chat retention settings and WordPress personal-data export and erasure support for Chat records.
+* Made the visitor bubble open the prayer request form when Chat is turned off.
+* Made Chat storage and prayer-request notifications more reliable when WordPress cannot complete the first attempt.
+* Improved submission and bulk-action handling so failed updates are not shown as successful.
+* Hardened rate limiting for sites behind a trusted reverse proxy.
+* Improved Chat and Language & Text settings with clearer controls, search, and expandable groups.
+* Fixed shared Chat, text, design, and notification settings being overwritten when switching between Free and Pro.
+* Fixed shared Chat data being kept when the other PrayerPop edition is still installed.
+* Fixed the notification recovery schedule being cleared when PrayerPop is deactivated or uninstalled.
 
 = 1.6.0 =
 * Added a simple PrayerPop Chat with one classic visitor layout and a shared WordPress inbox.
