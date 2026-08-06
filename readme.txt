@@ -211,17 +211,21 @@ PrayerPop uses the direct visitor IP address for rate limits by default. If your
 == Changelog ==
 
 = 1.6.2 =
-* Improved the visitor Chat experience, with clearer message grouping, steadier scrolling, better refresh behaviour, team profile images, and an unread reply count on the launcher.
-* Added an editable opening message in the Chat inbox.
 * Added Chat retention settings and WordPress personal-data export and erasure support for Chat records.
 * Made the visitor bubble open the prayer request form when Chat is turned off.
 * Made Chat storage and prayer-request notifications more reliable when WordPress cannot complete the first attempt.
 * Improved submission and bulk-action handling so failed updates are not shown as successful.
 * Hardened rate limiting for sites behind a trusted reverse proxy.
-* Improved Chat and Language & Text settings with clearer controls, search, and expandable groups.
-* Fixed shared Chat, text, design, and notification settings being overwritten when switching between Free and Pro.
-* Fixed shared Chat data being kept when the other PrayerPop edition is still installed.
 * Fixed the notification recovery schedule being cleared when PrayerPop is deactivated or uninstalled.
+
+= 1.6.1 =
+* Added an editable Chat opening message in the Chat inbox.
+* Added team profile images to team replies and an unread reply count on the closed PrayerPop launcher.
+* Improved Chat transitions, message grouping, refresh behaviour, and scroll preservation for returning visitors.
+* Improved Chat message styling so team replies use a consistent profile, message bubble, sender name, and timestamp treatment.
+* Improved Chat and Language & Text settings with clearer controls, search, and expandable text groups.
+* Fixed shared Chat, text, design, and notification settings being overwritten when switching between PrayerPop Free and Pro.
+* Fixed uninstall handling so shared Chat data is preserved while the other PrayerPop edition remains installed.
 
 = 1.6.0 =
 * Added a simple PrayerPop Chat with one classic visitor layout and a shared WordPress inbox.
