@@ -35,7 +35,7 @@ class Prayer_Pop_Settings_Text {
 		);
 		$this->register_content_section( 'bubble', esc_html__( 'Bubble & Navigation', 'prayerpop' ), esc_html__( 'Text shown on the floating bubble and its primary navigation.', 'prayerpop' ) );
 		$this->register_content_section( 'chat', esc_html__( 'Chat Conversation', 'prayerpop' ), esc_html__( 'Prompts, placeholders, buttons, and status text shown in the visitor chat.', 'prayerpop' ) );
-		$this->register_content_section( 'form', esc_html__( 'Prayer Request Form', 'prayerpop' ), esc_html__( 'Headings, fields, buttons, and accessibility labels used by the request form.', 'prayerpop' ) );
+		$this->register_content_section( 'form', esc_html__( 'Submission Forms', 'prayerpop' ), esc_html__( 'Headings, fields, buttons, and accessibility labels used by the prayer request and testimony forms.', 'prayerpop' ) );
 		$this->register_content_section( 'messages', esc_html__( 'Confirmations & Errors', 'prayerpop' ), esc_html__( 'Success, validation, preview, and error messages shown to visitors.', 'prayerpop' ) );
 		$this->register_content_section( 'activity', esc_html__( 'Activity & Time', 'prayerpop' ), esc_html__( 'Recent-submission wording and the time units used in relative dates.', 'prayerpop' ) );
 
@@ -44,6 +44,7 @@ class Prayer_Pop_Settings_Text {
 		$this->add_text_field( 'text_bubble_icon_alt', esc_html__( 'Bubble Icon Alt Text', 'prayerpop' ), 'PrayerPop icon' );
 		$this->add_text_field( 'text_chat_button', esc_html__( 'Chat Button', 'prayerpop' ), 'Send us a message' );
 		$this->add_text_field( 'text_prayer_request_label', esc_html__( 'Prayer Request Button', 'prayerpop' ), 'Prayer request' );
+		$this->add_text_field( 'text_testimony_label', esc_html__( 'Testimony Button', 'prayerpop' ), 'Share a testimony' );
 		$this->add_text_field( 'text_back_button', esc_html__( 'Back Button', 'prayerpop' ), 'Back' );
 		$this->add_text_field( 'text_chat_team_help', esc_html__( 'Chat Team Help Text', 'prayerpop' ), 'The team can also help' );
 		$this->add_text_field( 'text_chat_reply_time', esc_html__( 'Chat Reply Time Text', 'prayerpop' ), 'Replies within a day' );
@@ -69,18 +70,23 @@ class Prayer_Pop_Settings_Text {
 		$this->add_textarea_field( 'text_popup_intro_description', esc_html__( 'Popup Intro Description', 'prayerpop' ), 'Send us a message and we will get back to you.' );
 		$this->add_text_field( 'text_prayer_request_header', esc_html__( 'Prayer Request Header', 'prayerpop' ), 'Submit a Prayer Request' );
 		$this->add_text_field( 'text_prayer_request_description', esc_html__( 'Prayer Request Description', 'prayerpop' ), 'Please fill out the form below to submit your prayer request.' );
+		$this->add_text_field( 'text_testimony_header', esc_html__( 'Testimony Header', 'prayerpop' ), 'Share a testimony' );
+		$this->add_textarea_field( 'text_testimony_description', esc_html__( 'Testimony Description', 'prayerpop' ), 'We would love to hear what God has done in your life.' );
 
 		// Form Fields
 		$this->add_text_field( 'text_message_placeholder', esc_html__( 'Message Placeholder', 'prayerpop' ), 'Enter your message...' );
+		$this->add_text_field( 'text_testimony_message_placeholder', esc_html__( 'Testimony Message Placeholder', 'prayerpop' ), 'Share your testimony…' );
 		$this->add_text_field( 'text_name_placeholder', esc_html__( 'Name Placeholder (Optional)', 'prayerpop' ), 'Your Name (optional)' );
 		$this->add_text_field( 'text_name_placeholder_required', esc_html__( 'Name Placeholder (Required)', 'prayerpop' ), 'Your Name' );
 		$this->add_text_field( 'text_submit_button', esc_html__( 'Submit Button', 'prayerpop' ), 'Submit' );
+		$this->add_text_field( 'text_testimony_submit_button', esc_html__( 'Testimony Submit Button', 'prayerpop' ), 'Share testimony' );
 		$this->add_text_field( 'text_submitting_button', esc_html__( 'Submitting Button', 'prayerpop' ), 'Sending...' );
 		$this->add_text_field( 'text_anonymous', esc_html__( 'Anonymous Text', 'prayerpop' ), 'Anonymous' );
 		$this->add_text_field( 'text_honeypot_label', esc_html__( 'Honeypot Accessibility Label', 'prayerpop' ), 'Leave this field empty' );
 
 		// Messages
 		$this->add_text_field( 'text_success_message', esc_html__( 'Success Message', 'prayerpop' ), 'Thank you for your submission!' );
+		$this->add_text_field( 'text_testimony_success_message', esc_html__( 'Testimony Success Message', 'prayerpop' ), 'Thank you for sharing your testimony!' );
 		$this->add_text_field( 'text_error_message', esc_html__( 'Error Message', 'prayerpop' ), 'There was an error processing your request.' );
 		$this->add_text_field( 'text_error_rate_limit', esc_html__( 'Rate Limit Message', 'prayerpop' ), 'Too many submissions right now. Please wait a few minutes and try again.' );
 		$this->add_text_field( 'text_error_invalid_name', esc_html__( 'Invalid Name Message', 'prayerpop' ), 'Please use only a real person name in the name field.' );
@@ -119,13 +125,18 @@ class Prayer_Pop_Settings_Text {
 			'text_bubble_label',
 			'text_chat_button',
 			'text_prayer_request_label',
+			'text_testimony_label',
 			'text_popup_intro_title',
 			'text_popup_intro_description',
 			'text_prayer_request_header',
+			'text_testimony_header',
 			'text_message_placeholder',
+			'text_testimony_message_placeholder',
 			'text_name_placeholder',
 			'text_submit_button',
+			'text_testimony_submit_button',
 			'text_success_message',
+			'text_testimony_success_message',
 			'text_last_prayer_time_message',
 		);
 		?>
@@ -213,7 +224,7 @@ class Prayer_Pop_Settings_Text {
 		<?php $this->render_export_import_section(); ?>
 
 		<div class="prayer-pop-text-placeholders-help">
-			<p><?php esc_html_e( 'Customize text strings used by the PrayerPop bubble and prayer request workflow. Available placeholders:', 'prayerpop' ); ?></p>
+			<p><?php esc_html_e( 'Customize text strings used by the PrayerPop bubble and submission workflows. Available placeholders:', 'prayerpop' ); ?></p>
 			<ul>
 				<li><code>{time_ago}</code> - <?php esc_html_e( 'Used in last submission messages to show time', 'prayerpop' ); ?></li>
 			</ul>
@@ -289,11 +300,11 @@ class Prayer_Pop_Settings_Text {
 		if ( 0 === strpos( $id, 'text_chat_' ) && 'text_chat_button' !== $id ) {
 			return 'prayer_pop_text_chat_section';
 		}
-		$bubble = array( 'text_bubble_label', 'text_bubble_icon_alt', 'text_chat_button', 'text_prayer_request_label', 'text_popup_intro_title', 'text_popup_intro_description', 'text_back_button' );
+		$bubble = array( 'text_bubble_label', 'text_bubble_icon_alt', 'text_chat_button', 'text_prayer_request_label', 'text_testimony_label', 'text_popup_intro_title', 'text_popup_intro_description', 'text_back_button' );
 		if ( in_array( $id, $bubble, true ) ) {
 			return 'prayer_pop_text_bubble_section';
 		}
-		if ( 0 === strpos( $id, 'text_error_' ) || in_array( $id, array( 'text_success_message', 'text_new_request_button', 'text_required_field', 'text_preview_permission_error', 'text_preview_invalid_token', 'text_answered_message_label' ), true ) ) {
+		if ( 0 === strpos( $id, 'text_error_' ) || in_array( $id, array( 'text_success_message', 'text_testimony_success_message', 'text_new_request_button', 'text_required_field', 'text_preview_permission_error', 'text_preview_invalid_token', 'text_answered_message_label' ), true ) ) {
 			return 'prayer_pop_text_messages_section';
 		}
 		if ( 0 === strpos( $id, 'text_last_' ) || 0 === strpos( $id, 'text_time_unit_' ) ) {
@@ -416,19 +427,25 @@ class Prayer_Pop_Settings_Text {
 			'text_chat_closed',
 			'text_chat_new_conversation',
 			'text_prayer_request_label',
+			'text_testimony_label',
 			'text_popup_intro_title',
 			'text_popup_intro_description',
 			'text_back_button',
 			'text_prayer_request_header',
 			'text_prayer_request_description',
+			'text_testimony_header',
+			'text_testimony_description',
 			'text_message_placeholder',
+			'text_testimony_message_placeholder',
 			'text_name_placeholder',
 			'text_name_placeholder_required',
 			'text_submit_button',
+			'text_testimony_submit_button',
 			'text_submitting_button',
 			'text_anonymous',
 			'text_honeypot_label',
 			'text_success_message',
+			'text_testimony_success_message',
 			'text_error_message',
 			'text_error_rate_limit',
 			'text_error_invalid_name',

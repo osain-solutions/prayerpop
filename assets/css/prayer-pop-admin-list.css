@@ -1362,8 +1362,9 @@ tr.prayerpop-new {
     padding: 8px;
 }
 
-.prayer-pop-submissions-footer-row {
-    margin: 18px 0 10px;
+/* Leave room for the standard PrayerPop footer card below the list table. */
+body.edit-php.post-type-prayer_request #wpbody-content {
+    padding-bottom: 112px;
 }
 
 /* Streamlined single-submission edit screen. */

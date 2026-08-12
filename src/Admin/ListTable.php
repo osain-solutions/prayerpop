@@ -197,8 +197,11 @@ class ListTable {
             case 'pp_type':
 				$labels       = get_option( 'prayer_pop_texts', array() );
 				$prayer_label = isset( $labels['text_prayer_request_label'] ) ? $labels['text_prayer_request_label'] : esc_html__( 'Prayer Request', 'prayerpop' );
+				$testimony_label = isset( $labels['text_testimony_label'] ) ? $labels['text_testimony_label'] : esc_html__( 'Testimony', 'prayerpop' );
+				$type = sanitize_key( (string) get_post_meta( $post_id, 'prayer_pop_type', true ) );
+				$is_testimony = 'testimony' === $type;
 				echo '<div class="pp-type-cell">';
-				echo wp_kses_post( $this->render_inline_badge( $post_id, 'type', 'prayer_request', $prayer_label, 'pp-type-request', $this->get_inline_field_options( 'type', $post_id ) ) );
+				echo wp_kses_post( $this->render_inline_badge( $post_id, 'type', $is_testimony ? 'testimony' : 'prayer_request', $is_testimony ? $testimony_label : $prayer_label, $is_testimony ? 'pp-type-testimony' : 'pp-type-request', $this->get_inline_field_options( 'type', $post_id ) ) );
 				echo '</div>';
                 break;
 
@@ -849,6 +852,13 @@ class ListTable {
                 PRAYERPOP_VERSION,
                 true
             );
+            wp_enqueue_script(
+                'prayer-pop-admin-submissions-footer',
+                PRAYERPOP_PLUGIN_URL . 'assets/js/prayer-pop-admin-submissions-footer.js',
+                array(),
+                file_exists( PRAYERPOP_PLUGIN_DIR . 'assets/js/prayer-pop-admin-submissions-footer.js' ) ? (string) filemtime( PRAYERPOP_PLUGIN_DIR . 'assets/js/prayer-pop-admin-submissions-footer.js' ) : PRAYERPOP_VERSION,
+                true
+            );
 
 	            wp_localize_script(
 	                'prayer-pop-admin-bulk-email',
@@ -1021,7 +1031,7 @@ class ListTable {
 			return;
 		}
 		?>
-		<div class="prayer-pop-save-row prayer-pop-submissions-footer-row prayer-pop-save-row--logo-only">
+		<div id="prayer-pop-submissions-footer" class="prayer-pop-save-row prayer-pop-save-row--logo-only" hidden>
 			<div class="prayer-pop-save-row__actions"></div>
 			<div class="prayer-pop-brand-footer" aria-hidden="true">
 				<a class="prayer-pop-brand-logo prayer-pop-brand-logo-full" href="<?php echo esc_url( 'https://prayerpop.eu/' ); ?>" target="_blank" rel="noopener noreferrer">
@@ -1107,32 +1117,22 @@ class ListTable {
                 update_post_meta( $post_id, \Prayer_Pop_Run::ANSWERED_MESSAGE_META_KEY, $text_value_input );
             }
 		} elseif ( 'type' === $field ) {
-			$value = 'prayer_request';
-
-			if ( 'prayer_request' !== $value ) {
+			if ( ! in_array( $value, array( 'prayer_request', 'testimony' ), true ) ) {
 				wp_send_json_error( array( 'message' => esc_html__( 'Invalid type value.', 'prayerpop' ) ), 400 );
 			}
 
-			update_post_meta( $post_id, 'prayer_pop_type', $value );
-			if ( false ) {
-				if ( 'answered' === $current_status ) {
-					$this->update_submission_post_or_fail(
-						array(
-							'ID'          => $post_id,
-							'post_status' => 'approved',
-						)
-					);
-				}
+			if ( 'testimony' === $value && 'answered' === $current_status ) {
+				$this->update_submission_post_or_fail(
+					array(
+						'ID'          => $post_id,
+						'post_status' => 'approved',
+					)
+				);
 				delete_post_meta( $post_id, \Prayer_Pop_Run::ANSWERED_AT_META_KEY );
 				delete_post_meta( $post_id, \Prayer_Pop_Run::ANSWERED_MESSAGE_META_KEY );
-			} else {
-				if ( '' === (string) get_post_meta( $post_id, 'i_prayed_count', true ) ) {
-					update_post_meta( $post_id, 'i_prayed_count', 0 );
-				}
-				if ( '' === (string) get_post_meta( $post_id, 'celebrate_count', true ) ) {
-					update_post_meta( $post_id, 'celebrate_count', 0 );
-				}
 			}
+
+			update_post_meta( $post_id, 'prayer_pop_type', $value );
 		} elseif ( 'visibility' === $field ) {
 			$value = 'public';
 
@@ -1142,11 +1142,7 @@ class ListTable {
 
 			$new_public = ( 'public' === $value ) ? '1' : '0';
 			update_post_meta( $post_id, 'prayer_pop_public', $new_public );
-			if ( false ) {
-				update_post_meta( $post_id, \Prayer_Pop_Run::PRIVATE_REVIEWED_META_KEY, '0' );
-			} else {
-				delete_post_meta( $post_id, \Prayer_Pop_Run::PRIVATE_REVIEWED_META_KEY );
-			}
+			delete_post_meta( $post_id, \Prayer_Pop_Run::PRIVATE_REVIEWED_META_KEY );
 
 			if ( ! in_array( $current_status, array( 'archived', 'trash' ), true ) ) {
 				$this->update_submission_post_or_fail(
@@ -1285,11 +1281,17 @@ class ListTable {
 		if ( 'type' === $field ) {
 			$labels          = get_option( 'prayer_pop_texts', array() );
 			$prayer_label    = isset( $labels['text_prayer_request_label'] ) ? $labels['text_prayer_request_label'] : esc_html__( 'Prayer Request', 'prayerpop' );
+			$testimony_label = isset( $labels['text_testimony_label'] ) ? $labels['text_testimony_label'] : esc_html__( 'Testimony', 'prayerpop' );
 			$options = array(
 				array(
 					'value'      => 'prayer_request',
 					'label'      => (string) $prayer_label,
 					'badge_class'=> 'pp-type-request',
+				),
+				array(
+					'value'      => 'testimony',
+					'label'      => (string) $testimony_label,
+					'badge_class'=> 'pp-type-testimony',
 				),
 			);
 

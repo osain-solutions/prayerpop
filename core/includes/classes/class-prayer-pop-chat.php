@@ -236,6 +236,13 @@ class Prayer_Pop_Chat {
 			'prayer-pop-settings-general',
 			'prayer_pop_general_section'
 		);
+		add_settings_field(
+			'chat_conversation_retention',
+			esc_html__( 'Chat conversation retention', 'prayerpop' ),
+			array( $this, 'retention_setting_callback' ),
+			'prayer-pop-settings-general',
+			'prayer_pop_general_section'
+		);
 	}
 
 	public function sanitize_settings( $input ) {
@@ -278,10 +285,15 @@ class Prayer_Pop_Chat {
 				<span class="prayer-pop-toggle-slider"></span>
 				<span class="toggle-status"><?php echo $enabled ? esc_html__( 'On', 'prayerpop' ) : esc_html__( 'Off', 'prayerpop' ); ?></span>
 			</label>
-			<p class="description"><?php esc_html_e( 'Let visitors start Chat conversations and let administrators reply from PrayerPop → Chat. Turn this off to use PrayerPop only for prayer-request submissions.', 'prayerpop' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Let visitors start Chat conversations and let administrators reply from PrayerPop → Chat. Turn this off to offer only the enabled prayer request and testimony forms.', 'prayerpop' ); ?></p>
 		</div>
+		<?php
+	}
+
+	/** Render Chat data retention in the unified Free Data tab. */
+	public function retention_setting_callback() {
+		?>
 		<p>
-			<label for="prayer_pop_chat_retention_days"><strong><?php esc_html_e( 'Chat conversation retention', 'prayerpop' ); ?></strong></label><br>
 			<select id="prayer_pop_chat_retention_days" name="<?php echo esc_attr( self::SETTINGS_OPTION ); ?>[retention_days]">
 				<?php foreach ( self::retention_options() as $days => $label ) : ?>
 					<option value="<?php echo esc_attr( $days ); ?>" <?php selected( absint( self::settings()['retention_days'] ), $days ); ?>><?php echo esc_html( $label ); ?></option>
@@ -434,6 +446,7 @@ class Prayer_Pop_Chat {
 				'i18n'  => array(
 					'empty'          => __( 'No conversations yet.', 'prayerpop' ),
 					'newMessages'    => __( 'New website messages will appear here.', 'prayerpop' ),
+					'connectionLost' => __( 'Connection lost. Retrying…', 'prayerpop' ),
 					'choose'         => __( 'Choose a conversation to read and reply.', 'prayerpop' ),
 					'deleteConversation' => __( 'Delete conversation', 'prayerpop' ),
 					'deleteConfirm'  => __( 'Delete this conversation permanently?', 'prayerpop' ),
@@ -522,6 +535,7 @@ class Prayer_Pop_Chat {
 				'root' => esc_url_raw( rest_url( 'prayerpop/v1/chat/' ) ),
 				'i18n' => array(
 					'error'   => __( 'Something went wrong. Please try again.', 'prayerpop' ),
+					'connectionLost' => __( 'Connection lost. Retrying…', 'prayerpop' ),
 					'closed'  => __( 'This conversation is closed.', 'prayerpop' ),
 					'sending' => __( 'Sending…', 'prayerpop' ),
 					'justNow' => __( 'Just now', 'prayerpop' ),

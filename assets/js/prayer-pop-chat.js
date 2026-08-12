@@ -23,6 +23,7 @@
     var panelOpening = false;
     var panelClosing = false;
     var classicRouteTransition = null;
+	var pollFailures = 0;
 
     function panelIsOpen() {
         return !panel.hidden && panel.getAttribute('aria-hidden') !== 'true';
@@ -35,6 +36,27 @@
         var unread = current ? Number(current.visitor_unread || 0) : 0;
         badge.textContent = unread > 99 ? '99+' : (unread || '');
         badge.hidden = !(unread > 0 && !panelIsOpen() && bubble.getAttribute('aria-expanded') !== 'true');
+    }
+
+    function notePollingFailure() {
+        pollFailures = Math.min(pollFailures + 1, 4);
+        var box = panel.querySelector('.ppfc-error');
+        box.textContent = (cfg.i18n && cfg.i18n.connectionLost) || 'Connection lost. Retrying…';
+        box.dataset.pollingError = '1';
+        box.hidden = false;
+    }
+
+    function notePollingSuccess() {
+        pollFailures = 0;
+        var box = panel.querySelector('.ppfc-error');
+        if (box && box.dataset.pollingError === '1') {
+            delete box.dataset.pollingError;
+            box.hidden = true;
+        }
+    }
+
+    function pollingDelay(base) {
+        return Math.min(30000, base * Math.pow(2, pollFailures));
     }
 
     function markCurrentRead() {
@@ -60,10 +82,11 @@
                 return;
             }
             request('conversation').then(function (payload) {
+				notePollingSuccess();
                 current = payload.conversation || null;
                 syncBubbleUnread();
-            }).catch(function () {}).finally(scheduleBackgroundStatus);
-        }, 15000);
+            }).catch(function () { notePollingFailure(); }).finally(scheduleBackgroundStatus);
+        }, pollingDelay(15000));
     }
 
     function classicPanelHost() {
@@ -343,6 +366,7 @@
         if (!current || current.status !== 'open' || panel.hidden) return;
         pollTimer = setTimeout(function () {
             request('messages?conversation_id=' + Number(current.id) + '&after_id=' + lastMessageId).then(function (payload) {
+				notePollingSuccess();
                 current = payload.conversation;
                 renderMessages(payload.messages || [], true);
                 var closed = current.status === 'closed';
@@ -350,8 +374,8 @@
                 panel.querySelector('.ppfc-composer').hidden = closed;
                 syncBubbleUnread();
                 markCurrentRead();
-            }).catch(function () {}).finally(schedulePoll);
-        }, 5000);
+            }).catch(function () { notePollingFailure(); }).finally(schedulePoll);
+        }, pollingDelay(5000));
     }
 
     function revealPanel(options) {

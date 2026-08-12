@@ -115,7 +115,7 @@ class Prayer_Pop_Ajax {
 		}
 
 		// Retrieve and sanitize form data with enhanced security
-		$type          = 'prayer_request';
+		$type          = isset( $form_data['prayer_pop_type'] ) ? sanitize_key( $form_data['prayer_pop_type'] ) : '';
 		$message       = isset( $form_data['prayer_pop_message'] ) ? sanitize_textarea_field( $form_data['prayer_pop_message'] ) : '';
 		$name          = isset( $form_data['prayer_pop_name'] ) ? sanitize_text_field( $form_data['prayer_pop_name'] ) : '';
 		$message       = $this->normalize_utf8_text( $message );
@@ -123,6 +123,17 @@ class Prayer_Pop_Ajax {
 		$is_anonymous  = Prayer_Pop_Defaults::is_anonymous_submission_name( 0, $name );
 		$is_public     = '1';
 		$ready_to_share = '0';
+
+		if ( ! in_array( $type, array( 'prayer_request', 'testimony' ), true ) ) {
+			wp_send_json_error( esc_html__( 'Invalid submission type.', 'prayerpop' ) );
+		}
+
+		$settings = Prayer_Pop_Defaults::get_settings();
+		$prayer_enabled = ! array_key_exists( 'show_prayer_request_button', $settings ) || ! empty( $settings['show_prayer_request_button'] );
+		$testimony_enabled = ! array_key_exists( 'show_testimony_button', $settings ) || ! empty( $settings['show_testimony_button'] );
+		if ( ( 'prayer_request' === $type && ! $prayer_enabled ) || ( 'testimony' === $type && ! $testimony_enabled ) ) {
+			wp_send_json_error( esc_html__( 'This submission type is not available.', 'prayerpop' ) );
+		}
 
 		if ( empty( trim( $message ) ) ) {
 			wp_send_json_error( esc_html__( 'Message cannot be empty.', 'prayerpop' ) );
@@ -218,7 +229,9 @@ class Prayer_Pop_Ajax {
 		);
 
 		// Get success message
-		$success_message = Prayer_Pop_Defaults::get_text( 'text_success_message', __('Thank you for your submission!', 'prayerpop' ) );
+		$success_message = 'testimony' === $type
+			? Prayer_Pop_Defaults::get_text( 'text_testimony_success_message', __( 'Thank you for sharing your testimony!', 'prayerpop' ) )
+			: Prayer_Pop_Defaults::get_text( 'text_success_message', __( 'Thank you for your submission!', 'prayerpop' ) );
 
 		// Schedule immediate notification if enabled (asynchronous)
 		$this->schedule_immediate_notification( $post_id, $type, $display_name, $message );

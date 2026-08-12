@@ -358,57 +358,73 @@ jQuery(document).ready(function($) {
         return timestamp;
     }
 
-    var popupDraftStorageKey = 'prayer_pop_bubble_draft:' + window.location.pathname;
-    var popupDraftMemory = null;
+    var popupDraftStoragePrefix = 'prayer_pop_bubble_draft:' + window.location.pathname + ':';
+    var popupDraftMemory = {};
 
-    function getPopupDraftFromStorage() {
-        if (popupDraftMemory && typeof popupDraftMemory === 'object') {
-            return popupDraftMemory;
+    function getPopupTypeConfig(type) {
+        var types = window.prayerPopConfig.types || {};
+        return types[type] || null;
+    }
+
+    function isEnabledPopupType(type) {
+        return !!(getPopupTypeConfig(type) && window.prayerPopConfig.enabledTypes && window.prayerPopConfig.enabledTypes[type]);
+    }
+
+    function getPopupDraftFromStorage(type) {
+        if (!isEnabledPopupType(type)) {
+            return null;
+        }
+        if (popupDraftMemory[type] && typeof popupDraftMemory[type] === 'object') {
+            return popupDraftMemory[type];
         }
 
         try {
-            var raw = window.sessionStorage ? window.sessionStorage.getItem(popupDraftStorageKey) : '';
+            var raw = window.sessionStorage ? window.sessionStorage.getItem(popupDraftStoragePrefix + type) : '';
             if (!raw) {
                 return null;
             }
             var parsed = JSON.parse(raw);
             if (parsed && typeof parsed === 'object') {
-                popupDraftMemory = parsed;
+                popupDraftMemory[type] = parsed;
                 return parsed;
             }
         } catch (e) {
-            popupDraftMemory = null;
+            delete popupDraftMemory[type];
         }
 
         return null;
     }
 
-    function setPopupDraftToStorage(draft) {
-        popupDraftMemory = draft && typeof draft === 'object' ? draft : null;
+    function setPopupDraftToStorage(type, draft) {
+        if (!isEnabledPopupType(type)) {
+            return;
+        }
+        popupDraftMemory[type] = draft && typeof draft === 'object' ? draft : null;
 
         try {
             if (!window.sessionStorage) {
                 return;
             }
 
-            if (!popupDraftMemory) {
-                window.sessionStorage.removeItem(popupDraftStorageKey);
+            if (!popupDraftMemory[type]) {
+                window.sessionStorage.removeItem(popupDraftStoragePrefix + type);
                 return;
             }
 
-            window.sessionStorage.setItem(popupDraftStorageKey, JSON.stringify(popupDraftMemory));
+            window.sessionStorage.setItem(popupDraftStoragePrefix + type, JSON.stringify(popupDraftMemory[type]));
         } catch (e) {
             // Ignore storage failures (private mode, blocked storage, etc.).
         }
     }
 
-    function clearPopupDraft() {
-        setPopupDraftToStorage(null);
+    function clearPopupDraft(type) {
+        type = type || getCurrentFormType();
+        setPopupDraftToStorage(type, null);
     }
 
     function getCurrentPopupDraft() {
         return {
-            type: 'prayer_request',
+            type: getCurrentFormType(),
             message: ($('#prayer-pop-form textarea[name="prayer_pop_message"]').val() || ''),
             name: ($('#prayer-pop-name').val() || '')
         };
@@ -419,7 +435,7 @@ jQuery(document).ready(function($) {
             return false;
         }
 
-        if (draft.type !== 'prayer_request') {
+        if (!isEnabledPopupType(draft.type)) {
             return false;
         }
 
@@ -432,14 +448,14 @@ jQuery(document).ready(function($) {
     function persistPopupDraftFromCurrentForm() {
         var draft = getCurrentPopupDraft();
         if (hasMeaningfulPopupDraft(draft)) {
-            setPopupDraftToStorage(draft);
+            setPopupDraftToStorage(draft.type, draft);
         } else {
             clearPopupDraft();
         }
     }
 
     function restorePopupDraftForType(type) {
-        var draft = getPopupDraftFromStorage();
+        var draft = getPopupDraftFromStorage(type);
         if (!hasMeaningfulPopupDraft(draft) || draft.type !== type) {
             return false;
         }
@@ -452,16 +468,13 @@ jQuery(document).ready(function($) {
     }
 
     function restorePopupDraftOnOpen() {
-        var draft = getPopupDraftFromStorage();
+        var type = getCurrentFormType();
+        var draft = getPopupDraftFromStorage(type);
         if (!hasMeaningfulPopupDraft(draft)) {
             return;
         }
 
-        if (draft.type !== 'prayer_request') {
-            return;
-        }
-
-        restorePopupDraftForType('prayer_request');
+        restorePopupDraftForType(type);
     }
 
     // Templates already carry the saved class. Only correct stale/missing output so
@@ -500,8 +513,7 @@ jQuery(document).ready(function($) {
             ($firstFocusable.length ? $firstFocusable : $('#prayer-pop-form-container')).trigger('focus');
         }, 0);
 
-        resetPopupFormState('prayer_request');
-        $('#prayer-pop-form input[name="prayer_pop_type"]').val('prayer_request');
+        resetPopupFormState(window.prayerPopConfig.defaultType || 'prayer_request');
         if ($('#prayer-pop-initial-options').length) {
             $('#prayer-pop-popup-intro').show();
             $('#prayer-pop-initial-options').show();
@@ -543,6 +555,21 @@ jQuery(document).ready(function($) {
         return $('#prayer-pop-form input[name="prayer_pop_type"]').val() || 'prayer_request';
     }
 
+    function applyPopupType(type) {
+        var typeConfig = getPopupTypeConfig(type);
+        var headerConfig = window.prayerPopHeaders[type];
+        if (!typeConfig || !headerConfig || !isEnabledPopupType(type)) {
+            return false;
+        }
+
+        $('#prayer-pop-form input[name="prayer_pop_type"]').val(type);
+        $('#prayer-pop-header .prayer-pop-heading').text(headerConfig.header || '');
+        $('#prayer-pop-description p').text(headerConfig.description || '');
+        $('#prayer-pop-form textarea[name="prayer_pop_message"]').attr('placeholder', typeConfig.messagePlaceholder || '');
+        $('#prayer-pop-form button[type="submit"]').text(typeConfig.submitLabel || '').removeData('original-label');
+        return true;
+    }
+
     function resetPopupFormState(typeToKeep) {
         var $form = $('#prayer-pop-form');
         if (!$form.length) {
@@ -552,8 +579,8 @@ jQuery(document).ready(function($) {
         var preservedType = (typeof typeToKeep === 'string') ? typeToKeep : getCurrentFormType();
 
         $form[0].reset();
-        if (preservedType) {
-            $form.find('input[name="prayer_pop_type"]').val(preservedType);
+        if (!applyPopupType(preservedType)) {
+            applyPopupType(window.prayerPopConfig.defaultType || 'prayer_request');
         }
 
         setPrayerPopStartTime();
@@ -645,9 +672,15 @@ jQuery(document).ready(function($) {
         }
     });
 
-    $(document).on('click', '#prayer-pop-initial-options [data-option="prayer_request"]', function(event) {
+    $(document).on('click', '#prayer-pop-initial-options [data-option]', function(event) {
         event.preventDefault();
+        var type = String($(this).data('option') || '');
+        if (!isEnabledPopupType(type)) {
+            return;
+        }
         beginPopupHeightTransition();
+        resetPopupFormState(type);
+        restorePopupDraftForType(type);
         $('#prayer-pop-popup-intro').hide();
         $('#prayer-pop-initial-options').hide();
         $('#prayer-pop-form-wrapper').show();
@@ -801,7 +834,9 @@ jQuery(document).ready(function($) {
                     $('#prayer-pop-last-time').hide();
                     
                     // Show success message
-                    $('#prayer-pop-success').text(window.prayerPopConfig.messages.success).show();
+                    var typeConfig = getPopupTypeConfig(type);
+                    var successMessage = (response.data && response.data.message) || (typeConfig && typeConfig.successMessage) || window.prayerPopConfig.messages.success;
+                    $('#prayer-pop-success').text(successMessage).show();
                     
                     // Add "Submit Another" button
                     if ($('#prayer-pop-new-request').length === 0) {

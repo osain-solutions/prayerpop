@@ -794,7 +794,9 @@ class Prayer_Pop_Run {
 		$force_render = defined( 'PRAYERPOP_FORCE_BUBBLE' ) && PRAYERPOP_FORCE_BUBBLE;
 		$settings     = Prayer_Pop_Defaults::get_settings();
 		$show_bubble  = isset( $settings['show_prayer_pop_bubble'] ) ? (bool) $settings['show_prayer_pop_bubble'] : true;
-		if ( ! $show_bubble && ! $force_render ) {
+		$prayer_enabled = ! array_key_exists( 'show_prayer_request_button', $settings ) || ! empty( $settings['show_prayer_request_button'] );
+		$testimony_enabled = ! array_key_exists( 'show_testimony_button', $settings ) || ! empty( $settings['show_testimony_button'] );
+		if ( ( ! $show_bubble || ( ! $prayer_enabled && ! $testimony_enabled ) ) && ! $force_render ) {
 			return;
 		}
 
@@ -2140,7 +2142,7 @@ class Prayer_Pop_Run {
 		}
 
 		if ( '' !== $action_notice_text ) {
-			echo '<div class="notice ' . esc_attr( $action_notice_class ) . ' is-dismissible"><p>' . esc_html( $action_notice_text ) . '</p></div>';
+			echo '<div class="notice prayerpop-admin-notice ' . esc_attr( $action_notice_class ) . ' is-dismissible"><p>' . esc_html( $action_notice_text ) . '</p></div>';
 		}
     }
 
@@ -2151,6 +2153,7 @@ class Prayer_Pop_Run {
         global $typenow;
         if ( $typenow == 'prayer_request' ) {
             $this->filter_by_status();
+			$this->filter_by_type();
         }
     }
 
@@ -2170,6 +2173,19 @@ class Prayer_Pop_Run {
 	        </select>
         <?php
     }
+
+	/** Add a submission-type filter to the Free inbox. */
+	private function filter_by_type() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only list-table filter.
+		$selected = isset( $_GET['prayer_pop_type'] ) ? sanitize_key( wp_unslash( $_GET['prayer_pop_type'] ) ) : '';
+		?>
+		<select name="prayer_pop_type">
+			<option value=""><?php esc_html_e( 'All Types', 'prayerpop' ); ?></option>
+			<option value="prayer_request" <?php selected( $selected, 'prayer_request' ); ?>><?php esc_html_e( 'Prayer Requests', 'prayerpop' ); ?></option>
+			<option value="testimony" <?php selected( $selected, 'testimony' ); ?>><?php esc_html_e( 'Testimonies', 'prayerpop' ); ?></option>
+		</select>
+		<?php
+	}
 
     /**
      * Filter posts by status on the admin screen
@@ -2208,10 +2224,12 @@ class Prayer_Pop_Run {
             $meta_query = array();
         }
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only list-table filter.
+		$type_filter = isset( $_GET['prayer_pop_type'] ) ? sanitize_key( wp_unslash( $_GET['prayer_pop_type'] ) ) : '';
 		$meta_query[] = array(
 			'key'     => 'prayer_pop_type',
-			'value'   => 'prayer_request',
-			'compare' => '=',
+			'value'   => in_array( $type_filter, array( 'prayer_request', 'testimony' ), true ) ? $type_filter : array( 'prayer_request', 'testimony' ),
+			'compare' => in_array( $type_filter, array( 'prayer_request', 'testimony' ), true ) ? '=' : 'IN',
 		);
 		$meta_query[] = array(
 			'key'     => 'prayer_pop_public',
@@ -2342,7 +2360,7 @@ class Prayer_Pop_Run {
 	        }
 
         $type = isset( $_REQUEST['prayer_pop_type'] ) ? sanitize_key( wp_unslash( $_REQUEST['prayer_pop_type'] ) ) : '';
-        if ( 'prayer_request' === $type ) {
+        if ( in_array( $type, array( 'prayer_request', 'testimony' ), true ) ) {
             $args['meta_query'] = array(
                 array(
                     'key'     => 'prayer_pop_type',

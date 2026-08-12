@@ -119,12 +119,14 @@ final class Prayer_Pop {
 		$settings     = Prayer_Pop_Defaults::get_settings();
 		$force_render = defined( 'PRAYERPOP_FORCE_BUBBLE' ) && PRAYERPOP_FORCE_BUBBLE;
 		$show_bubble  = isset( $settings['show_prayer_pop_bubble'] ) ? (bool) $settings['show_prayer_pop_bubble'] : true;
+		$prayer_enabled = ! array_key_exists( 'show_prayer_request_button', $settings ) || ! empty( $settings['show_prayer_request_button'] );
+		$testimony_enabled = ! array_key_exists( 'show_testimony_button', $settings ) || ! empty( $settings['show_testimony_button'] );
 		/**
 		 * Filter whether PrayerPop Free should load its frontend bubble assets.
 		 *
 		 * @param bool $should_enqueue Whether frontend assets are required.
 		 */
-		$should_enqueue = (bool) apply_filters( 'prayer_pop_should_enqueue_frontend_assets', $force_render || $show_bubble );
+		$should_enqueue = (bool) apply_filters( 'prayer_pop_should_enqueue_frontend_assets', $force_render || ( $show_bubble && ( $prayer_enabled || $testimony_enabled ) ) );
 		if ( ! $should_enqueue ) {
 			return;
 		}
@@ -169,12 +171,32 @@ final class Prayer_Pop {
 						'header' => $texts['text_prayer_request_header'],
 						'description' => $texts['text_prayer_request_description'],
 					),
+					'testimony' => array(
+						'header' => $texts['text_testimony_header'],
+						'description' => $texts['text_testimony_description'],
+					),
 				),
 				'config'                  => array(
 					'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 					'nonce' => wp_create_nonce( 'prayer_pop_nonce' ),
 					'enableLastSubmissionTime' => false,
-					'defaultType' => 'prayer_request',
+					'defaultType' => $prayer_enabled ? 'prayer_request' : 'testimony',
+					'enabledTypes' => array(
+						'prayer_request' => $prayer_enabled,
+						'testimony'      => $testimony_enabled,
+					),
+					'types' => array(
+						'prayer_request' => array(
+							'messagePlaceholder' => $texts['text_message_placeholder'],
+							'submitLabel'        => $texts['text_submit_button'],
+							'successMessage'     => $texts['text_success_message'],
+						),
+						'testimony' => array(
+							'messagePlaceholder' => $texts['text_testimony_message_placeholder'],
+							'submitLabel'        => $texts['text_testimony_submit_button'],
+							'successMessage'     => $texts['text_testimony_success_message'],
+						),
+					),
 					'timezoneOffset' => intval( get_option( 'gmt_offset' ) * 3600 ),
 					'timeUnits' => array(
 						'second_singular' => $texts['text_time_unit_second_singular'],

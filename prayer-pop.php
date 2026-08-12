@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name: PrayerPop – Chat & Prayer Requests
+ * Plugin Name: PrayerPop – Chat, Prayer Requests & Testimonies
  * Plugin URI: https://prayerpop.eu/
  * Update URI: https://wordpress.org/plugins/prayerpop/
- * Description: Prayer request workflow and simple visitor chat with frontend tools, WordPress inboxes, and email notifications.
- * Version: 1.6.2
+ * Description: Receive prayer requests and testimonies, with simple visitor chat, WordPress inboxes, and email notifications.
+ * Version: 1.6.3
  * Author: Ösain OÜ
  * Author URI: https://osain.ee/
  * Text Domain: prayerpop
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 
 // Define plugin constants
 if ( ! defined( 'PRAYERPOP_VERSION' ) ) {
-	define( 'PRAYERPOP_VERSION', '1.6.2' );
+	define( 'PRAYERPOP_VERSION', '1.6.3' );
 }
 if ( ! defined( 'PRAYERPOP_PLUGIN_DIR' ) ) {
 	define( 'PRAYERPOP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -90,6 +90,8 @@ function prayer_pop_activate() {
 		'prayer_pop_general_settings',
 		array(
 			'show_prayer_pop_bubble'    => 1,
+			'show_prayer_request_button'=> 1,
+			'show_testimony_button'     => 1,
 			'popup_intro_image_id'      => 0,
 			'allow_anonymous'           => 1,
 			'require_admin_approval'    => 1,
@@ -464,7 +466,7 @@ function prayer_pop_get_plugin_information_sections() {
 	$readme_sections = prayer_pop_get_readme_sections();
 	$sections        = array(
 		'description'  => prayer_pop_format_plugin_information_content(
-			$readme_sections['Description'] ?? __( 'PrayerPop helps churches collect and moderate prayer requests with a simple frontend bubble and admin workflow.', 'prayerpop' )
+			$readme_sections['Description'] ?? __( 'PrayerPop helps churches collect and moderate prayer requests and testimonies with a simple frontend bubble and admin workflow.', 'prayerpop' )
 		),
 		'installation' => prayer_pop_format_plugin_information_content(
 			$readme_sections['Quick Start'] ?? __( 'Install and activate PrayerPop, then open PrayerPop -> Settings to configure the bubble, notifications, styling, and text.', 'prayerpop' )
@@ -626,7 +628,7 @@ function prayer_pop_format_plugin_information_line( $line ) {
  */
 function prayer_pop_get_plugin_information_screenshots_section() {
 	return wp_kses_post(
-		'<p>' . esc_html__( 'PrayerPop includes a focused admin workflow, a frontend prayer request bubble, notification settings, style controls, and built-in documentation.', 'prayerpop' ) . '</p>' .
+		'<p>' . esc_html__( 'PrayerPop includes a focused admin workflow, a frontend prayer request and testimony bubble, notification settings, style controls, and built-in documentation.', 'prayerpop' ) . '</p>' .
 		'<p><img src="' . esc_url( PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-favicon-512x512.png' ) . '" class="screenshot" width="320" height="320" alt="' . esc_attr__( 'PrayerPop app icon', 'prayerpop' ) . '" /></p>'
 	);
 }

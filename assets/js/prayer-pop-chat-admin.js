@@ -5,6 +5,7 @@
     var activeId = 0;
     var listTimer;
     var threadTimer;
+	var pollFailures = 0;
     var settingsToggle = document.getElementById('ppfc-settings-toggle');
     var settingsPanel = document.getElementById('ppfc-settings');
     var initialMessageTrigger = document.querySelector('.ppm-initial-messages-trigger');
@@ -48,6 +49,16 @@
     }
 
     function text(key, fallback) { return cfg.i18n[key] || fallback; }
+	function pollingStatus(failed) {
+		var status = document.getElementById('ppm-polling-status');
+		if (!status) { status = document.createElement('p'); status.id = 'ppm-polling-status'; status.className = 'ppm-polling-status'; status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite'); var inbox = document.querySelector('.ppm-inbox'); if (inbox && inbox.parentNode) inbox.parentNode.insertBefore(status, inbox); }
+		if (!status) return;
+		status.hidden = !failed;
+		status.textContent = failed ? text('connectionLost', 'Connection lost. Retrying…') : '';
+	}
+	function notePollingFailure() { pollFailures = Math.min(pollFailures + 1, 4); pollingStatus(true); }
+	function notePollingSuccess() { pollFailures = 0; pollingStatus(false); }
+	function pollingDelay(base) { return Math.min(30000, base * Math.pow(2, pollFailures)); }
     function esc(value) { return String(value || '').replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]; }); }
     function api(path, options) {
         options = options || {};
@@ -93,7 +104,7 @@
         }).join('');
         box.querySelectorAll('[data-id]').forEach(function (button) { button.addEventListener('click', function () { openConversation(button.dataset.id); }); });
     }
-    function loadList() { api('conversations').then(renderList).catch(function () {}).finally(scheduleList); }
+    function loadList() { api('conversations').then(function(rows) { notePollingSuccess(); renderList(rows); }).catch(function () { notePollingFailure(); }).finally(function() { clearTimeout(listTimer); listTimer = setTimeout(loadList, pollingDelay(5000)); }); }
     function messageMarkup(message) { return '<div class="ppm-admin-message ' + esc(message.sender_type) + '"><div>' + esc(message.message).replace(/\n/g,'<br>') + '</div><time>' + esc(shortTime(message.created_at)) + '</time></div>'; }
     function renderThread(payload) {
         var c = payload.conversation;
@@ -107,7 +118,7 @@
         if (form) form.addEventListener('submit', function (event) { event.preventDefault(); var button=form.querySelector('button'); button.disabled=true; api('conversations/' + activeId + '/messages',{method:'POST',body:JSON.stringify({message:form.querySelector('textarea').value})}).then(renderThread).then(loadList).catch(function (error) { window.alert(error.message || text('error','Something went wrong.')); }).finally(function(){button.disabled=false;}); });
         var messages = root.querySelector('.ppm-admin-messages'); messages.scrollTop = messages.scrollHeight;
     }
-    function pollThread() { clearTimeout(threadTimer); var draft=document.querySelector('.ppm-admin-composer textarea'); if (!activeId || document.hidden || (draft && (draft.value || document.activeElement === draft))) { threadTimer=setTimeout(pollThread,4000); return; } api('conversations/' + activeId).then(renderThread).catch(function(){}).finally(function(){threadTimer=setTimeout(pollThread,4000);}); }
+    function pollThread() { clearTimeout(threadTimer); var draft=document.querySelector('.ppm-admin-composer textarea'); if (!activeId || document.hidden || (draft && (draft.value || document.activeElement === draft))) { threadTimer=setTimeout(pollThread,4000); return; } api('conversations/' + activeId).then(function(payload){ notePollingSuccess(); renderThread(payload); }).catch(function(){ notePollingFailure(); }).finally(function(){threadTimer=setTimeout(pollThread,pollingDelay(4000));}); }
     function openConversation(id) { activeId=Number(id); api('conversations/' + activeId).then(function(payload){renderThread(payload);api('conversations/' + activeId + '/read',{method:'POST',body:'{}'});loadList();pollThread();}); }
     loadList();
     var requested = Number(new URLSearchParams(window.location.search).get('conversation')); if (requested) openConversation(requested);

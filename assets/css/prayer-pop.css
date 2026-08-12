@@ -473,8 +473,8 @@
 .prayer-pop-popup-intro--hero:not(.prayer-pop-popup-intro--has-image)::before {
 	content: "";
 	position: absolute;
-	inset: 0 0 auto;
-	height: 145px;
+	/* Keep the welcome card visibly overlapping the header at every text length. */
+	inset: 0 0 16px;
 	border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
 	background: var(--global-bg-color);
 }
@@ -491,9 +491,8 @@
 
 .prayer-pop-popup-intro__media {
     position: absolute;
-	inset: 0 0 auto;
+	inset: 0 0 16px;
     width: 100%;
-	height: 145px;
 	overflow: hidden;
 	border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
 	background: var(--global-bg-color);

@@ -1,27 +1,26 @@
-# Copyright (C) 2026 Ösain OÜ
-# This file is distributed under the GPLv2 or later.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PrayerPop 1.6.1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/prayerpop\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-12 15:19+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-01T12:37:07+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: prayerpop\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. Plugin Name of the plugin
 #: prayer-pop.php
-#: core/includes/classes/class-prayer-pop-chat.php:49
-#: core/includes/classes/class-prayer-pop-chat.php:140
-#: core/includes/classes/class-prayer-pop-defaults.php:65
-#: core/includes/classes/class-prayer-pop-settings.php:294
-#: core/includes/classes/class-prayer-pop-settings.php:295
-msgid "PrayerPop"
+msgid "PrayerPop – Chat, Prayer Requests & Testimonies"
 msgstr ""
 
 #. Plugin URI of the plugin
@@ -31,7 +30,9 @@ msgstr ""
 
 #. Description of the plugin
 #: prayer-pop.php
-msgid "Prayer request workflow and simple visitor chat with frontend tools, WordPress inboxes, and email notifications."
+msgid ""
+"Receive prayer requests and testimonies, with simple visitor chat, WordPress "
+"inboxes, and email notifications."
 msgstr ""
 
 #. Author of the plugin
@@ -44,39 +45,38 @@ msgstr ""
 msgid "https://osain.ee/"
 msgstr ""
 
-#: core/class-prayer-pop.php:151
-#: core/includes/classes/class-prayer-pop-defaults.php:109
+#: core/class-prayer-pop.php:153
+#: core/includes/classes/class-prayer-pop-defaults.php:115
 msgid "Send One More"
 msgstr ""
 
-#: core/class-prayer-pop.php:152
-#: core/includes/classes/class-prayer-pop-ajax.php:220
-#: core/includes/classes/class-prayer-pop-defaults.php:105
+#: core/class-prayer-pop.php:154
+#: core/includes/classes/class-prayer-pop-ajax.php:234
+#: core/includes/classes/class-prayer-pop-defaults.php:110
 msgid "Thank you for your submission!"
 msgstr ""
 
-#: core/class-prayer-pop.php:153
-#: core/includes/classes/class-prayer-pop-defaults.php:101
-#: core/includes/classes/class-prayer-pop-defaults.php:174
-#: core/includes/classes/class-prayer-pop-defaults.php:204
-#: core/includes/classes/class-prayer-pop-run.php:2880
+#: core/class-prayer-pop.php:155
+#: core/includes/classes/class-prayer-pop-defaults.php:106
+#: core/includes/classes/class-prayer-pop-defaults.php:180
+#: core/includes/classes/class-prayer-pop-defaults.php:210
 msgid "Anonymous"
 msgstr ""
 
-#: core/class-prayer-pop.php:242
-#: core/includes/classes/class-prayer-pop-ajax.php:216
-#: core/includes/classes/class-prayer-pop-defaults.php:115
-#: core/includes/classes/class-prayer-pop-defaults.php:147
+#: core/class-prayer-pop.php:264
+#: core/includes/classes/class-prayer-pop-ajax.php:228
+#: core/includes/classes/class-prayer-pop-defaults.php:121
+#: core/includes/classes/class-prayer-pop-defaults.php:153
 msgid "Last prayer request: {time_ago} ago"
 msgstr ""
 
-#: core/class-prayer-pop.php:342
-#: core/includes/classes/class-prayer-pop-defaults.php:111
+#: core/class-prayer-pop.php:364
+#: core/includes/classes/class-prayer-pop-defaults.php:117
 msgid "You do not have permission to view this preview."
 msgstr ""
 
-#: core/class-prayer-pop.php:348
-#: core/includes/classes/class-prayer-pop-defaults.php:112
+#: core/class-prayer-pop.php:370
+#: core/includes/classes/class-prayer-pop-defaults.php:118
 msgid "Invalid preview token."
 msgstr ""
 
@@ -86,316 +86,581 @@ msgstr ""
 
 #: core/includes/classes/class-prayer-pop-ajax.php:92
 #: core/includes/classes/class-prayer-pop-ajax.php:103
-#: core/includes/classes/class-prayer-pop-defaults.php:106
+#: core/includes/classes/class-prayer-pop-defaults.php:112
 msgid "There was an error processing your request."
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-ajax.php:112
-#: core/includes/classes/class-prayer-pop-defaults.php:107
-msgid "Too many submissions right now. Please wait a few minutes and try again."
+#: core/includes/classes/class-prayer-pop-defaults.php:113
+msgid ""
+"Too many submissions right now. Please wait a few minutes and try again."
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-ajax.php:128
-msgid "Message cannot be empty."
+#: core/includes/classes/class-prayer-pop-run.php:1884
+#: core/includes/classes/class-prayer-pop-run.php:1912
+msgid "Invalid submission type."
 msgstr ""
 
-#. translators: %d: maximum number of allowed characters.
-#: core/includes/classes/class-prayer-pop-ajax.php:136
-#, php-format
-msgid "Message is too long. Maximum %d characters allowed."
+#: core/includes/classes/class-prayer-pop-ajax.php:135
+msgid "This submission type is not available."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-ajax.php:139
+msgid "Message cannot be empty."
 msgstr ""
 
 #. translators: %d: maximum number of allowed characters.
 #: core/includes/classes/class-prayer-pop-ajax.php:147
 #, php-format
+msgid "Message is too long. Maximum %d characters allowed."
+msgstr ""
+
+#. translators: %d: maximum number of allowed characters.
+#: core/includes/classes/class-prayer-pop-ajax.php:158
+#, php-format
 msgid "Name is too long. Maximum %d characters allowed."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-ajax.php:191
+#: core/includes/classes/class-prayer-pop-ajax.php:203
 msgid "Failed to submit your request. Please try again."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-ajax.php:532
-#: core/includes/classes/class-prayer-pop-defaults.php:108
+#: core/includes/classes/class-prayer-pop-ajax.php:233
+#: core/includes/classes/class-prayer-pop-defaults.php:111
+msgid "Thank you for sharing your testimony!"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-ajax.php:540
+#: core/includes/classes/class-prayer-pop-defaults.php:114
 msgid "Please use only a real person name in the name field."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:160
-#: core/includes/classes/class-prayer-pop-chat.php:168
-#: core/includes/classes/class-prayer-pop-chat.php:176
+#: core/includes/classes/class-prayer-pop-chat.php:54
+#: core/includes/classes/class-prayer-pop-chat.php:256
+#: core/includes/classes/class-prayer-pop-defaults.php:65
+#: core/includes/classes/class-prayer-pop-settings.php:271
+#: core/includes/classes/class-prayer-pop-settings.php:272
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:54
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:256
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:271
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:272
+msgid "PrayerPop"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:63
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:174
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:63
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:188
+msgid "30 days"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:64
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:175
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:64
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:189
+msgid "90 days"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:65
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:176
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:65
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:190
+msgid "180 days"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:66
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:66
+msgid "1 year"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:67
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:67
+msgid "2 years"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:68
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:68
+msgid "Keep indefinitely"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:124
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:124
+msgid "You are not allowed to update PrayerPop Chat."
+msgstr ""
+
 #: core/includes/classes/class-prayer-pop-chat.php:234
-#: core/includes/classes/class-prayer-pop-chat.php:295
-msgid "PrayerPop Chat"
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:234
+msgid "Enable PrayerPop Chat"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:161
-msgid "When PrayerPop Chat is enabled, the visitor name, email address, messages, conversation status, and message timestamps are stored in this website’s WordPress database. A random private browser token is stored as an HttpOnly cookie so the visitor can return to the conversation. New-message and reply notifications are sent through the website’s configured WordPress email system."
+#: core/includes/classes/class-prayer-pop-chat.php:241
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:241
+msgid "Chat conversation retention"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:199
-msgid "PrayerPop Chat conversations"
+#: core/includes/classes/class-prayer-pop-chat.php:286
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:157
+#: core/includes/classes/settings/class-prayer-pop-settings-notifications.php:144
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:286
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:171
+msgid "On"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:202
-#: core/includes/classes/class-prayer-pop-run.php:338
-#: src/Admin/ListTable.php:877
-msgid "Name"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:203
-#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1233
-#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1544
-msgid "Email"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:204
-#: core/includes/classes/class-prayer-pop-chat.php:270
-#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1019
-#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1279
-#: src/Admin/ListTable.php:74
-msgid "Status"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:205
-msgid "Created"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:206
-msgid "Messages"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:235
-#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1015
-#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1278
-msgid "Chat"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:262
-msgid "No conversations yet."
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:263
-msgid "New website messages will appear here."
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:264
-msgid "Choose a conversation to read and reply."
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:265
-msgid "Delete conversation"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:266
-msgid "Delete this conversation permanently?"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:267
-#: core/includes/classes/class-prayer-pop-chat.php:308
-msgid "Visitor details will appear here."
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:268
-#: core/includes/classes/class-prayer-pop-chat.php:307
-msgid "Your messages"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:269
-msgid "Contact details"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:271
-msgid "Started"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:272
-msgid "Last message"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:273
-msgid "Write a reply…"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:274
-msgid "Send reply"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:275
-msgid "Close conversation"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:276
-msgid "Reopen conversation"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:277
-msgid "Something went wrong."
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:278
-msgid "Closed"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:279
-#: core/includes/classes/class-prayer-pop-run.php:1590
-msgid "Open"
+#: core/includes/classes/class-prayer-pop-chat.php:286
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:157
+#: core/includes/classes/settings/class-prayer-pop-settings-notifications.php:144
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:286
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:171
+msgid "Off"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-chat.php:288
-msgid "You do not have permission to access this page."
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:295
-msgid "Talk with your website visitors in one place."
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:296
-msgid "Chat settings"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:300
-msgid "Enable Chat"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-chat.php:301
-msgid "Team name"
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:288
+msgid ""
+"Let visitors start Chat conversations and let administrators reply from "
+"PrayerPop → Chat. Turn this off to offer only the enabled prayer request and "
+"testimony forms."
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-chat.php:302
-msgid "Notification email"
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:302
+msgid ""
+"PrayerPop permanently removes Chat conversations after this period of "
+"inactivity. Choose “Keep indefinitely” only when your retention policy "
+"requires it."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:303
-msgid "Save Chat settings"
+#: core/includes/classes/class-prayer-pop-chat.php:311
+#: core/includes/classes/class-prayer-pop-chat.php:319
+#: core/includes/classes/class-prayer-pop-chat.php:327
+#: core/includes/classes/class-prayer-pop-chat.php:419
+#: core/includes/classes/class-prayer-pop-chat.php:482
+#: core/includes/classes/class-prayer-pop-settings.php:514
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:311
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:319
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:327
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:419
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:483
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:514
+msgid "PrayerPop Chat"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:306
-msgid "Chats"
+#: core/includes/classes/class-prayer-pop-chat.php:312
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:312
+msgid ""
+"When PrayerPop Chat is enabled, the visitor name, email address, messages, "
+"conversation status, and message timestamps are stored in this website’s "
+"WordPress database. A random private browser token is stored as an HttpOnly "
+"cookie so the visitor can return to the conversation. New-message and reply "
+"notifications are sent through the website’s configured WordPress email "
+"system. Chat conversations are permanently removed after the retention "
+"period chosen in PrayerPop settings, measured from their last activity. "
+"WordPress privacy requests can locate Chat records when the visitor supplied "
+"an email address."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:306
-msgid "Loading conversations…"
+#: core/includes/classes/class-prayer-pop-chat.php:350
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:350
+msgid "PrayerPop Chat conversations"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:307
-msgid "Choose a conversation from the left to read and reply."
+#: core/includes/classes/class-prayer-pop-chat.php:353
+#: core/includes/classes/class-prayer-pop-run.php:360
+#: src/Admin/ListTable.php:880
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:353
+msgid "Name"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:321
-msgid "Chat is unavailable."
+#: core/includes/classes/class-prayer-pop-chat.php:354
+#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1233
+#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1544
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:354
+msgid "Email"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:340
-#: core/includes/classes/class-prayer-pop-chat.php:368
-msgid "Something went wrong. Please try again."
+#: core/includes/classes/class-prayer-pop-chat.php:355
+#: core/includes/classes/class-prayer-pop-chat.php:455
+#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1019
+#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1279
+#: src/Admin/ListTable.php:74
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:355
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:456
+msgid "Status"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:341
-#: core/includes/classes/class-prayer-pop-chat.php:529
-#: core/includes/classes/class-prayer-pop-defaults.php:86
-msgid "This conversation is closed."
+#: core/includes/classes/class-prayer-pop-chat.php:356
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:356
+msgid "Created"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:342
-msgid "Sending…"
+#: core/includes/classes/class-prayer-pop-chat.php:357
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:357
+msgid "Messages"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:343
-msgid "Just now"
+#: core/includes/classes/class-prayer-pop-chat.php:394
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:394
+msgid ""
+"One or more Chat conversations could not be erased. Please retry the request "
+"or check the database error log."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:344
-msgid "{count}m"
+#: core/includes/classes/class-prayer-pop-chat.php:420
+#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1015
+#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1278
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:420
+msgid "Chat"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:345
-msgid "{count}h"
+#: core/includes/classes/class-prayer-pop-chat.php:447
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:447
+msgid "No conversations yet."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:369
-#: templates/prayer-pop-front-end.php:189
-msgid "Back to options"
+#: core/includes/classes/class-prayer-pop-chat.php:448
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:448
+msgid "New website messages will appear here."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:369
-#: src/Admin/ListTable.php:908
-msgid "Close"
+#: core/includes/classes/class-prayer-pop-chat.php:449
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:450
+msgid "Choose a conversation to read and reply."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:375
-#: core/includes/classes/class-prayer-pop-chat.php:376
-msgid "Previous step"
+#: core/includes/classes/class-prayer-pop-chat.php:450
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:451
+msgid "Delete conversation"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:451
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:452
+msgid "Delete this conversation permanently?"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:452
+#: core/includes/classes/class-prayer-pop-chat.php:504
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:453
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:505
+msgid "Visitor details will appear here."
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-chat.php:453
-msgid "Please wait a moment and try again."
+#: core/includes/classes/class-prayer-pop-chat.php:503
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:454
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:504
+msgid "Your messages"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:454
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:455
+msgid "Contact details"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:456
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:457
+msgid "Started"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:457
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:458
+msgid "Last message"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:458
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:459
+msgid "Write a reply…"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-chat.php:459
-msgid "Enter your name and a message. If you add an email address, make sure it is valid."
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:460
+msgid "Send reply"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:460
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:461
+msgid "Close conversation"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:461
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:462
+msgid "Reopen conversation"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:462
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:463
+msgid "Something went wrong."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:463
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:464
+msgid "Closed"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:464
+#: core/includes/classes/class-prayer-pop-run.php:1625
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:465
+msgid "Open"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:473
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:474
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:480
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:481
+msgid "Initial Chat message updated."
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-chat.php:482
-msgid "The conversation could not be created."
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:483
+msgid "Talk with your website visitors in one place."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:486
-#: core/includes/classes/class-prayer-pop-chat.php:535
-msgid "The message could not be saved."
+#: core/includes/classes/class-prayer-pop-chat.php:483
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:484
+msgid "Initial message"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:483
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:484
+msgid "Chat settings"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:489
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:490
+msgid "Initial Chat message"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:489
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:490
+msgid ""
+"Set the team message shown before a visitor starts their first conversation."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:489
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:490
+msgid "Close initial message editor"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:490
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:491
+msgid "Opening message"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:490
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:491
+msgid ""
+"Shown as one team message before a visitor starts their first conversation."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:490
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:491
+msgid ""
+"Formatting: use <strong>bold text</strong>, <em>italic text</em>, or a new "
+"line. Other HTML is removed."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:491
+#: src/Admin/ListTable.php:872 src/Admin/ListTable.php:888
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:492
+msgid "Cancel"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:491
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:492
+msgid "Save initial message"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:496
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:497
+msgid "Enable Chat"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:497
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:498
+msgid "Team name"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:498
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:499
+msgid "Notification email"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:499
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:500
+msgid "Save Chat settings"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:502
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:503
+msgid "Chats"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:502
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:503
+msgid "Loading conversations…"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:503
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:504
+msgid "Choose a conversation from the left to read and reply."
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-chat.php:517
-#: core/includes/classes/class-prayer-pop-chat.php:609
-#: core/includes/classes/class-prayer-pop-chat.php:631
-#: core/includes/classes/class-prayer-pop-chat.php:657
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:518
+msgid "Chat is unavailable."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:536
+#: core/includes/classes/class-prayer-pop-chat.php:562
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:537
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:564
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:537
+#: core/includes/classes/class-prayer-pop-chat.php:720
+#: core/includes/classes/class-prayer-pop-defaults.php:87
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:539
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:722
+msgid "This conversation is closed."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:538
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:540
+msgid "Sending…"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:539
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:541
+msgid "Just now"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:540
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:542
+msgid "{count}m"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:541
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:543
+msgid "{count}h"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:563
+#: templates/prayer-pop-front-end.php:210
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:565
+msgid "Back to options"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:563
+#: src/Admin/ListTable.php:911
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:565
+msgid "Close"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:569
+#: core/includes/classes/class-prayer-pop-chat.php:570
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:571
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:572
+msgid "Previous step"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:647
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:649
+msgid "Please wait a moment and try again."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:653
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:655
+msgid ""
+"Enter your name and a message. If you add an email address, make sure it is "
+"valid."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:674
+#: core/includes/classes/class-prayer-pop-chat.php:678
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:676
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:680
+msgid "The conversation could not be created."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:708
+#: core/includes/classes/class-prayer-pop-chat.php:793
+#: core/includes/classes/class-prayer-pop-chat.php:814
+#: core/includes/classes/class-prayer-pop-chat.php:839
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:710
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:795
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:816
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:841
 msgid "Conversation not found."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:532
+#: core/includes/classes/class-prayer-pop-chat.php:723
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:725
 msgid "Enter a message and try again."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:618
+#: core/includes/classes/class-prayer-pop-chat.php:726
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:728
+msgid "The message could not be saved."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-chat.php:802
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:804
 msgid "Reopen the conversation and enter a reply."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:621
+#: core/includes/classes/class-prayer-pop-chat.php:805
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:807
 msgid "The reply could not be saved."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:645
+#: core/includes/classes/class-prayer-pop-chat.php:828
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:830
 msgid "Choose a valid conversation status."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:662
+#: core/includes/classes/class-prayer-pop-chat.php:842
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:844
 msgid "The conversation could not be deleted."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:672
-msgid "Continue the conversation in PrayerPop Chat. Replies to this email are not added to the chat."
+#: core/includes/classes/class-prayer-pop-chat.php:857
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:859
+msgid ""
+"Continue the conversation in PrayerPop Chat. Replies to this email are not "
+"added to the chat."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:689
+#: core/includes/classes/class-prayer-pop-chat.php:874
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:876
 msgid "New PrayerPop Chat message"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:689
+#: core/includes/classes/class-prayer-pop-chat.php:874
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:876
 msgid "New message"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:689
+#: core/includes/classes/class-prayer-pop-chat.php:874
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:876
 msgid "Open Chat"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:695
+#: core/includes/classes/class-prayer-pop-chat.php:880
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:882
 msgid "We replied to your message"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:695
+#: core/includes/classes/class-prayer-pop-chat.php:880
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:882
 msgid "We’re here to help"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-chat.php:695
+#: core/includes/classes/class-prayer-pop-chat.php:880
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:882
 msgid "Open PrayerPop Chat"
 msgstr ""
 
@@ -405,293 +670,325 @@ msgid "PrayerPop icon"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:67
-#: core/includes/classes/class-prayer-pop-defaults.php:144
+#: core/includes/classes/class-prayer-pop-defaults.php:150
 msgid "Prayer request"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:68
-msgid "Send us a message"
+#: core/includes/classes/class-prayer-pop-defaults.php:95
+msgid "Share a testimony"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:69
-#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1521
-#: src/Admin/ListTable.php:905
-msgid "Back"
+msgid "Send us a message"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:70
-msgid "The team can also help"
+#: core/includes/classes/settings/class-prayer-pop-settings-style.php:1521
+#: src/Admin/ListTable.php:908
+msgid "Back"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:71
-msgid "Replies within a day"
+msgid "The team can also help"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:72
-msgid "We are here to help. Leave a message and we will reply here."
+msgid "Replies within a day"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:73
-msgid "1 of 3"
+msgid "We are here to help. Leave a message and we will reply here."
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:74
-msgid "2 of 3"
+msgid "1 of 3"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:75
-msgid "3 of 3"
+msgid "2 of 3"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:76
-msgid "Before we start, what’s your name?"
+msgid "3 of 3"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:77
-msgid "Type your name"
+msgid "Before we start, what’s your name?"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:78
-msgid "Thanks,"
+msgid "Type your name"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:79
-msgid "Where should we send reply notifications?"
+msgid "Thanks,"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:80
-msgid "Email address (optional)"
+msgid "Where should we send reply notifications?"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:81
-msgid "Skip for now"
+msgid "Email address (optional)"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:82
-#: core/includes/classes/class-prayer-pop-settings.php:241
-msgid "How can we help?"
+msgid "Skip for now"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:83
-msgid "Write your message…"
+#: core/includes/classes/class-prayer-pop-settings.php:218
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:218
+msgid "How can we help?"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:84
-msgid "Continue"
+msgid "Write your message…"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:85
+msgid "Continue"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-defaults.php:86
 msgid "Send message"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:87
+#: core/includes/classes/class-prayer-pop-defaults.php:88
 msgid "Start a new conversation"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:90
+#: core/includes/classes/class-prayer-pop-defaults.php:91
 msgid "Hi there, prayer warrior!"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:91
+#: core/includes/classes/class-prayer-pop-defaults.php:92
 msgid "Send us a message and we will get back to you."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:92
+#: core/includes/classes/class-prayer-pop-defaults.php:93
 msgid "Submit a Prayer Request"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:93
+#: core/includes/classes/class-prayer-pop-defaults.php:94
 msgid "Please fill out the form below to submit your prayer request."
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:96
-msgid "Enter your message..."
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-defaults.php:97
-msgid "Your Name (optional)"
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-defaults.php:98
-msgid "Your Name"
+msgid "We would love to hear what God has done in your life."
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:99
-msgid "Submit"
+msgid "Enter your message..."
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:100
-msgid "Sending..."
+msgid "Share your testimony…"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-defaults.php:101
+msgid "Your Name (optional)"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-defaults.php:102
+msgid "Your Name"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-defaults.php:103
+msgid "Submit"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-defaults.php:104
+msgid "Share testimony"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-defaults.php:105
+msgid "Sending..."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-defaults.php:107
 msgid "Leave this field empty"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:110
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:88
+#: core/includes/classes/class-prayer-pop-defaults.php:116
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:94
 msgid "Please fill out this field"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:118
+#: core/includes/classes/class-prayer-pop-defaults.php:124
 msgid "second"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:119
+#: core/includes/classes/class-prayer-pop-defaults.php:125
 msgid "seconds"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:120
+#: core/includes/classes/class-prayer-pop-defaults.php:126
 msgid "minute"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:121
+#: core/includes/classes/class-prayer-pop-defaults.php:127
 msgid "minutes"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:122
+#: core/includes/classes/class-prayer-pop-defaults.php:128
 msgid "hour"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:123
+#: core/includes/classes/class-prayer-pop-defaults.php:129
 #: core/includes/classes/settings/class-prayer-pop-settings-notifications.php:267
 msgid "hours"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:124
+#: core/includes/classes/class-prayer-pop-defaults.php:130
 msgid "day"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:125
-#: core/includes/classes/settings/class-prayer-pop-settings-general.php:146
+#: core/includes/classes/class-prayer-pop-defaults.php:131
 msgid "days"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-defaults.php:127
+#: core/includes/classes/class-prayer-pop-defaults.php:133
 #: src/Admin/ListTable.php:179
 msgid "Answer Update"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:266
-msgid "Answered Prayer Message"
+#: core/includes/classes/class-prayer-pop-notification-scheduler.php:22
+msgid "The submission could not be queued for notification."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-notification-scheduler.php:32
+msgid "WordPress could not schedule the notification event."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-run.php:121
+msgid "Invalid submission."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-run.php:126
+msgid "Could not update the submission."
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-run.php:288
-msgid "Submission Content"
+msgid "Answered Prayer Message"
 msgstr ""
 
 #: core/includes/classes/class-prayer-pop-run.php:310
+msgid "Submission Content"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-run.php:332
 msgid "Submission Details"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:340
+#: core/includes/classes/class-prayer-pop-run.php:362
 msgid "Leave empty to keep this submission anonymous."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:343
+#: core/includes/classes/class-prayer-pop-run.php:365
 msgid "Submission Text"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:369
+#: core/includes/classes/class-prayer-pop-run.php:391
 msgid "Submission entered at:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:373
+#: core/includes/classes/class-prayer-pop-run.php:395
 msgid "Last modified at:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:380
-#: src/Admin/ListTable.php:342
-#: src/Admin/ListTable.php:660
-#: src/Admin/ListTable.php:922
+#: core/includes/classes/class-prayer-pop-run.php:402
+#: src/Admin/ListTable.php:345 src/Admin/ListTable.php:663
+#: src/Admin/ListTable.php:925
 msgid "Move to Trash"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:385
-#: core/includes/classes/class-prayer-pop-settings.php:463
+#: core/includes/classes/class-prayer-pop-run.php:407
+#: core/includes/classes/class-prayer-pop-settings.php:438
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:438
 msgid "Save Changes"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:465
+#: core/includes/classes/class-prayer-pop-run.php:487
 msgid "Optional message shown in the answered section on the front end."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:592
-#: core/includes/classes/class-prayer-pop-run.php:2523
+#: core/includes/classes/class-prayer-pop-run.php:614
+#: core/includes/classes/class-prayer-pop-run.php:2591
 msgid "Back to Submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:670
-#: src/Admin/ListTable.php:891
+#: core/includes/classes/class-prayer-pop-run.php:692
+#: src/Admin/ListTable.php:894
 msgid "Changes saved."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:806
+#: core/includes/classes/class-prayer-pop-run.php:830
 msgctxt "post type general name"
 msgid "Submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:807
+#: core/includes/classes/class-prayer-pop-run.php:831
 msgctxt "post type singular name"
 msgid "Submission"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:808
+#: core/includes/classes/class-prayer-pop-run.php:832
 msgctxt "admin menu"
 msgid "Submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:809
+#: core/includes/classes/class-prayer-pop-run.php:833
 msgctxt "add new on admin bar"
 msgid "Submission"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:810
+#: core/includes/classes/class-prayer-pop-run.php:834
 msgctxt "pray request"
 msgid "Add New"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:811
+#: core/includes/classes/class-prayer-pop-run.php:835
 msgid "Add New Submission"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:812
+#: core/includes/classes/class-prayer-pop-run.php:836
 msgid "New Submission"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:813
+#: core/includes/classes/class-prayer-pop-run.php:837
 msgid "Edit Submission"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:814
+#: core/includes/classes/class-prayer-pop-run.php:838
 msgid "View Submission"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:815
-#: core/includes/classes/class-prayer-pop-run.php:2982
-#: core/includes/classes/class-prayer-pop-settings.php:434
+#: core/includes/classes/class-prayer-pop-run.php:839
+#: core/includes/classes/class-prayer-pop-run.php:3120
 #: src/Admin/ListTable.php:71
 msgid "Submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:816
+#: core/includes/classes/class-prayer-pop-run.php:840
 msgid "Search Submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:817
+#: core/includes/classes/class-prayer-pop-run.php:841
 msgid "Parent Submissions:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:818
+#: core/includes/classes/class-prayer-pop-run.php:842
 msgid "No submissions found."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:819
+#: core/includes/classes/class-prayer-pop-run.php:843
 msgid "No submissions found in Trash."
 msgstr ""
 
 #. translators: %s: Number of submissions in this status.
-#: core/includes/classes/class-prayer-pop-run.php:870
+#: core/includes/classes/class-prayer-pop-run.php:894
 #, php-format
 msgid "Approved <span class=\"count\">(%s)</span>"
 msgid_plural "Approved <span class=\"count\">(%s)</span>"
@@ -699,7 +996,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: Number of submissions in this status.
-#: core/includes/classes/class-prayer-pop-run.php:873
+#: core/includes/classes/class-prayer-pop-run.php:897
 #, php-format
 msgid "Answered <span class=\"count\">(%s)</span>"
 msgid_plural "Answered <span class=\"count\">(%s)</span>"
@@ -707,7 +1004,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: Number of submissions in this status.
-#: core/includes/classes/class-prayer-pop-run.php:876
+#: core/includes/classes/class-prayer-pop-run.php:900
 #, php-format
 msgid "Declined <span class=\"count\">(%s)</span>"
 msgid_plural "Declined <span class=\"count\">(%s)</span>"
@@ -715,7 +1012,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: Number of submissions in this status.
-#: core/includes/classes/class-prayer-pop-run.php:879
+#: core/includes/classes/class-prayer-pop-run.php:903
 #, php-format
 msgid "Archived <span class=\"count\">(%s)</span>"
 msgid_plural "Archived <span class=\"count\">(%s)</span>"
@@ -723,45 +1020,44 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: Number of submissions in this status.
-#: core/includes/classes/class-prayer-pop-run.php:882
+#: core/includes/classes/class-prayer-pop-run.php:906
 #, php-format
 msgid "Submissions <span class=\"count\">(%s)</span>"
 msgid_plural "Submissions <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1110
+#: core/includes/classes/class-prayer-pop-run.php:1134
 msgid "Send via Email"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1111
+#: core/includes/classes/class-prayer-pop-run.php:1135
 msgid "Approve selected"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1112
+#: core/includes/classes/class-prayer-pop-run.php:1136
 msgid "Decline selected"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1113
+#: core/includes/classes/class-prayer-pop-run.php:1137
 msgid "Mark prayer as answered"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1114
+#: core/includes/classes/class-prayer-pop-run.php:1138
 msgid "Edit selected"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1115
+#: core/includes/classes/class-prayer-pop-run.php:1139
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:1228
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:1540
-#: src/Admin/ListTable.php:349
-#: src/Admin/ListTable.php:622
-#: src/Admin/ListTable.php:923
+#: src/Admin/ListTable.php:352 src/Admin/ListTable.php:625
+#: src/Admin/ListTable.php:926
 msgid "Archive"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1511
-#: core/includes/classes/class-prayer-pop-run.php:2873
-#: core/includes/classes/class-prayer-pop-run.php:2935
+#: core/includes/classes/class-prayer-pop-run.php:1541
+#: core/includes/classes/class-prayer-pop-run.php:2965
+#: core/includes/classes/class-prayer-pop-run.php:3073
 #: core/includes/classes/settings/class-prayer-pop-settings-email-template.php:165
 msgid ""
 "Type: {type}\n"
@@ -770,78 +1066,88 @@ msgid ""
 "{message}"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1512
-#: core/includes/classes/class-prayer-pop-run.php:1581
-#: core/includes/classes/class-prayer-pop-run.php:2869
+#: core/includes/classes/class-prayer-pop-run.php:1542
+#: core/includes/classes/class-prayer-pop-run.php:1611
+#: core/includes/classes/class-prayer-pop-run.php:2964
 #: core/includes/classes/settings/class-prayer-pop-settings-email-template.php:153
 msgid "New PrayerPop Submission"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1529
-#: core/includes/classes/class-prayer-pop-run.php:2543
-#: core/includes/classes/class-prayer-pop-run.php:2879
-#: core/includes/classes/class-prayer-pop-run.php:2990
-#: core/includes/classes/class-prayer-pop-run.php:3019
-#: src/Admin/ListTable.php:199
-#: src/Admin/ListTable.php:914
-#: src/Admin/ListTable.php:1272
+#: core/includes/classes/class-prayer-pop-run.php:1559
+#: core/includes/classes/class-prayer-pop-run.php:2611
+#: core/includes/classes/class-prayer-pop-run.php:2968
+#: core/includes/classes/class-prayer-pop-run.php:3128
+#: core/includes/classes/class-prayer-pop-run.php:3157
+#: src/Admin/ListTable.php:199 src/Admin/ListTable.php:917
+#: src/Admin/ListTable.php:1280
 msgid "Prayer Request"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1583
+#. translators: %s: Number of selected prayer requests.
+#: core/includes/classes/class-prayer-pop-run.php:1616
 #, php-format
 msgid "%s selected prayer request"
 msgid_plural "%s selected prayer requests"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1593
-#: core/includes/classes/class-prayer-pop-run.php:2575
+#: core/includes/classes/class-prayer-pop-run.php:1628
+#: core/includes/classes/class-prayer-pop-run.php:2643
 msgid "Answer Note"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1597
+#: core/includes/classes/class-prayer-pop-run.php:1632
 msgid "This email was generated from the PrayerPop submissions bulk action."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1613
-#: core/includes/classes/class-prayer-pop-run.php:1656
-#: core/includes/classes/class-prayer-pop-run.php:1687
-#: core/includes/classes/class-prayer-pop-run.php:1730
-#: core/includes/classes/class-prayer-pop-run.php:1789
-#: core/includes/classes/class-prayer-pop-run.php:1829
-#: core/includes/classes/class-prayer-pop-run.php:1857
-#: core/includes/classes/class-prayer-pop-run.php:1927
-#: core/includes/classes/class-prayer-pop-run.php:1953
+#: core/includes/classes/class-prayer-pop-run.php:1648
+#: core/includes/classes/class-prayer-pop-run.php:1694
+#: core/includes/classes/class-prayer-pop-run.php:1725
+#: core/includes/classes/class-prayer-pop-run.php:1771
+#: core/includes/classes/class-prayer-pop-run.php:1833
+#: core/includes/classes/class-prayer-pop-run.php:1876
+#: core/includes/classes/class-prayer-pop-run.php:1904
+#: core/includes/classes/class-prayer-pop-run.php:1974
+#: core/includes/classes/class-prayer-pop-run.php:2002
 msgid "Invalid request."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1617
-#: core/includes/classes/class-prayer-pop-run.php:1621
-#: core/includes/classes/class-prayer-pop-run.php:1660
-#: core/includes/classes/class-prayer-pop-run.php:1664
-#: core/includes/classes/class-prayer-pop-run.php:1691
-#: core/includes/classes/class-prayer-pop-run.php:1695
-#: core/includes/classes/class-prayer-pop-run.php:1734
-#: core/includes/classes/class-prayer-pop-run.php:1738
-#: core/includes/classes/class-prayer-pop-run.php:1793
-#: core/includes/classes/class-prayer-pop-run.php:1797
-#: core/includes/classes/class-prayer-pop-run.php:1833
-#: core/includes/classes/class-prayer-pop-run.php:1861
-#: core/includes/classes/class-prayer-pop-run.php:1931
-#: core/includes/classes/class-prayer-pop-run.php:1935
-#: core/includes/classes/class-prayer-pop-run.php:1957
-#: core/includes/classes/class-prayer-pop-run.php:1961
+#: core/includes/classes/class-prayer-pop-run.php:1652
+#: core/includes/classes/class-prayer-pop-run.php:1656
+#: core/includes/classes/class-prayer-pop-run.php:1698
+#: core/includes/classes/class-prayer-pop-run.php:1702
+#: core/includes/classes/class-prayer-pop-run.php:1729
+#: core/includes/classes/class-prayer-pop-run.php:1733
+#: core/includes/classes/class-prayer-pop-run.php:1775
+#: core/includes/classes/class-prayer-pop-run.php:1779
+#: core/includes/classes/class-prayer-pop-run.php:1837
+#: core/includes/classes/class-prayer-pop-run.php:1841
+#: core/includes/classes/class-prayer-pop-run.php:1880
+#: core/includes/classes/class-prayer-pop-run.php:1908
+#: core/includes/classes/class-prayer-pop-run.php:1978
+#: core/includes/classes/class-prayer-pop-run.php:1982
+#: core/includes/classes/class-prayer-pop-run.php:2006
+#: core/includes/classes/class-prayer-pop-run.php:2010
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:1837
-#: core/includes/classes/class-prayer-pop-run.php:1865
-msgid "Invalid submission type."
+#: core/includes/classes/class-prayer-pop-run.php:1673
+#: core/includes/classes/class-prayer-pop-run.php:1750
+#: core/includes/classes/class-prayer-pop-run.php:1813
+#: core/includes/classes/class-prayer-pop-run.php:1856
+msgid "Could not update this submission. Please try again."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-run.php:1986
+msgid "Could not archive this submission. Please try again."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-run.php:2027
+msgid "Could not restore this submission. Please try again."
 msgstr ""
 
 #. translators: %s: number of archived submissions.
-#: core/includes/classes/class-prayer-pop-run.php:2013
+#: core/includes/classes/class-prayer-pop-run.php:2065
 #, php-format
 msgid "%s submission archived."
 msgid_plural "%s submissions archived."
@@ -849,7 +1155,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: number of submissions sent by email.
-#: core/includes/classes/class-prayer-pop-run.php:2018
+#: core/includes/classes/class-prayer-pop-run.php:2070
 #, php-format
 msgid "%s submission sent via email."
 msgid_plural "%s submissions sent via email."
@@ -857,7 +1163,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: number of approved submissions.
-#: core/includes/classes/class-prayer-pop-run.php:2023
+#: core/includes/classes/class-prayer-pop-run.php:2075
 #, php-format
 msgid "%s submission approved."
 msgid_plural "%s submissions approved."
@@ -865,7 +1171,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: number of declined submissions.
-#: core/includes/classes/class-prayer-pop-run.php:2028
+#: core/includes/classes/class-prayer-pop-run.php:2080
 #, php-format
 msgid "%s submission declined."
 msgid_plural "%s submissions declined."
@@ -873,7 +1179,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: number of prayers marked as answered.
-#: core/includes/classes/class-prayer-pop-run.php:2033
+#: core/includes/classes/class-prayer-pop-run.php:2085
 #, php-format
 msgid "%s prayer marked as answered."
 msgid_plural "%s prayers marked as answered."
@@ -881,1203 +1187,1731 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: number of updated submissions.
-#: core/includes/classes/class-prayer-pop-run.php:2038
+#: core/includes/classes/class-prayer-pop-run.php:2090
 #, php-format
 msgid "%s submission updated."
 msgid_plural "%s submissions updated."
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2043
+#: core/includes/classes/class-prayer-pop-run.php:2095
 msgid "Submission approved."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2046
+#: core/includes/classes/class-prayer-pop-run.php:2098
 msgid "Submission marked as reviewed."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2049
+#: core/includes/classes/class-prayer-pop-run.php:2101
 msgid "Submission declined."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2052
+#: core/includes/classes/class-prayer-pop-run.php:2104
 msgid "Prayer marked as answered."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2055
+#: core/includes/classes/class-prayer-pop-run.php:2107
 msgid "Prayer moved back to approved."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2058
+#: core/includes/classes/class-prayer-pop-run.php:2110
 msgid "Only approved public prayer requests can be marked as answered."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2061
+#: core/includes/classes/class-prayer-pop-run.php:2113
 msgid "Submission archived."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2064
+#: core/includes/classes/class-prayer-pop-run.php:2116
 msgid "Submission unarchived."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2067
+#: core/includes/classes/class-prayer-pop-run.php:2119
 msgid "Private submissions cannot be approved or declined."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2070
+#: core/includes/classes/class-prayer-pop-run.php:2122
 msgid "Please enter a valid recipient email before sending."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2073
+#: core/includes/classes/class-prayer-pop-run.php:2125
 msgid "No submissions were selected to send via email."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2076
+#: core/includes/classes/class-prayer-pop-run.php:2128
 msgid "Could not send submissions via email. Please try again."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2079
-msgid "Submission edit page is disabled. Use inline editing directly in the Submissions table."
+#: core/includes/classes/class-prayer-pop-run.php:2131
+msgid ""
+"Submission edit page is disabled. Use inline editing directly in the "
+"Submissions table."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2082
+#: core/includes/classes/class-prayer-pop-run.php:2134
 msgid "This action is not available for the current submissions workflow."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2085
+#: core/includes/classes/class-prayer-pop-run.php:2137
 msgid "Submission moved to Trash."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2088
+#: core/includes/classes/class-prayer-pop-run.php:2140
 msgid "Submission restored from Trash."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2114
+#: core/includes/classes/class-prayer-pop-run.php:2167
 msgid "All Statuses"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2115
+#: core/includes/classes/class-prayer-pop-run.php:2168
 msgid "Pending (Action/Review)"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2116
-#: src/Admin/ListTable.php:239
-#: src/Admin/ListTable.php:917
-#: src/Admin/ListTable.php:1308
+#: core/includes/classes/class-prayer-pop-run.php:2169
+#: src/Admin/ListTable.php:242 src/Admin/ListTable.php:920
+#: src/Admin/ListTable.php:1322
 msgid "Approved"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2117
-#: src/Admin/ListTable.php:240
-#: src/Admin/ListTable.php:918
-#: src/Admin/ListTable.php:1325
+#: core/includes/classes/class-prayer-pop-run.php:2170
+#: src/Admin/ListTable.php:243 src/Admin/ListTable.php:921
+#: src/Admin/ListTable.php:1339
 msgid "Answered"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2118
-#: src/Admin/ListTable.php:241
-#: src/Admin/ListTable.php:919
-#: src/Admin/ListTable.php:1313
+#: core/includes/classes/class-prayer-pop-run.php:2171
+#: src/Admin/ListTable.php:244 src/Admin/ListTable.php:922
+#: src/Admin/ListTable.php:1327
 msgid "Declined"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2119
-#: src/Admin/ListTable.php:230
-#: src/Admin/ListTable.php:242
-#: src/Admin/ListTable.php:920
-#: src/Admin/ListTable.php:1318
-#: src/Admin/ListTable.php:1345
+#: core/includes/classes/class-prayer-pop-run.php:2172
+#: src/Admin/ListTable.php:233 src/Admin/ListTable.php:245
+#: src/Admin/ListTable.php:923 src/Admin/ListTable.php:1332
+#: src/Admin/ListTable.php:1359
 msgid "Archived"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2518
+#: core/includes/classes/class-prayer-pop-run.php:2183
+msgid "All Types"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-run.php:2184
+msgid "Prayer Requests"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-run.php:2185
+msgid "Testimonies"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-run.php:2586
 msgid "Print Submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2524
+#: core/includes/classes/class-prayer-pop-run.php:2592
 msgid "Print"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2528
+#: core/includes/classes/class-prayer-pop-run.php:2596
 msgid "Selected Submissions"
 msgstr ""
 
 #. translators: 1: number of submissions, 2: print date.
-#: core/includes/classes/class-prayer-pop-run.php:2533
+#: core/includes/classes/class-prayer-pop-run.php:2601
 #, php-format
 msgid "%1$s submission · Prepared %2$s"
 msgid_plural "%1$s submissions · Prepared %2$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2543
-#: core/includes/classes/class-prayer-pop-run.php:2879
-#: core/includes/classes/class-prayer-pop-run.php:2990
-#: core/includes/classes/class-prayer-pop-run.php:3019
+#: core/includes/classes/class-prayer-pop-run.php:2611
+#: core/includes/classes/class-prayer-pop-run.php:2968
+#: core/includes/classes/class-prayer-pop-run.php:3128
+#: core/includes/classes/class-prayer-pop-run.php:3157
+#: src/Admin/ListTable.php:200 src/Admin/ListTable.php:1281
 msgid "Testimony"
 msgstr ""
 
 #. translators: 1: submission ID, 2: submission date.
-#: core/includes/classes/class-prayer-pop-run.php:2560
+#: core/includes/classes/class-prayer-pop-run.php:2628
 #, php-format
 msgid "Submission #%1$s · %2$s"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2571
+#: core/includes/classes/class-prayer-pop-run.php:2639
 msgid "Message"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2934
+#: core/includes/classes/class-prayer-pop-run.php:2953
+msgid "Immediate notifications are disabled."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-run.php:2959
+msgid "No valid notification recipient is configured."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-run.php:2994
+msgid "wp_mail returned false."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-run.php:3072
 msgid "Scheduled PrayerPop Submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:2983
+#: core/includes/classes/class-prayer-pop-run.php:3121
 msgid "Multiple submitters"
 msgstr ""
 
 #. translators: %d: number of submissions included in the notification.
-#: core/includes/classes/class-prayer-pop-run.php:2986
+#: core/includes/classes/class-prayer-pop-run.php:3124
 #, php-format
 msgid "%d submissions included"
 msgstr ""
 
 #. translators: %d: number of pending submissions.
-#: core/includes/classes/class-prayer-pop-run.php:3005
+#: core/includes/classes/class-prayer-pop-run.php:3143
 #, php-format
 msgid ""
 "Total pending submissions: %d\n"
 "\n"
-""
 msgstr ""
 
 #. translators: %s: admin URL to manage submissions.
-#: core/includes/classes/class-prayer-pop-run.php:3036
+#: core/includes/classes/class-prayer-pop-run.php:3174
 #, php-format
 msgid ""
 "\n"
 "Manage submissions: %s"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:3054
+#: core/includes/classes/class-prayer-pop-run.php:3192
 msgid "Once Weekly"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:3117
+#: core/includes/classes/class-prayer-pop-run.php:3255
 msgid "PrayerPop Pending Submissions"
 msgstr ""
 
 #. translators: %s: number of pending submissions.
-#: core/includes/classes/class-prayer-pop-run.php:3146
+#: core/includes/classes/class-prayer-pop-run.php:3284
 #, php-format
 msgid "%s submission is waiting for approval."
 msgid_plural "%s submissions are waiting for approval."
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/includes/classes/class-prayer-pop-run.php:3156
+#: core/includes/classes/class-prayer-pop-run.php:3294
 msgid "Review Submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:3157
+#: core/includes/classes/class-prayer-pop-run.php:3295
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:1171
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:1336
 msgid "Dismiss"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-run.php:3161
+#: core/includes/classes/class-prayer-pop-run.php:3299
 msgid "No pending submissions right now."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:222
+#: core/includes/classes/class-prayer-pop-settings.php:199
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:199
 msgid "Please select a file to import."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:223
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:635
+#: core/includes/classes/class-prayer-pop-settings.php:200
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:652
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:200
 msgid "Please select a valid JSON file."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:224
+#: core/includes/classes/class-prayer-pop-settings.php:201
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:201
 msgid "Importing..."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:225
+#: core/includes/classes/class-prayer-pop-settings.php:202
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:202
 msgid "Text fields imported successfully!"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:226
+#: core/includes/classes/class-prayer-pop-settings.php:203
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:203
 msgid "Import failed: "
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:227
+#: core/includes/classes/class-prayer-pop-settings.php:204
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:204
 msgid "Unknown error."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:228
+#: core/includes/classes/class-prayer-pop-settings.php:205
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:205
 msgid "Import failed. Please try again."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:231
-#: core/includes/classes/class-prayer-pop-settings.php:376
+#: core/includes/classes/class-prayer-pop-settings.php:208
+#: core/includes/classes/class-prayer-pop-settings.php:353
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:208
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:353
 msgid "Bug summary"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:232
+#: core/includes/classes/class-prayer-pop-settings.php:209
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:209
 msgid "A short summary of the problem"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:233
-#: core/includes/classes/class-prayer-pop-settings.php:387
+#: core/includes/classes/class-prayer-pop-settings.php:210
+#: core/includes/classes/class-prayer-pop-settings.php:364
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:210
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:364
 msgid "What happened? What did you expect?"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:234
+#: core/includes/classes/class-prayer-pop-settings.php:211
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:211
 msgid "Describe what went wrong and what you expected to happen."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:235
+#: core/includes/classes/class-prayer-pop-settings.php:212
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:212
 msgid "Feature idea"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:236
+#: core/includes/classes/class-prayer-pop-settings.php:213
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:213
 msgid "A short name for your idea"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:237
+#: core/includes/classes/class-prayer-pop-settings.php:214
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:214
 msgid "What would you like PrayerPop to do?"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:238
+#: core/includes/classes/class-prayer-pop-settings.php:215
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:215
 msgid "Describe the feature and how it would help you."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:239
-#: core/includes/classes/class-prayer-pop-settings.php:371
+#: core/includes/classes/class-prayer-pop-settings.php:216
+#: core/includes/classes/class-prayer-pop-settings.php:348
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:216
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:348
 msgid "Question"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:240
+#: core/includes/classes/class-prayer-pop-settings.php:217
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:217
 msgid "What is your question about?"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:242
+#: core/includes/classes/class-prayer-pop-settings.php:219
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:219
 msgid "Write your question and include any helpful details."
 msgstr ""
 
 #. translators: %s: settings tab label.
-#: core/includes/classes/class-prayer-pop-settings.php:273
+#: core/includes/classes/class-prayer-pop-settings.php:250
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:250
 #, php-format
 msgid "%s settings updated successfully."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:279
+#: core/includes/classes/class-prayer-pop-settings.php:256
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:256
 msgid "There was an error saving your settings."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:306
-#: core/includes/classes/class-prayer-pop-settings.php:307
+#: core/includes/classes/class-prayer-pop-settings.php:283
+#: core/includes/classes/class-prayer-pop-settings.php:284
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:996
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:1387
-#: prayer-pop.php:380
-#: src/Admin/ListTable.php:1003
+#: prayer-pop.php:331 src/Admin/ListTable.php:1006
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:283
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:284
 msgid "Settings"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:315
-#: core/includes/classes/class-prayer-pop-settings.php:316
-#: core/includes/classes/class-prayer-pop-settings.php:347
+#: core/includes/classes/class-prayer-pop-settings.php:292
+#: core/includes/classes/class-prayer-pop-settings.php:293
+#: core/includes/classes/class-prayer-pop-settings.php:324
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:292
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:293
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:324
 msgid "Bug, feature, question"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:336
+#: core/includes/classes/class-prayer-pop-settings.php:313
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:313
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:349
+#: core/includes/classes/class-prayer-pop-settings.php:326
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:326
 msgid "Your report was sent successfully."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:351
+#: core/includes/classes/class-prayer-pop-settings.php:328
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:328
 msgid "Could not send your report. Please try again."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:356
-msgid "Title and description are both required. Found a bug or have a feature idea? Fill this in and it comes to our mailbox."
+#: core/includes/classes/class-prayer-pop-settings.php:333
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:333
+msgid ""
+"Title and description are both required. Found a bug or have a feature idea? "
+"Fill this in and it comes to our mailbox."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:366
+#: core/includes/classes/class-prayer-pop-settings.php:343
 #: src/Admin/ListTable.php:72
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:343
 msgid "Type"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:369
+#: core/includes/classes/class-prayer-pop-settings.php:346
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:346
 msgid "Bug"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:370
+#: core/includes/classes/class-prayer-pop-settings.php:347
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:347
 msgid "Feature request"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:377
+#: core/includes/classes/class-prayer-pop-settings.php:354
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:354
 msgid "A short summary"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:380
+#: core/includes/classes/class-prayer-pop-settings.php:357
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:357
 msgid "Your email"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:383
-msgid "Used only so we can reply to this message. If left empty, your WordPress account email will be included."
+#: core/includes/classes/class-prayer-pop-settings.php:360
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:360
+msgid ""
+"Used only so we can reply to this message. If left empty, your WordPress "
+"account email will be included."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:388
+#: core/includes/classes/class-prayer-pop-settings.php:365
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:365
 msgid "Describe the issue or the feature you have in mind."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:391
+#: core/includes/classes/class-prayer-pop-settings.php:368
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:368
 msgid "Steps to reproduce (bug only)"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:392
+#: core/includes/classes/class-prayer-pop-settings.php:369
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:369
 msgid "One step per line"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:398
+#: core/includes/classes/class-prayer-pop-settings.php:375
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:375
 msgid "Environment included with the report"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:412
+#: core/includes/classes/class-prayer-pop-settings.php:389
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:389
 msgid "Send"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:433
-msgid "Popup"
+#: core/includes/classes/class-prayer-pop-settings.php:410
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:410
+msgid "Popup & Submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:435
+#: core/includes/classes/class-prayer-pop-settings.php:411
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:411
 msgid "Notifications & Email"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:436
+#: core/includes/classes/class-prayer-pop-settings.php:412
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:412
 msgid "Design"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:437
+#: core/includes/classes/class-prayer-pop-settings.php:413
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:413
 msgid "Language & Text"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:438
+#: core/includes/classes/class-prayer-pop-settings.php:414
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:414
 msgid "Data"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:439
-#: core/includes/classes/class-prayer-pop-settings.php:975
-#: src/Admin/ListTable.php:976
-#: src/Admin/ListTable.php:1004
+#: core/includes/classes/class-prayer-pop-settings.php:415
+#: core/includes/classes/class-prayer-pop-settings.php:949
+#: src/Admin/ListTable.php:979 src/Admin/ListTable.php:1007
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:415
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:949
 msgid "Documentation"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:443
-msgid "Control whether the PrayerPop bubble appears for visitors."
+#: core/includes/classes/class-prayer-pop-settings.php:419
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:419
+msgid ""
+"Choose the visitor experience: private submissions only, or submissions with "
+"PrayerPop Chat."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:444
-msgid "Configure the prayer-request submission rules available in PrayerPop Free."
+#: core/includes/classes/class-prayer-pop-settings.php:420
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:420
+msgid ""
+"Set who receives prayer request and testimony alerts, when they are sent, "
+"and how the email is written."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:445
-msgid "Set who receives prayer request alerts, when they are sent, and how the email is written."
-msgstr ""
-
-#: core/includes/classes/class-prayer-pop-settings.php:446
+#: core/includes/classes/class-prayer-pop-settings.php:421
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:421
 msgid "Customize the PrayerPop color, typography, position, and bubble icon."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:447
-msgid "Search and customize all visitor-facing wording included in PrayerPop Free."
+#: core/includes/classes/class-prayer-pop-settings.php:422
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:422
+msgid ""
+"Search and customize all visitor-facing wording included in PrayerPop Free."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:448
-msgid "Choose how long PrayerPop Free keeps submitted prayer requests."
+#: core/includes/classes/class-prayer-pop-settings.php:423
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:423
+msgid ""
+"Choose how long PrayerPop Free keeps submissions and Chat conversations."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:449
-msgid "Browse setup, usage, styling, wording, notification, and troubleshooting guidance."
+#: core/includes/classes/class-prayer-pop-settings.php:424
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:424
+msgid ""
+"Browse setup, usage, styling, wording, notification, and troubleshooting "
+"guidance."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:454
+#: core/includes/classes/class-prayer-pop-settings.php:429
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:429
 msgid "PrayerPop Settings"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:461
+#: core/includes/classes/class-prayer-pop-settings.php:436
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:436
 msgid "You have unsaved changes"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:469
+#: core/includes/classes/class-prayer-pop-settings.php:444
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:444
 msgid "Search all settings"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:470
+#: core/includes/classes/class-prayer-pop-settings.php:445
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:445
 msgid "Search all settings…"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:471
+#: core/includes/classes/class-prayer-pop-settings.php:446
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:708
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:794
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:136
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:147
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:446
 msgid "Clear"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:538
+#: core/includes/classes/class-prayer-pop-settings.php:513
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:513
 msgid "Bubble"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:538
+#: core/includes/classes/class-prayer-pop-settings.php:513
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:513
 msgid "Choose whether the PrayerPop entry point is visible on the front end."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:542
+#: core/includes/classes/class-prayer-pop-settings.php:514
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:514
+msgid ""
+"Enable conversations when your team wants to reply to visitors. Turn this "
+"off to offer only the enabled submission forms."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:515
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:515
 msgid "Submission rules"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:542
-msgid "Configure visitor options. PrayerPop Free holds every new request for manual admin approval before it is actioned."
+#: core/includes/classes/class-prayer-pop-settings.php:515
+msgid ""
+"Choose which submissions visitors can send. PrayerPop Free holds every new "
+"item for manual admin approval before it is actioned."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:546
+#: core/includes/classes/class-prayer-pop-settings.php:519
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:519
 msgid "Submission alerts"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:546
+#: core/includes/classes/class-prayer-pop-settings.php:519
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:519
 msgid "Set recipients and delivery timing for new prayer request alerts."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:549
+#: core/includes/classes/class-prayer-pop-settings.php:522
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:522
 msgid "Submission email template"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:550
-msgid "Set the subject and body, then send a test to the submission-alert recipient."
+#: core/includes/classes/class-prayer-pop-settings.php:523
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:523
+msgid ""
+"Set the subject and body, then send a test to the submission-alert recipient."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:554
+#: core/includes/classes/class-prayer-pop-settings.php:527
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:527
 msgid "Advanced diagnostics"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:559
+#: core/includes/classes/class-prayer-pop-settings.php:532
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:532
 msgid "Popup welcome image"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:559
+#: core/includes/classes/class-prayer-pop-settings.php:532
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:532
 msgid "Add the image used by the Free popup welcome panel."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:568
+#: core/includes/classes/class-prayer-pop-settings.php:541
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:541
 msgid "Data retention"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:568
+#: core/includes/classes/class-prayer-pop-settings.php:541
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:541
 msgid "Choose how long submitted prayer requests are retained."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:669
+#: core/includes/classes/class-prayer-pop-settings.php:542
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:542
+msgid "Chat data retention"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:542
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:542
+msgid "Choose how long inactive Chat conversations are retained."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:643
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:643
 msgid "PrayerPop Pro feature highlights"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:671
+#: core/includes/classes/class-prayer-pop-settings.php:645
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:645
 msgid "Reasons to go Pro"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:672
-msgid "Add public-facing prayer content, deeper moderation, and more design control when your prayer workflow grows."
+#: core/includes/classes/class-prayer-pop-settings.php:646
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:646
+msgid ""
+"Add public-facing prayer content, deeper moderation, and more design control "
+"when your prayer workflow grows."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:673
-#: core/includes/classes/class-prayer-pop-settings.php:714
+#: core/includes/classes/class-prayer-pop-settings.php:647
+#: core/includes/classes/class-prayer-pop-settings.php:688
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:647
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:688
 msgid "View Pro Features"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:677
+#: core/includes/classes/class-prayer-pop-settings.php:651
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:651
 msgid "AI-Assisted Moderation"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:678
-msgid "Reduce manual review work with optional AI checks for public submissions and a clearer moderation flow."
+#: core/includes/classes/class-prayer-pop-settings.php:652
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:652
+msgid ""
+"Reduce manual review work with optional AI checks for public submissions and "
+"a clearer moderation flow."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:682
+#: core/includes/classes/class-prayer-pop-settings.php:656
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:656
 msgid "Pro Content Tools"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:684
+#: core/includes/classes/class-prayer-pop-settings.php:658
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:658
 msgid "Prayer Campaigns"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:684
-msgid "Create focused campaigns with public pages, progress, and clear calls to action."
+#: core/includes/classes/class-prayer-pop-settings.php:658
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:658
+msgid ""
+"Create focused campaigns with public pages, progress, and clear calls to "
+"action."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:685
+#: core/includes/classes/class-prayer-pop-settings.php:659
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:659
 msgid "Testimonies and FAQ"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:685
-msgid "Show answered prayers and helpful explanations beside the prayer experience."
+#: core/includes/classes/class-prayer-pop-settings.php:659
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:659
+msgid ""
+"Show answered prayers and helpful explanations beside the prayer experience."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:686
+#: core/includes/classes/class-prayer-pop-settings.php:660
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:660
 msgid "Custom Link Buttons"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:686
+#: core/includes/classes/class-prayer-pop-settings.php:660
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:660
 msgid "Guide visitors to calendars, groups, giving pages, or other next steps."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:691
+#: core/includes/classes/class-prayer-pop-settings.php:665
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:665
 msgid "Public Submissions Wall"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:693
+#: core/includes/classes/class-prayer-pop-settings.php:667
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:667
 msgid "Public submissions wall"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:694
+#: core/includes/classes/class-prayer-pop-settings.php:668
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:668
 msgid "Social media sharing"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:695
+#: core/includes/classes/class-prayer-pop-settings.php:669
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:669
 msgid "Reactions such as “I Prayed” and “Celebrate”"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:700
+#: core/includes/classes/class-prayer-pop-settings.php:674
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:674
 msgid "Builder Modules"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:701
+#: core/includes/classes/class-prayer-pop-settings.php:675
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:675
 msgid "Divi 5 PrayerPop modules"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:701
-msgid "let you place and style forms, submissions, campaigns, and campaign cards directly inside the builder."
+#: core/includes/classes/class-prayer-pop-settings.php:675
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:675
+msgid ""
+"let you place and style forms, submissions, campaigns, and campaign cards "
+"directly inside the builder."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:705
+#: core/includes/classes/class-prayer-pop-settings.php:679
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:679
 msgid "Extra Styling Options"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:707
+#: core/includes/classes/class-prayer-pop-settings.php:681
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:681
 msgid "More layout controls for walls and cards"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:708
+#: core/includes/classes/class-prayer-pop-settings.php:682
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:682
 msgid "Additional icon and bubble style controls"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:709
+#: core/includes/classes/class-prayer-pop-settings.php:683
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:683
 msgid "Advanced color and spacing customization"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:953
+#: core/includes/classes/class-prayer-pop-settings.php:927
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:927
 msgid "Close welcome message"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:955
+#: core/includes/classes/class-prayer-pop-settings.php:929
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:929
 msgid "Welcome to PrayerPop"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:956
-msgid "PrayerPop helps your church receive prayer requests through a simple frontend bubble and review them inside WordPress admin."
+#: core/includes/classes/class-prayer-pop-settings.php:930
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:930
+msgid ""
+"PrayerPop helps your church receive prayer requests through a simple "
+"frontend bubble and review them inside WordPress admin."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:957
+#: core/includes/classes/class-prayer-pop-settings.php:931
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:931
 msgid "How it works:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:958
-msgid "People submit prayer requests through the bubble on your website. Those submissions appear in WordPress admin, where your team can review them, approve or decline them, archive old items, or mark approved prayers as answered."
+#: core/includes/classes/class-prayer-pop-settings.php:932
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:932
+msgid ""
+"People submit prayer requests through the bubble on your website. Those "
+"submissions appear in WordPress admin, where your team can review them, "
+"approve or decline them, archive old items, or mark approved prayers as "
+"answered."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:959
+#: core/includes/classes/class-prayer-pop-settings.php:933
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:933
 msgid "Your next steps:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:961
+#: core/includes/classes/class-prayer-pop-settings.php:935
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:935
 msgid "Confirm the bubble is enabled"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:961
+#: core/includes/classes/class-prayer-pop-settings.php:935
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:935
 msgid "Open General settings and keep Show PrayerPop Bubble turned on."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:962
+#: core/includes/classes/class-prayer-pop-settings.php:936
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:936
 msgid "Check your submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:962
-msgid "Go to Admin Submissions to see incoming prayer requests and manage them."
+#: core/includes/classes/class-prayer-pop-settings.php:936
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:936
+msgid ""
+"Go to Admin Submissions to see incoming prayer requests and manage them."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:963
+#: core/includes/classes/class-prayer-pop-settings.php:937
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:937
 msgid "Adjust your settings"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:963
-msgid "Customize the bubble style, form text, notifications, and retention cleanup."
+#: core/includes/classes/class-prayer-pop-settings.php:937
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:937
+msgid ""
+"Customize the bubble style, form text, notifications, and retention cleanup."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:967
+#: core/includes/classes/class-prayer-pop-settings.php:941
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:941
 msgid "Settings & Setup"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:968
-msgid "Configure bubble behavior, admin approval, style, text, notifications, and retention cleanup."
+#: core/includes/classes/class-prayer-pop-settings.php:942
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:942
+msgid ""
+"Configure bubble behavior, admin approval, style, text, notifications, and "
+"retention cleanup."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:971
+#: core/includes/classes/class-prayer-pop-settings.php:945
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:945
 msgid "Admin Submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:972
-msgid "Review incoming prayer requests, approve or decline items, archive old items, and mark answered prayers."
+#: core/includes/classes/class-prayer-pop-settings.php:946
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:946
+msgid ""
+"Review incoming prayer requests, approve or decline items, archive old "
+"items, and mark answered prayers."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:976
+#: core/includes/classes/class-prayer-pop-settings.php:950
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:950
 msgid "Open practical setup guides and workflow explanations for your team."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1008
+#: core/includes/classes/class-prayer-pop-settings.php:982
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:982
 msgid "Frontend Overlay Preview"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1009
+#: core/includes/classes/class-prayer-pop-settings.php:983
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:983
 msgid "Reload"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1010
+#: core/includes/classes/class-prayer-pop-settings.php:984
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:984
 msgid "Open in New Tab"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1016
+#: core/includes/classes/class-prayer-pop-settings.php:990
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:990
 msgid "PrayerPop Frontend Preview"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1030
+#: core/includes/classes/class-prayer-pop-settings.php:1004
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1004
 msgid "Most common tasks"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1032
+#: core/includes/classes/class-prayer-pop-settings.php:1006
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1006
 msgid "Get PrayerPop live quickly"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1033
+#: core/includes/classes/class-prayer-pop-settings.php:1007
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1007
 msgid "Use the PrayerPop bubble"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1034
+#: core/includes/classes/class-prayer-pop-settings.php:1008
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1008
 msgid "Review and process submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1035
+#: core/includes/classes/class-prayer-pop-settings.php:1009
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1009
 msgid "Understand settings tabs"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1036
+#: core/includes/classes/class-prayer-pop-settings.php:1010
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1010
 msgid "Solve common issues fast"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1041
+#: core/includes/classes/class-prayer-pop-settings.php:1015
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1015
 msgid "Quick Start Guide"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1042
-msgid "PrayerPop is bubble-first. Follow these steps to collect and review prayer requests."
+#: core/includes/classes/class-prayer-pop-settings.php:1016
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1016
+msgid ""
+"PrayerPop is bubble-first. Follow these steps to collect and review prayer "
+"requests and testimonies."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1044
+#: core/includes/classes/class-prayer-pop-settings.php:1018
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1018
 msgid "Open General settings and confirm Show PrayerPop Bubble is enabled."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1045
+#: core/includes/classes/class-prayer-pop-settings.php:1019
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1019
+msgid ""
+"Choose whether to enable PrayerPop Chat. Leave it off when you want visitors "
+"to use prayer-request submissions only."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1020
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1020
 msgid "Choose whether visitors may leave the name field empty."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1046
-msgid "Set the retention period if old approved or answered requests should be archived and later cleaned up."
+#: core/includes/classes/class-prayer-pop-settings.php:1021
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1021
+msgid ""
+"Set the retention period if old approved or answered requests should be "
+"archived and later cleaned up."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1047
-msgid "In Notifications, set your recipient email and schedule, then send a test email."
+#: core/includes/classes/class-prayer-pop-settings.php:1022
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1022
+msgid ""
+"In Notifications, set your recipient email and schedule, then send a test "
+"email."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1048
+#: core/includes/classes/class-prayer-pop-settings.php:1023
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1023
 msgid "In Style, adjust the bubble color, icon, position, animation, and font."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1049
-msgid "In Text Customization, edit the visible prayer request form labels and messages if needed."
+#: core/includes/classes/class-prayer-pop-settings.php:1024
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1024
+msgid ""
+"In Text Customization, edit the visible prayer request and testimony labels "
+"and messages if needed."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1050
-msgid "Visit the frontend of your site, click the bubble, and submit a test prayer request."
+#: core/includes/classes/class-prayer-pop-settings.php:1025
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1025
+msgid ""
+"Visit the frontend of your site, click the bubble, and submit a test prayer "
+"request or testimony."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1051
-msgid "Open PrayerPop -> Submissions and process the test request."
+#: core/includes/classes/class-prayer-pop-settings.php:1026
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1026
+msgid "Open PrayerPop -> Submissions and process the test submission."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1053
+#: core/includes/classes/class-prayer-pop-settings.php:1028
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1028
 msgid "Note:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1053
-msgid "The global bubble opens the prayer request form on your site."
+#: core/includes/classes/class-prayer-pop-settings.php:1028
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1028
+msgid ""
+"With PrayerPop Chat turned off, the global bubble offers the enabled prayer "
+"request and testimony forms. When only one form is enabled, it opens "
+"straight away. With Chat turned on, visitors can also start a conversation."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1059
+#: core/includes/classes/class-prayer-pop-settings.php:1034
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1034
 msgid "Using the PrayerPop Bubble"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1060
-msgid "The bubble is the frontend entry point. When enabled, it appears on your site and opens the prayer request form."
+#: core/includes/classes/class-prayer-pop-settings.php:1035
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1035
+msgid ""
+"The bubble is the frontend entry point. When enabled, it offers the prayer "
+"request and testimony forms you have enabled. If you enable PrayerPop Chat, "
+"it also gives visitors a way to start a conversation."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1062
-msgid "Visitors submit one prayer request message and an optional name."
+#: core/includes/classes/class-prayer-pop-settings.php:1037
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1037
+msgid ""
+"With Chat turned off, visitors choose an enabled prayer request or testimony "
+"form. If only one is enabled, it opens directly."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1063
-msgid "Submissions are saved as prayer requests in WordPress admin."
+#: core/includes/classes/class-prayer-pop-settings.php:1038
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1038
+msgid ""
+"With Chat turned on, visitors can send messages to your team as well as "
+"submit enabled prayer requests or testimonies."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1064
+#: core/includes/classes/class-prayer-pop-settings.php:1039
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1039
+msgid ""
+"Submissions are saved in WordPress admin with their prayer request or "
+"testimony type."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1040
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1040
 msgid "Every new request starts in Pending Action so an admin can review it."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1065
-msgid "The form includes honeypot, minimum-submit-time, rate-limit, and cooldown protection."
+#: core/includes/classes/class-prayer-pop-settings.php:1041
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1041
+msgid ""
+"The form includes honeypot, minimum-submit-time, rate-limit, and cooldown "
+"protection."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1067
+#: core/includes/classes/class-prayer-pop-settings.php:1043
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1043
 msgid "Bubble setup:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1067
-msgid "Use the global bubble setting to make the form available on the frontend."
+#: core/includes/classes/class-prayer-pop-settings.php:1043
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1043
+msgid ""
+"Use the global bubble setting to make the form available on the frontend."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1073
+#: core/includes/classes/class-prayer-pop-settings.php:1049
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1049
 msgid "Managing Submissions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1074
-msgid "This is where your church team will spend most time. New submissions appear in WordPress -> Submissions."
+#: core/includes/classes/class-prayer-pop-settings.php:1050
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1050
+msgid ""
+"This is where your church team will spend most time. New submissions appear "
+"in WordPress -> Submissions."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1075
-msgid "Usually this is handled by administrators or trusted team members with PrayerPop permissions."
+#: core/includes/classes/class-prayer-pop-settings.php:1051
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1051
+msgid "Usually WordPress administrators handle this work in PrayerPop Free."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1077
+#: core/includes/classes/class-prayer-pop-settings.php:1053
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1053
 msgid "What happens when someone submits"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1079
-msgid "The request is saved as a prayer request submission."
+#: core/includes/classes/class-prayer-pop-settings.php:1055
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1055
+msgid "The item is saved as a prayer request or testimony submission."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1080
-msgid "The request starts as Pending Action."
+#: core/includes/classes/class-prayer-pop-settings.php:1056
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1056
+msgid "The submission starts as Pending Action."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1081
-msgid "An admin reviews the request and chooses the next action."
+#: core/includes/classes/class-prayer-pop-settings.php:1057
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1057
+msgid "An admin reviews the submission and chooses the next action."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1082
-msgid "Approved prayer requests can later be marked as answered with an optional answer update."
+#: core/includes/classes/class-prayer-pop-settings.php:1058
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1058
+msgid ""
+"Approved prayer requests can later be marked as answered with an optional "
+"answer update."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1084
-#: core/includes/classes/class-prayer-pop-settings.php:1127
+#: core/includes/classes/class-prayer-pop-settings.php:1060
+#: core/includes/classes/class-prayer-pop-settings.php:1105
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1060
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1105
 msgid "Admin review:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1084
-msgid "Every request starts in Pending Action so your team can review it manually."
+#: core/includes/classes/class-prayer-pop-settings.php:1060
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1060
+msgid ""
+"Every request starts in Pending Action so your team can review it manually."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1086
+#: core/includes/classes/class-prayer-pop-settings.php:1062
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1062
 msgid "Typical workflow"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1088
+#: core/includes/classes/class-prayer-pop-settings.php:1064
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1064
 msgid "Open Submissions in WordPress admin."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1089
+#: core/includes/classes/class-prayer-pop-settings.php:1065
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1065
 msgid "Start with pending rows first so new items are handled quickly."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1090
+#: core/includes/classes/class-prayer-pop-settings.php:1066
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1066
 msgid "Approve requests you want to keep as accepted."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1091
+#: core/includes/classes/class-prayer-pop-settings.php:1067
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1067
 msgid "Decline requests that should be rejected."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1092
+#: core/includes/classes/class-prayer-pop-settings.php:1068
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1068
 msgid "Archive requests that should leave the active queue but remain stored."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1093
+#: core/includes/classes/class-prayer-pop-settings.php:1069
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1069
 msgid "Mark approved prayer requests as answered when appropriate."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1094
+#: core/includes/classes/class-prayer-pop-settings.php:1070
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1070
 msgid "Move spam or unwanted records to Trash."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1097
+#: core/includes/classes/class-prayer-pop-settings.php:1073
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1073
 msgid "Filters and Bulk Actions"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1099
-msgid "Use quick filters for queue views such as All, Approved, Answered, Declined, Archived, and Trash."
+#: core/includes/classes/class-prayer-pop-settings.php:1075
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1075
+msgid ""
+"Use quick filters for queue views such as All, Approved, Answered, Declined, "
+"Archived, and Trash."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1100
-msgid "Use dropdown filters for status, visibility, type, and date when available."
+#: core/includes/classes/class-prayer-pop-settings.php:1076
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1076
+msgid ""
+"Use dropdown filters for status, visibility, type, and date when available."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1101
-msgid "Use bulk actions to send selected via email, approve selected, decline selected, mark prayer requests as answered, edit selected, archive, or trash."
+#: core/includes/classes/class-prayer-pop-settings.php:1077
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1077
+msgid ""
+"Use bulk actions to send selected via email, approve selected, decline "
+"selected, mark prayer requests as answered, edit selected, archive, or trash."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1104
+#: core/includes/classes/class-prayer-pop-settings.php:1080
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1080
 msgid "Status labels (plain meaning)"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1106
+#: core/includes/classes/class-prayer-pop-settings.php:1082
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1082
 msgid "Pending Action:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1106
+#: core/includes/classes/class-prayer-pop-settings.php:1082
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1082
 msgid "Waiting for admin decision."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1107
+#: core/includes/classes/class-prayer-pop-settings.php:1083
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1083
 msgid "Approved:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1107
+#: core/includes/classes/class-prayer-pop-settings.php:1083
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1083
 msgid "Accepted by an admin."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1108
+#: core/includes/classes/class-prayer-pop-settings.php:1084
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1084
 msgid "Answered:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1108
+#: core/includes/classes/class-prayer-pop-settings.php:1084
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1084
 msgid "Approved prayer request marked as answered."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1109
+#: core/includes/classes/class-prayer-pop-settings.php:1085
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1085
 msgid "Declined:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1109
+#: core/includes/classes/class-prayer-pop-settings.php:1085
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1085
 msgid "Rejected by an admin."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1110
+#: core/includes/classes/class-prayer-pop-settings.php:1086
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1086
 msgid "Archived:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1110
+#: core/includes/classes/class-prayer-pop-settings.php:1086
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1086
 msgid "Kept for history, outside your active queue."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1111
+#: core/includes/classes/class-prayer-pop-settings.php:1087
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1087
 msgid "Trash:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1111
+#: core/includes/classes/class-prayer-pop-settings.php:1087
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1087
 msgid "Moved to trash and restorable from the Trash view."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1118
+#: core/includes/classes/class-prayer-pop-settings.php:1094
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1094
 msgid "What Each Settings Tab Does"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1119
-msgid "Use this section to find the right setting quickly. Each tab description explains what it does and when to use it."
+#: core/includes/classes/class-prayer-pop-settings.php:1095
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1095
+msgid ""
+"Use this section to find the right setting quickly. Each tab description "
+"explains what it does and when to use it."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1121
+#: core/includes/classes/class-prayer-pop-settings.php:1097
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1097
 msgid "General Tab"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1122
-#: core/includes/classes/class-prayer-pop-settings.php:1132
-#: core/includes/classes/class-prayer-pop-settings.php:1140
-#: core/includes/classes/class-prayer-pop-settings.php:1144
+#: core/includes/classes/class-prayer-pop-settings.php:1098
+#: core/includes/classes/class-prayer-pop-settings.php:1110
+#: core/includes/classes/class-prayer-pop-settings.php:1120
+#: core/includes/classes/class-prayer-pop-settings.php:1124
+#: core/includes/classes/class-prayer-pop-settings.php:1133
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1098
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1110
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1120
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1124
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1133
 msgid "What it does:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1122
-msgid "Controls the prayer request workflow."
+#: core/includes/classes/class-prayer-pop-settings.php:1098
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1098
+msgid "Controls the prayer request, testimony, and Chat workflow."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1123
-#: core/includes/classes/class-prayer-pop-settings.php:1133
-#: core/includes/classes/class-prayer-pop-settings.php:1141
-#: core/includes/classes/class-prayer-pop-settings.php:1145
+#: core/includes/classes/class-prayer-pop-settings.php:1099
+#: core/includes/classes/class-prayer-pop-settings.php:1111
+#: core/includes/classes/class-prayer-pop-settings.php:1121
+#: core/includes/classes/class-prayer-pop-settings.php:1125
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1099
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1111
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1121
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1125
 msgid "Use it when:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1123
-msgid "You want to show or hide the bubble, allow anonymous names, or set the retention period."
+#: core/includes/classes/class-prayer-pop-settings.php:1099
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1099
+msgid ""
+"You want to show or hide the bubble, choose submissions only or Chat, or "
+"allow anonymous names."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1125
+#: core/includes/classes/class-prayer-pop-settings.php:1101
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1101
 msgid "Show PrayerPop Bubble:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1125
-msgid "Shows the floating frontend bubble that opens the prayer request form."
+#: core/includes/classes/class-prayer-pop-settings.php:1101
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1101
+msgid ""
+"Shows the floating frontend bubble. It opens the enabled prayer request and "
+"testimony forms and, when enabled, PrayerPop Chat."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1126
+#: core/includes/classes/class-prayer-pop-settings.php:1102
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1102
+msgid "Enable Prayer Requests / Enable Testimonies:"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1102
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1102
+msgid ""
+"Choose which private submissions visitors can send. If both are disabled, "
+"the frontend bubble is hidden."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1103
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1103
+msgid "Enable PrayerPop Chat:"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1103
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1103
+msgid ""
+"Lets visitors start Chat conversations. Turn it off to offer only the "
+"enabled submission forms. Existing Chat records remain stored until you "
+"delete them or the Chat retention rule removes them."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1104
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1104
 msgid "Anonymous submissions:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1126
+#: core/includes/classes/class-prayer-pop-settings.php:1104
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1104
 msgid "Allows visitors to leave the name field empty."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1127
+#: core/includes/classes/class-prayer-pop-settings.php:1105
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1105
 msgid "Every request starts in Pending Action for review."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1128
+#: core/includes/classes/class-prayer-pop-settings.php:1106
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1106
 msgid "Retention period:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1128
-msgid "Older approved/answered submissions move to archive first. Later, archived submissions can be auto-deleted based on this time window."
+#: core/includes/classes/class-prayer-pop-settings.php:1106
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1106
+msgid ""
+"Older approved/answered submissions move to archive first. Later, archived "
+"submissions can be auto-deleted based on this time window."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1131
-#: src/Admin/ListTable.php:931
+#: core/includes/classes/class-prayer-pop-settings.php:1109
+#: src/Admin/ListTable.php:934
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1109
 msgid "Notifications"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1132
-msgid "Sends email alerts when prayer requests arrive."
+#: core/includes/classes/class-prayer-pop-settings.php:1110
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1110
+msgid "Sends email alerts when prayer requests or testimonies arrive."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1133
+#: core/includes/classes/class-prayer-pop-settings.php:1111
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1111
 msgid "You want your team notified automatically instead of checking manually."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1135
+#: core/includes/classes/class-prayer-pop-settings.php:1113
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1113
 msgid "Set recipient and frequency (immediate, daily, weekly)."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1136
-msgid "Set the subject and body in Email Template, then verify delivery with a real notification."
+#: core/includes/classes/class-prayer-pop-settings.php:1114
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1114
+msgid ""
+"Set the subject and body in Email Template, then verify delivery with a real "
+"notification."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1139
+#: core/includes/classes/class-prayer-pop-settings.php:1115
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1115
+msgid ""
+"PrayerPop queues immediate alerts and retries failed work. It cannot fix an "
+"unavailable mail service, so keep your WordPress mail service working and "
+"send a test after changes."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1116
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1116
+msgid ""
+"Daily and weekly alerts run through WordPress cron. On a low-traffic site, "
+"ask your host or developer to run WordPress cron from the server so "
+"scheduled alerts run on time."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1119
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1119
 msgid "Style Tab"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1140
+#: core/includes/classes/class-prayer-pop-settings.php:1120
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1120
 msgid "Controls how PrayerPop looks on your website."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1141
-msgid "You want to adjust colors, typography, bubble design, icon, position, animation, and spacing."
+#: core/includes/classes/class-prayer-pop-settings.php:1121
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1121
+msgid ""
+"You want to adjust colors, typography, bubble design, icon, position, "
+"animation, and spacing."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1143
+#: core/includes/classes/class-prayer-pop-settings.php:1123
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1123
 msgid "Text Customization Tab"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1144
-msgid "Lets you rewrite visible prayer request form text, labels, and messages."
+#: core/includes/classes/class-prayer-pop-settings.php:1124
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1124
+msgid ""
+"Lets you rewrite visible prayer request and testimony form text, labels, and "
+"messages."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1145
+#: core/includes/classes/class-prayer-pop-settings.php:1125
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1125
 msgid "You want your own tone, wording, or single-language translation."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1147
+#: core/includes/classes/class-prayer-pop-settings.php:1127
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1127
 msgid "Edit text directly in fields."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1148
+#: core/includes/classes/class-prayer-pop-settings.php:1128
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1128
 msgid "Export text fields to JSON as backup."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1149
+#: core/includes/classes/class-prayer-pop-settings.php:1129
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1129
 msgid "Import JSON back after edits or translation updates."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1152
+#: core/includes/classes/class-prayer-pop-settings.php:1132
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1132
+msgid "Data Tab"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1133
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1133
+msgid ""
+"Controls how long submission records and inactive Chat conversations are "
+"retained."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1135
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1135
+msgid "Chat conversation retention:"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1135
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1135
+msgid ""
+"Permanently removes inactive Chat conversations after the chosen period. The "
+"default is one year. Choose Keep indefinitely only when your data-retention "
+"policy requires it."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1138
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1138
 msgid "Anti-Spam & Cooldown"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1154
+#: core/includes/classes/class-prayer-pop-settings.php:1140
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1140
 msgid "Current limit:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1154
+#: core/includes/classes/class-prayer-pop-settings.php:1140
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1140
 msgid "Maximum 5 submissions from the same source in 5 minutes."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1155
+#: core/includes/classes/class-prayer-pop-settings.php:1141
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1141
 msgid "Cooldown:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1155
+#: core/includes/classes/class-prayer-pop-settings.php:1141
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1141
 msgid "If the limit is reached, new submissions are blocked for 3 minutes."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1156
+#: core/includes/classes/class-prayer-pop-settings.php:1142
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1142
 msgid "Customization:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1156
+#: core/includes/classes/class-prayer-pop-settings.php:1142
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1142
 msgid "Currently fixed. Can be made configurable in a future update if needed."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1163
+#: core/includes/classes/class-prayer-pop-settings.php:1149
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1149
 msgid "Troubleshooting"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1165
+#: core/includes/classes/class-prayer-pop-settings.php:1151
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1151
 msgid "Email delivery issue:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1165
-msgid "Check Notifications and Email Template settings, then verify WordPress mail delivery with your hosting provider."
+#: core/includes/classes/class-prayer-pop-settings.php:1151
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1151
+msgid ""
+"Check Notifications and Email Template settings, then verify WordPress mail "
+"delivery with your hosting provider."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1166
+#: core/includes/classes/class-prayer-pop-settings.php:1152
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1152
+msgid "Chat is not available to visitors:"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1152
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1152
+msgid ""
+"Open Settings, turn on Enable PrayerPop Chat, save the setting, clear page "
+"or CDN caches, and reload the website."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1153
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1153
 msgid "Bubble visibility issue:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1166
-msgid "Check General settings, confirm Show PrayerPop Bubble is enabled, then clear cache and reload the frontend."
+#: core/includes/classes/class-prayer-pop-settings.php:1153
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1153
+msgid ""
+"Check General settings, confirm Show PrayerPop Bubble is enabled, then clear "
+"cache and reload the frontend."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1167
+#: core/includes/classes/class-prayer-pop-settings.php:1154
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1154
 msgid "Website changes are missing:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1167
+#: core/includes/classes/class-prayer-pop-settings.php:1154
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1154
 msgid "Clear cache (plugin/server/CDN) and reload the page."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1168
+#: core/includes/classes/class-prayer-pop-settings.php:1155
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1155
 msgid "Text import failed:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1168
-msgid "Use a JSON file exported from PrayerPop that contains top-level \"texts\" data."
+#: core/includes/classes/class-prayer-pop-settings.php:1155
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1155
+msgid ""
+"Use a JSON file exported from PrayerPop that contains top-level \"texts\" "
+"data."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1169
+#: core/includes/classes/class-prayer-pop-settings.php:1156
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1156
 msgid "Pending approvals:"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1169
+#: core/includes/classes/class-prayer-pop-settings.php:1156
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1156
 msgid "Open PrayerPop -> Submissions and approve pending requests manually."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1174
+#: core/includes/classes/class-prayer-pop-settings.php:1161
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1161
 msgid "Advanced: Privacy, Data, Cookies, and Open-Source Notices"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1176
+#: core/includes/classes/class-prayer-pop-settings.php:1163
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1163
 msgid "Privacy & Data Handling"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1178
-msgid "Submissions are stored as WordPress posts (post type: prayer_request) with related meta fields."
+#: core/includes/classes/class-prayer-pop-settings.php:1165
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1165
+msgid ""
+"Submissions are stored as WordPress posts (post type: prayer_request) with "
+"related meta fields."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1179
-msgid "Main stored fields include: message, name (or anonymous marker), submission type, public marker, moderation status, and answered-prayer note when used."
+#: core/includes/classes/class-prayer-pop-settings.php:1166
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1166
+msgid ""
+"Main stored fields include: message, name (or anonymous marker), submission "
+"type, public marker, moderation status, and answered-prayer note when used."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1180
+#: core/includes/classes/class-prayer-pop-settings.php:1167
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1167
 msgid "Notification settings can store one admin email address for alerts."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1181
+#: core/includes/classes/class-prayer-pop-settings.php:1168
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1168
+msgid ""
+"When PrayerPop Chat is enabled, it stores visitor names, optional email "
+"addresses, messages, conversation status, and message times in WordPress "
+"database tables. It sends new-message and reply notices through your "
+"WordPress email service."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1169
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1169
+msgid ""
+"Use Tools -> Export Personal Data or Tools -> Erase Personal Data for a "
+"visitor who gave an email address. PrayerPop can export or erase matching "
+"Chat conversations."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1170
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1170
 msgid "No external analytics or ad trackers are added by PrayerPop itself."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1184
+#: core/includes/classes/class-prayer-pop-settings.php:1173
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1173
 msgid "Cookies & Browser Storage Used by PrayerPop"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1186
-msgid "Local anti-spam and cooldown tracking is used to limit repeated submissions."
+#: core/includes/classes/class-prayer-pop-settings.php:1175
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1175
+msgid ""
+"Local anti-spam and cooldown tracking is used to limit repeated submissions."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1189
+#: core/includes/classes/class-prayer-pop-settings.php:1176
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1176
+msgid ""
+"A private HttpOnly, SameSite browser credential lets a visitor return to a "
+"Chat conversation. WordPress stores only a hash of this credential."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1179
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1179
 msgid "Retention & Deletion (Practical)"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1191
-msgid "Approved/Answered items older than the retention window are archived first."
+#: core/includes/classes/class-prayer-pop-settings.php:1181
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1181
+msgid ""
+"Approved/Answered items older than the retention window are archived first."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1192
-msgid "Archived items are deleted only after they have also stayed archived for the full retention window."
+#: core/includes/classes/class-prayer-pop-settings.php:1182
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1182
+msgid ""
+"Archived items are deleted only after they have also stayed archived for the "
+"full retention window."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1193
-msgid "Retention set to Forever (0) keeps submissions stored during automatic cleanup."
+#: core/includes/classes/class-prayer-pop-settings.php:1183
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1183
+msgid ""
+"Retention set to Forever (0) keeps submissions stored during automatic "
+"cleanup."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1196
+#: core/includes/classes/class-prayer-pop-settings.php:1184
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1184
+msgid ""
+"Chat retention is separate from submission retention. PrayerPop permanently "
+"removes each inactive Chat conversation after the Chat retention period you "
+"choose."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1187
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1187
+msgid "Hosting Behind a Reverse Proxy"
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1188
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1188
+msgid ""
+"PrayerPop uses the direct connection address for rate limiting by default. "
+"If your site runs behind a reverse proxy or CDN, ask your developer to add "
+"only your trusted proxy ranges through the prayer_pop_trusted_proxy_ranges "
+"filter before PrayerPop uses forwarded visitor IP headers."
+msgstr ""
+
+#: core/includes/classes/class-prayer-pop-settings.php:1190
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1190
 msgid "Uninstall Behavior"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1198
+#: core/includes/classes/class-prayer-pop-settings.php:1192
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1192
 msgid "On uninstall, plugin options and scheduled cron hooks are removed."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1199
-msgid "Submission posts remain in WordPress after uninstall unless you delete them manually."
+#: core/includes/classes/class-prayer-pop-settings.php:1193
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1193
+msgid ""
+"Submission posts remain in WordPress after uninstall unless you delete them "
+"manually."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1202
+#: core/includes/classes/class-prayer-pop-settings.php:1196
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1196
 msgid "Open-Source Components"
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1204
+#: core/includes/classes/class-prayer-pop-settings.php:1198
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1198
 msgid "WordPress Dashicons (from WordPress core)."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1205
+#: core/includes/classes/class-prayer-pop-settings.php:1199
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1199
 msgid "Tabler SVG icon dataset (MIT) bundled locally for icon selection."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1206
+#: core/includes/classes/class-prayer-pop-settings.php:1200
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1200
 msgid "jQuery provided by WordPress core."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1208
-msgid "See THIRD_PARTY_NOTICES.txt in the plugin folder for attribution details."
+#: core/includes/classes/class-prayer-pop-settings.php:1202
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1202
+msgid ""
+"See THIRD_PARTY_NOTICES.txt in the plugin folder for attribution details."
 msgstr ""
 
-#: core/includes/classes/class-prayer-pop-settings.php:1283
+#: core/includes/classes/class-prayer-pop-settings.php:1277
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:1277
 msgid "You do not have sufficient permissions to perform this action."
 msgstr ""
 
@@ -2094,7 +2928,9 @@ msgid "Email Body"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-email-template.php:94
-msgid "Customize the email notifications sent when new prayer requests are submitted. Available placeholders:"
+msgid ""
+"Customize the email notifications sent when new prayer requests are "
+"submitted. Available placeholders:"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-email-template.php:98
@@ -2135,74 +2971,135 @@ msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-email-template.php:156
 #: core/includes/classes/settings/class-prayer-pop-settings-email-template.php:169
-msgid "Available placeholders: {type}, {name}, {message}, {pending_count}, {admin_url}, {site_url}, {site_name}"
+msgid ""
+"Available placeholders: {type}, {name}, {message}, {pending_count}, "
+"{admin_url}, {site_url}, {site_name}"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-general.php:26
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:26
 msgid "General Settings"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-general.php:33
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:33
 msgid "Show PrayerPop Bubble"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-general.php:40
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:40
 msgid "Show the PrayerPop bubble at the bottom right corner of the site."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-general.php:46
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:46
 msgid "Welcome Image"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-general.php:54
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:54
 msgid "Anonymous Submissions"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-general.php:61
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:61
 msgid "Allow users to submit without providing a name"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-general.php:67
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:67
+msgid "Enable Prayer Requests"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:74
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:74
+msgid "Allow visitors to send prayer requests from the PrayerPop bubble."
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:80
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:80
+msgid "Enable Testimonies"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:87
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:87
+msgid ""
+"Allow visitors to share testimonies from the PrayerPop bubble. Testimonies "
+"stay in the private Submissions inbox."
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:93
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:106
 msgid "Retention Period"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-general.php:100
-#: core/includes/classes/settings/class-prayer-pop-settings-general.php:104
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:128
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:132
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:142
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:146
 msgid "No image selected"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-general.php:108
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:136
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:150
 msgid "Choose popup welcome image"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-general.php:108
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:136
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:150
 msgid "Use this image"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-general.php:108
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:136
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:150
 msgid "Choose Image"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-general.php:109
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:137
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:151
 msgid "Remove Image"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-general.php:111
-msgid "Choose the image shown behind the popup welcome text. A wide image works best."
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:139
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:153
+msgid ""
+"Choose the image shown behind the popup welcome text. A wide image works "
+"best."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-general.php:129
-#: core/includes/classes/settings/class-prayer-pop-settings-notifications.php:144
-msgid "On"
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:173
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:187
+msgid "7 days"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-general.php:129
-#: core/includes/classes/settings/class-prayer-pop-settings-notifications.php:144
-msgid "Off"
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:177
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:191
+msgid "360 days"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-general.php:147
-msgid "0 disables automatic retention cleanup."
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:178
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:192
+msgid "720 days"
+msgstr ""
+
+#. translators: %d: custom retention period in days.
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:185
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:199
+#, php-format
+msgid "%d days (custom)"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:190
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:204
+msgid "Forever"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-general.php:197
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:211
+msgid ""
+"Sets how long submissions are kept before automatic cleanup. Approved items "
+"are archived first, then archived items are removed after the retention "
+"window. Choose \"Forever\" to disable automatic deletion."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-notifications.php:32
@@ -2367,7 +3264,7 @@ msgid "Showing first"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:65
-#: src/Admin/ListTable.php:904
+#: src/Admin/ListTable.php:907
 msgid "of"
 msgstr ""
 
@@ -2428,7 +3325,10 @@ msgid "Icon Color"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:186
-msgid "Customize your core colors, typography, and bubble controls (size, animation, layout, icon, and position), or reset this section back to defaults."
+msgid ""
+"Customize your core colors, typography, and bubble controls (size, "
+"animation, layout, icon, and position), or reset this section back to "
+"defaults."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:207
@@ -2524,7 +3424,9 @@ msgid "Soft Pop"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:366
-msgid "Fade changes opacity only; Gentle Rise moves subtly; Slide Up travels visibly; Soft Scale zooms from the corner; Soft Pop overshoots and settles."
+msgid ""
+"Fade changes opacity only; Gentle Rise moves subtly; Slide Up travels "
+"visibly; Soft Scale zooms from the corner; Soft Pop overshoots and settles."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:376
@@ -2544,7 +3446,9 @@ msgid "Text Only"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:394
-msgid "Choose whether the bubble shows icon only, text only, or both (and in which order)."
+msgid ""
+"Choose whether the bubble shows icon only, text only, or both (and in which "
+"order)."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:405
@@ -2568,7 +3472,9 @@ msgid "Y offset (px)"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:428
-msgid "X moves the bubble inward from the selected side. Y moves it upward from the bottom. The popup follows the adjusted bubble position."
+msgid ""
+"X moves the bubble inward from the selected side. Y moves it upward from the "
+"bottom. The popup follows the adjusted bubble position."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:439
@@ -2584,7 +3490,9 @@ msgid "Fixed Circle"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:456
-msgid "Adaptive rectangle grows with content. Fixed square/circle keep a constant bubble size and center content inside."
+msgid ""
+"Adaptive rectangle grows with content. Fixed square/circle keep a constant "
+"bubble size and center content inside."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:468
@@ -2692,11 +3600,15 @@ msgid "Spacing below checkboxes (use: px, em, rem, or %)"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:636
-msgid "Customize the icon displayed in the prayer bubble. Choose from WordPress Dashicons, Tabler SVG icons, or leave it empty for text-only bubbles."
+msgid ""
+"Customize the icon displayed in the prayer bubble. Choose from WordPress "
+"Dashicons, Tabler SVG icons, or leave it empty for text-only bubbles."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:637
-msgid "When Icon Type is enabled, search and pick from a single combined icon list (Dashicons + Tabler)."
+msgid ""
+"When Icon Type is enabled, search and pick from a single combined icon list "
+"(Dashicons + Tabler)."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:663
@@ -2733,7 +3645,8 @@ msgid "PrayerPop • Brand Icon"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:768
-msgid "Search and select an icon from both WordPress Dashicons and Tabler SVG icons."
+msgid ""
+"Search and select an icon from both WordPress Dashicons and Tabler SVG icons."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:791
@@ -2741,7 +3654,9 @@ msgid "Search Tabler icons..."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:813
-msgid "Search and select a Tabler SVG icon. Tip: try \"pray\", \"cross\", \"heart\", or \"hands\"."
+msgid ""
+"Search and select a Tabler SVG icon. Tip: try \"pray\", \"cross\", "
+"\"heart\", or \"hands\"."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:983
@@ -3858,7 +4773,7 @@ msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:1266
 #: core/includes/classes/settings/class-prayer-pop-settings-style.php:1326
-#: src/Admin/ListTable.php:921
+#: src/Admin/ListTable.php:924
 msgid "Edit"
 msgstr ""
 
@@ -4156,15 +5071,18 @@ msgid "Chat Conversation"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:37
-msgid "Prompts, placeholders, buttons, and status text shown in the visitor chat."
+msgid ""
+"Prompts, placeholders, buttons, and status text shown in the visitor chat."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:38
-msgid "Prayer Request Form"
+msgid "Submission Forms"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:38
-msgid "Headings, fields, buttons, and accessibility labels used by the request form."
+msgid ""
+"Headings, fields, buttons, and accessibility labels used by the prayer "
+"request and testimony forms."
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:39
@@ -4200,355 +5118,401 @@ msgid "Prayer Request Button"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:47
-msgid "Back Button"
+msgid "Testimony Button"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:48
-msgid "Chat Team Help Text"
+msgid "Back Button"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:49
-msgid "Chat Reply Time Text"
+msgid "Chat Team Help Text"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:50
-msgid "Chat Intro Text"
+msgid "Chat Reply Time Text"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:51
-msgid "Chat Step One Label"
+msgid "Chat Intro Text"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:52
-msgid "Chat Step Two Label"
+msgid "Chat Step One Label"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:53
-msgid "Chat Step Three Label"
+msgid "Chat Step Two Label"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:54
-msgid "Chat Name Prompt"
+msgid "Chat Step Three Label"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:55
-msgid "Chat Name Placeholder"
+msgid "Chat Name Prompt"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:56
-msgid "Chat Thank-you Text"
+msgid "Chat Name Placeholder"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:57
-msgid "Chat Email Prompt"
+msgid "Chat Thank-you Text"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:58
-msgid "Chat Email Placeholder"
+msgid "Chat Email Prompt"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:59
-msgid "Chat Skip Button"
+msgid "Chat Email Placeholder"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:60
-msgid "Chat Message Prompt"
+msgid "Chat Skip Button"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:61
-msgid "Chat Message Placeholder"
+msgid "Chat Message Prompt"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:62
-msgid "Chat Continue Accessibility Label"
+msgid "Chat Message Placeholder"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:63
-msgid "Chat Send Accessibility Label"
+msgid "Chat Continue Accessibility Label"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:64
-msgid "Closed Chat Text"
+msgid "Chat Send Accessibility Label"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:65
+msgid "Closed Chat Text"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:66
 msgid "New Conversation Button"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:68
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:69
 msgid "Popup Intro Title"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:69
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:70
 msgid "Popup Intro Description"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:70
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:71
 msgid "Prayer Request Header"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:71
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:72
 msgid "Prayer Request Description"
 msgstr ""
 
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:73
+msgid "Testimony Header"
+msgstr ""
+
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:74
-msgid "Message Placeholder"
-msgstr ""
-
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:75
-msgid "Name Placeholder (Optional)"
-msgstr ""
-
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:76
-msgid "Name Placeholder (Required)"
+msgid "Testimony Description"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:77
-msgid "Submit Button"
+msgid "Message Placeholder"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:78
-msgid "Submitting Button"
+msgid "Testimony Message Placeholder"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:79
-msgid "Anonymous Text"
+msgid "Name Placeholder (Optional)"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:80
-msgid "Honeypot Accessibility Label"
+msgid "Name Placeholder (Required)"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:81
+msgid "Submit Button"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:82
+msgid "Testimony Submit Button"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:83
-msgid "Success Message"
+msgid "Submitting Button"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:84
-msgid "Error Message"
+msgid "Anonymous Text"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:85
-msgid "Rate Limit Message"
-msgstr ""
-
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:86
-msgid "Invalid Name Message"
-msgstr ""
-
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:87
-msgid "New Request Button"
+msgid "Honeypot Accessibility Label"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:88
-msgid "Required Field Message"
+msgid "Success Message"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:89
-msgid "Preview Permission Error"
+msgid "Testimony Success Message"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:90
-msgid "Preview Invalid Token Error"
+msgid "Error Message"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:91
+msgid "Rate Limit Message"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:92
+msgid "Invalid Name Message"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:93
-msgid "Last Prayer Time Message"
+msgid "New Request Button"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:94
+msgid "Required Field Message"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:95
+msgid "Preview Permission Error"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:96
-msgid "\"Second\" (Singular)"
-msgstr ""
-
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:97
-msgid "\"Seconds\" (Plural)"
-msgstr ""
-
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:98
-msgid "\"Minute\" (Singular)"
+msgid "Preview Invalid Token Error"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:99
-msgid "\"Minutes\" (Plural)"
-msgstr ""
-
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:100
-msgid "\"Hour\" (Singular)"
-msgstr ""
-
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:101
-msgid "\"Hours\" (Plural)"
+msgid "Last Prayer Time Message"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:102
-msgid "\"Day\" (Singular)"
+msgid "\"Second\" (Singular)"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:103
-msgid "\"Days\" (Plural)"
+msgid "\"Seconds\" (Plural)"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:104
+msgid "\"Minute\" (Singular)"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:105
+msgid "\"Minutes\" (Plural)"
 msgstr ""
 
 #: core/includes/classes/settings/class-prayer-pop-settings-text.php:106
+msgid "\"Hour\" (Singular)"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:107
+msgid "\"Hours\" (Plural)"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:108
+msgid "\"Day\" (Singular)"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:109
+msgid "\"Days\" (Plural)"
+msgstr ""
+
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:112
 msgid "Answered Message Label"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:134
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:145
 msgid "Search text fields"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:135
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:146
 msgid "Search labels, field names, or current text…"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:137
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:148
 msgid "Open all"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:137
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:148
 msgid "Close all"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:142
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:153
 msgid "Commonly Edited"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:144
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:155
 msgid "The visitor-facing labels and messages most often adapted first."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:173
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:184
 msgid "No text fields match that search."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:216
-msgid "Customize text strings used by the PrayerPop bubble and prayer request workflow. Available placeholders:"
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:227
+msgid ""
+"Customize text strings used by the PrayerPop bubble and submission "
+"workflows. Available placeholders:"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:218
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:229
 msgid "Used in last submission messages to show time"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:231
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:242
 msgid "Reset all Language & Text accordion fields to plugin defaults?"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:233
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:244
 msgid "Reset Language & Text Defaults"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:236
-msgid "Resets every accordion field on this page to the plugin default English text. Other settings are not changed."
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:247
+msgid ""
+"Resets every accordion field on this page to the plugin default English "
+"text. Other settings are not changed."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:567
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:606
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:584
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:623
 msgid "Security check failed."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:610
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:627
 msgid "No file selected for import."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:616
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:633
 msgid "Invalid uploaded file."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:620
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:637
 msgid "File upload failed."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:625
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:642
 msgid "File is too large. Maximum size is 5 MB."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:641
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:658
 msgid "Could not read the uploaded file."
 msgstr ""
 
 #. translators: %s: JSON parser error message.
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:650
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:667
 #, php-format
 msgid "Invalid JSON format: %s"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:658
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:675
 msgid "Invalid text fields file structure. Expected \"texts\" array."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:678
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:695
 msgid "No valid text fields found in the file."
 msgstr ""
 
 #. translators: %d: number of imported text fields.
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:691
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:708
 #, php-format
 msgid "Successfully imported %d text fields!"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:707
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:724
 msgid "Export / Import Text Fields"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:708
-msgid "Export/import text fields as JSON for backup or translation updates. These actions are independent of the main settings form and will not affect your ability to save text customizations."
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:725
+msgid ""
+"Export/import text fields as JSON for backup or translation updates. These "
+"actions are independent of the main settings form and will not affect your "
+"ability to save text customizations."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:712
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:716
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:729
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:733
 msgid "Export Text Fields"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:713
-msgid "Download all current text customization fields as a JSON file. This includes all text strings with their current values (custom or default)."
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:730
+msgid ""
+"Download all current text customization fields as a JSON file. This includes "
+"all text strings with their current values (custom or default)."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:721
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:727
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:738
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:744
 msgid "Import Text Fields"
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:722
-msgid "Upload a text fields JSON file to update text strings. Imported strings are merged with your current settings."
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:739
+msgid ""
+"Upload a text fields JSON file to update text strings. Imported strings are "
+"merged with your current settings."
 msgstr ""
 
-#: core/includes/classes/settings/class-prayer-pop-settings-text.php:730
-msgid "Note: After importing, the page will reload to show the updated text fields in the form above."
+#: core/includes/classes/settings/class-prayer-pop-settings-text.php:747
+msgid ""
+"Note: After importing, the page will reload to show the updated text fields "
+"in the form above."
 msgstr ""
 
-#: prayer-pop.php:292
-msgid "PrayerPop Pro cannot be activated while PrayerPop is active. Please deactivate PrayerPop first."
+#: prayer-pop.php:243
+msgid ""
+"PrayerPop Pro cannot be activated while PrayerPop is active. Please "
+"deactivate PrayerPop first."
 msgstr ""
 
-#: prayer-pop.php:381
+#: prayer-pop.php:332
 msgid "Docs"
 msgstr ""
 
 #. translators: %s: Plugin name.
-#: prayer-pop.php:422
+#: prayer-pop.php:373
 #, php-format
 msgid "More information about %s"
 msgstr ""
 
-#: prayer-pop.php:427
+#: prayer-pop.php:378
 msgid "View details"
 msgstr ""
 
-#: prayer-pop.php:518
-msgid "PrayerPop helps churches collect and moderate prayer requests with a simple frontend bubble and admin workflow."
+#: prayer-pop.php:469
+msgid ""
+"PrayerPop helps churches collect and moderate prayer requests and "
+"testimonies with a simple frontend bubble and admin workflow."
 msgstr ""
 
-#: prayer-pop.php:521
-msgid "Install and activate PrayerPop, then open PrayerPop -> Settings to configure the bubble, notifications, styling, and text."
+#: prayer-pop.php:472
+msgid ""
+"Install and activate PrayerPop, then open PrayerPop -> Settings to configure "
+"the bubble, notifications, styling, and text."
 msgstr ""
 
-#: prayer-pop.php:526
+#: prayer-pop.php:477
 msgid "See readme.txt for release notes."
 msgstr ""
 
-#: prayer-pop.php:680
-msgid "PrayerPop includes a focused admin workflow, a frontend prayer request bubble, notification settings, style controls, and built-in documentation."
+#: prayer-pop.php:631
+msgid ""
+"PrayerPop includes a focused admin workflow, a frontend prayer request and "
+"testimony bubble, notification settings, style controls, and built-in "
+"documentation."
 msgstr ""
 
-#: prayer-pop.php:681
+#: prayer-pop.php:632
 msgid "PrayerPop app icon"
 msgstr ""
 
@@ -4560,8 +5524,7 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: src/Admin/ListTable.php:159
-#: src/Admin/ListTable.php:878
+#: src/Admin/ListTable.php:159 src/Admin/ListTable.php:881
 msgid "Leave empty for Anonymous"
 msgstr ""
 
@@ -4569,8 +5532,7 @@ msgstr ""
 msgid "Edit name"
 msgstr ""
 
-#: src/Admin/ListTable.php:166
-#: src/Admin/ListTable.php:170
+#: src/Admin/ListTable.php:166 src/Admin/ListTable.php:170
 msgid "Add submission text..."
 msgstr ""
 
@@ -4578,8 +5540,7 @@ msgstr ""
 msgid "Edit submission text"
 msgstr ""
 
-#: src/Admin/ListTable.php:183
-#: src/Admin/ListTable.php:187
+#: src/Admin/ListTable.php:183 src/Admin/ListTable.php:187
 msgid "Add answer update..."
 msgstr ""
 
@@ -4587,404 +5548,449 @@ msgstr ""
 msgid "Edit answer update"
 msgstr ""
 
-#: src/Admin/ListTable.php:206
-#: src/Admin/ListTable.php:915
-#: src/Admin/ListTable.php:1288
+#: src/Admin/ListTable.php:209 src/Admin/ListTable.php:918
+#: src/Admin/ListTable.php:1302
 msgid "Public"
 msgstr ""
 
-#: src/Admin/ListTable.php:222
-#: src/Admin/ListTable.php:1335
+#: src/Admin/ListTable.php:225 src/Admin/ListTable.php:1349
 msgid "Pending Review"
 msgstr ""
 
-#: src/Admin/ListTable.php:226
-#: src/Admin/ListTable.php:1340
+#: src/Admin/ListTable.php:229 src/Admin/ListTable.php:1354
 msgid "Reviewed"
 msgstr ""
 
-#: src/Admin/ListTable.php:235
-#: src/Admin/ListTable.php:916
-#: src/Admin/ListTable.php:1303
+#: src/Admin/ListTable.php:238 src/Admin/ListTable.php:919
+#: src/Admin/ListTable.php:1317
 msgid "Pending Action"
 msgstr ""
 
-#: src/Admin/ListTable.php:281
+#: src/Admin/ListTable.php:284
 msgid "Submitted within last 24 hours"
 msgstr ""
 
-#: src/Admin/ListTable.php:283
+#: src/Admin/ListTable.php:286
 msgid "NEW"
 msgstr ""
 
-#: src/Admin/ListTable.php:331
-#: src/Admin/ListTable.php:649
+#: src/Admin/ListTable.php:334 src/Admin/ListTable.php:652
 msgid "Restore"
 msgstr ""
 
-#: src/Admin/ListTable.php:347
-#: src/Admin/ListTable.php:636
+#: src/Admin/ListTable.php:350 src/Admin/ListTable.php:639
 msgid "Unarchive"
 msgstr ""
 
-#: src/Admin/ListTable.php:374
-#: src/Admin/ListTable.php:399
-#: src/Admin/ListTable.php:537
-#: src/Admin/ListTable.php:578
-#: src/Admin/ListTable.php:924
+#: src/Admin/ListTable.php:377 src/Admin/ListTable.php:402
+#: src/Admin/ListTable.php:540 src/Admin/ListTable.php:581
+#: src/Admin/ListTable.php:927
 msgid "Approve"
 msgstr ""
 
-#: src/Admin/ListTable.php:375
-#: src/Admin/ListTable.php:538
-#: src/Admin/ListTable.php:925
+#: src/Admin/ListTable.php:378 src/Admin/ListTable.php:541
+#: src/Admin/ListTable.php:928
 msgid "Decline"
 msgstr ""
 
-#: src/Admin/ListTable.php:387
+#: src/Admin/ListTable.php:390
 msgid "Mark as Reviewed"
 msgstr ""
 
-#: src/Admin/ListTable.php:417
+#: src/Admin/ListTable.php:420
 msgid "Mark as Answered"
 msgstr ""
 
-#: src/Admin/ListTable.php:433
-#: src/Admin/ListTable.php:607
+#: src/Admin/ListTable.php:436 src/Admin/ListTable.php:610
 msgid "Remove answered prayer and move back to approved"
 msgstr ""
 
-#: src/Admin/ListTable.php:557
+#: src/Admin/ListTable.php:560
 msgid "Mark Reviewed"
 msgstr ""
 
-#: src/Admin/ListTable.php:594
+#: src/Admin/ListTable.php:597
 msgid "Mark Answered"
 msgstr ""
 
 #. translators: %s: number of submissions in the All view.
-#: src/Admin/ListTable.php:713
+#: src/Admin/ListTable.php:716
 #, php-format
 msgid "All (%s)"
 msgstr ""
 
 #. translators: %s: number of pending submissions.
-#: src/Admin/ListTable.php:723
+#: src/Admin/ListTable.php:726
 #, php-format
 msgid "Pending (%s)"
 msgstr ""
 
 #. translators: %s: number of approved submissions.
-#: src/Admin/ListTable.php:739
+#: src/Admin/ListTable.php:742
 #, php-format
 msgid "Approved (%s)"
 msgstr ""
 
 #. translators: %s: number of answered submissions.
-#: src/Admin/ListTable.php:749
+#: src/Admin/ListTable.php:752
 #, php-format
 msgid "Answered (%s)"
 msgstr ""
 
 #. translators: %s: number of declined submissions.
-#: src/Admin/ListTable.php:760
+#: src/Admin/ListTable.php:763
 #, php-format
 msgid "Declined (%s)"
 msgstr ""
 
 #. translators: %s: number of archived submissions.
-#: src/Admin/ListTable.php:771
+#: src/Admin/ListTable.php:774
 #, php-format
 msgid "Archived (%s)"
 msgstr ""
 
 #. translators: %s: number of trashed submissions.
-#: src/Admin/ListTable.php:782
+#: src/Admin/ListTable.php:785
 #, php-format
 msgid "Trash (%s)"
 msgstr ""
 
-#: src/Admin/ListTable.php:857
+#: src/Admin/ListTable.php:860
 msgid "Recipient email"
 msgstr ""
 
-#: src/Admin/ListTable.php:858
+#: src/Admin/ListTable.php:861
 msgid "name@example.com"
 msgstr ""
 
-#: src/Admin/ListTable.php:859
+#: src/Admin/ListTable.php:862
 msgid "Please enter a valid recipient email address."
 msgstr ""
 
-#: src/Admin/ListTable.php:860
+#: src/Admin/ListTable.php:863
 msgid "Optional answer update message (shown on the prayer card):"
 msgstr ""
 
-#: src/Admin/ListTable.php:861
+#: src/Admin/ListTable.php:864
 msgid "Update the answered prayer message (leave empty to remove it):"
 msgstr ""
 
-#: src/Admin/ListTable.php:862
-msgid "Optional answered prayer message for selected items (leave empty to keep current messages):"
-msgstr ""
-
-#: src/Admin/ListTable.php:863
-msgid "Mark Prayer as Answered"
-msgstr ""
-
-#: src/Admin/ListTable.php:864
-msgid "Update Answered Prayer"
-msgstr ""
-
 #: src/Admin/ListTable.php:865
-msgid "Bulk Mark as Answered"
+msgid ""
+"Optional answered prayer message for selected items (leave empty to keep "
+"current messages):"
 msgstr ""
 
 #: src/Admin/ListTable.php:866
-msgid "Optional answer update message shown on the prayer card."
+msgid "Mark Prayer as Answered"
 msgstr ""
 
 #: src/Admin/ListTable.php:867
-msgid "Update the answered prayer message. Leave empty to remove it."
+msgid "Update Answered Prayer"
 msgstr ""
 
 #: src/Admin/ListTable.php:868
-msgid "Add optional answer notes for selected prayer requests. You can fill only the ones you need."
+msgid "Bulk Mark as Answered"
 msgstr ""
 
 #: src/Admin/ListTable.php:869
-#: src/Admin/ListTable.php:885
-msgid "Cancel"
+msgid "Optional answer update message shown on the prayer card."
 msgstr ""
 
 #: src/Admin/ListTable.php:870
-#: src/Admin/ListTable.php:884
-msgid "Save"
+msgid "Update the answered prayer message. Leave empty to remove it."
 msgstr ""
 
 #: src/Admin/ListTable.php:871
-#: src/Admin/ListTable.php:876
+msgid ""
+"Add optional answer notes for selected prayer requests. You can fill only "
+"the ones you need."
+msgstr ""
+
+#: src/Admin/ListTable.php:873 src/Admin/ListTable.php:887
+msgid "Save"
+msgstr ""
+
+#: src/Admin/ListTable.php:874 src/Admin/ListTable.php:879
 msgid "Please select at least one submission first."
 msgstr ""
 
-#: src/Admin/ListTable.php:872
+#: src/Admin/ListTable.php:875
 msgid "Submission"
 msgstr ""
 
-#: src/Admin/ListTable.php:873
+#: src/Admin/ListTable.php:876
 msgid "Answered note"
 msgstr ""
 
-#: src/Admin/ListTable.php:874
+#: src/Admin/ListTable.php:877
 msgid "Bulk Edit Submissions"
 msgstr ""
 
-#: src/Admin/ListTable.php:875
-msgid "Edit selected submissions here. Leave Name empty to keep the item anonymous."
-msgstr ""
-
-#: src/Admin/ListTable.php:879
-msgid "Submission text"
+#: src/Admin/ListTable.php:878
+msgid ""
+"Edit selected submissions here. Leave Name empty to keep the item anonymous."
 msgstr ""
 
 #: src/Admin/ListTable.php:882
+msgid "Submission text"
+msgstr ""
+
+#: src/Admin/ListTable.php:885
 msgid "Could not update this value. Please try again."
 msgstr ""
 
-#: src/Admin/ListTable.php:883
+#: src/Admin/ListTable.php:886
 msgid "Invalid update option."
 msgstr ""
 
-#: src/Admin/ListTable.php:886
+#: src/Admin/ListTable.php:889
 msgid "Could not save this text. Please try again."
 msgstr ""
 
-#: src/Admin/ListTable.php:887
+#: src/Admin/ListTable.php:890
 msgid "Compact On"
 msgstr ""
 
-#: src/Admin/ListTable.php:888
+#: src/Admin/ListTable.php:891
 msgid "Compact Off"
 msgstr ""
 
-#: src/Admin/ListTable.php:889
+#: src/Admin/ListTable.php:892
 msgid "Switch to full submission text"
 msgstr ""
 
-#: src/Admin/ListTable.php:890
+#: src/Admin/ListTable.php:893
 msgid "Switch to compact submission text"
 msgstr ""
 
-#: src/Admin/ListTable.php:901
+#: src/Admin/ListTable.php:904
 msgid "How to Use"
 msgstr ""
 
-#: src/Admin/ListTable.php:902
+#: src/Admin/ListTable.php:905
 msgid "New here? Click How to Use for a quick walkthrough of this screen."
 msgstr ""
 
-#: src/Admin/ListTable.php:903
+#: src/Admin/ListTable.php:906
 msgid "Step"
 msgstr ""
 
-#: src/Admin/ListTable.php:906
+#: src/Admin/ListTable.php:909
 msgid "Next"
 msgstr ""
 
-#: src/Admin/ListTable.php:907
+#: src/Admin/ListTable.php:910
 msgid "Done"
 msgstr ""
 
-#: src/Admin/ListTable.php:909
+#: src/Admin/ListTable.php:912
 msgid "Submission updated successfully."
 msgstr ""
 
-#: src/Admin/ListTable.php:910
+#: src/Admin/ListTable.php:913
 msgid "Demo User"
 msgstr ""
 
-#: src/Admin/ListTable.php:911
+#: src/Admin/ListTable.php:914
 msgid "Please pray for wisdom and peace in my family this week."
 msgstr ""
 
-#: src/Admin/ListTable.php:912
+#: src/Admin/ListTable.php:915
 msgid "Last Modified"
 msgstr ""
 
-#: src/Admin/ListTable.php:913
+#: src/Admin/ListTable.php:916
 msgid "2026/03/13 at 10:30 am"
 msgstr ""
 
-#: src/Admin/ListTable.php:932
-msgid "Important results and action confirmations show here, including updates after you edit, approve, decline, archive, or trash submissions. Keep this area visible when processing submissions."
+#: src/Admin/ListTable.php:935
+msgid ""
+"Important results and action confirmations show here, including updates "
+"after you edit, approve, decline, archive, or trash submissions. Keep this "
+"area visible when processing submissions."
 msgstr ""
 
-#: src/Admin/ListTable.php:936
+#: src/Admin/ListTable.php:939
 msgid "Quick Filters"
 msgstr ""
 
-#: src/Admin/ListTable.php:937
-msgid "Use quick filters for one-click queues like Pending, Approved, Declined, Archived, or Trash."
+#: src/Admin/ListTable.php:940
+msgid ""
+"Use quick filters for one-click queues like Pending, Approved, Declined, "
+"Archived, or Trash."
 msgstr ""
 
-#: src/Admin/ListTable.php:941
+#: src/Admin/ListTable.php:944
 msgid "Search and Advanced Filters"
 msgstr ""
 
-#: src/Admin/ListTable.php:942
-msgid "Use search, date, status, visibility, and type filters to narrow down exactly what you need."
+#: src/Admin/ListTable.php:945
+msgid ""
+"Use search, date, status, visibility, and type filters to narrow down "
+"exactly what you need."
 msgstr ""
 
-#: src/Admin/ListTable.php:946
+#: src/Admin/ListTable.php:949
 msgid "Bulk Actions"
 msgstr ""
 
 #. translators: %s: settings link
-#: src/Admin/ListTable.php:949
+#: src/Admin/ListTable.php:952
 #, php-format
-msgid "<ul><li><strong>Send via Email</strong><br>Send selected submissions to a specific email address. You can update the email template in %s.</li><li><strong>Approve selected</strong><br>Approve selected prayer requests.</li><li><strong>Decline selected</strong><br>Decline selected prayer requests.</li><li><strong>Mark prayer as answered</strong><br>Move selected approved prayer requests to Answered (with optional answer note).</li><li><strong>Edit selected</strong><br>Edit names and submission text for selected rows in one modal.</li><li><strong>Archive</strong><br>Remove selected submissions from active workflow while keeping history.</li><li><strong>Move to Trash</strong><br>Move selected submissions to Trash.</li></ul>"
+msgid ""
+"<ul><li><strong>Send via Email</strong><br>Send selected submissions to a "
+"specific email address. You can update the email template in %s.</"
+"li><li><strong>Approve selected</strong><br>Approve selected prayer requests."
+"</li><li><strong>Decline selected</strong><br>Decline selected prayer "
+"requests.</li><li><strong>Mark prayer as answered</strong><br>Move selected "
+"approved prayer requests to Answered (with optional answer note).</"
+"li><li><strong>Edit selected</strong><br>Edit names and submission text for "
+"selected rows in one modal.</li><li><strong>Archive</strong><br>Remove "
+"selected submissions from active workflow while keeping history.</"
+"li><li><strong>Move to Trash</strong><br>Move selected submissions to Trash."
+"</li></ul>"
 msgstr ""
 
-#: src/Admin/ListTable.php:953
+#: src/Admin/ListTable.php:956
 msgid "Notifications > Email Template Settings"
 msgstr ""
 
-#: src/Admin/ListTable.php:960
+#: src/Admin/ListTable.php:963
 msgid "Submissions: Name and Text Editing"
 msgstr ""
 
-#: src/Admin/ListTable.php:961
-msgid "This area shows the column title, name, and submission text. Click the name to edit the person name, or click the submission text to edit the message inline. For answered prayers, you can also edit the answer update text here. After changes, click Save."
+#: src/Admin/ListTable.php:964
+msgid ""
+"This area shows the column title, name, and submission text. Click the name "
+"to edit the person name, or click the submission text to edit the message "
+"inline. For answered prayers, you can also edit the answer update text here. "
+"After changes, click Save."
 msgstr ""
 
-#: src/Admin/ListTable.php:971
+#: src/Admin/ListTable.php:974
 msgid "Type, Visibility, and Status"
 msgstr ""
 
 #. translators: %s: documentation link
-#: src/Admin/ListTable.php:974
+#: src/Admin/ListTable.php:977
 #, php-format
-msgid "<ul><li><strong>Type</strong><br>The Type label identifies prayer requests.</li><li><strong>Visibility</strong><br>The Visibility label shows whether a prayer request is public.</li><li><strong>Status</strong><br>Click the Status label to move the item through Pending, Approved, Answered, Declined, or Archived.</li></ul><p>For workflow details and examples, see %s.</p>"
+msgid ""
+"<ul><li><strong>Type</strong><br>The Type label identifies prayer requests.</"
+"li><li><strong>Visibility</strong><br>The Visibility label shows whether a "
+"prayer request is public.</li><li><strong>Status</strong><br>Click the "
+"Status label to move the item through Pending, Approved, Answered, Declined, "
+"or Archived.</li></ul><p>For workflow details and examples, see %s.</p>"
 msgstr ""
 
-#: src/Admin/ListTable.php:982
+#: src/Admin/ListTable.php:985
 msgid "Action Buttons"
 msgstr ""
 
-#: src/Admin/ListTable.php:983
-msgid "This column shows relevant quick actions for each submission, such as edit, approve, decline, archive, trash, restore, or mark a prayer as answered."
+#: src/Admin/ListTable.php:986
+msgid ""
+"This column shows relevant quick actions for each submission, such as edit, "
+"approve, decline, archive, trash, restore, or mark a prayer as answered."
 msgstr ""
 
-#: src/Admin/ListTable.php:987
+#: src/Admin/ListTable.php:990
 msgid "Screen Options Button"
 msgstr ""
 
-#: src/Admin/ListTable.php:988
-msgid "Open Screen Options to control which columns you want to see and how many submissions are shown per page."
+#: src/Admin/ListTable.php:991
+msgid ""
+"Open Screen Options to control which columns you want to see and how many "
+"submissions are shown per page."
 msgstr ""
 
-#: src/Admin/ListTable.php:993
+#: src/Admin/ListTable.php:996
 msgid "Screen Options Panel"
 msgstr ""
 
-#: src/Admin/ListTable.php:994
+#: src/Admin/ListTable.php:997
 msgid "This panel lets you tune the admin table view for your team workflow."
 msgstr ""
 
-#: src/Admin/ListTable.php:999
+#: src/Admin/ListTable.php:1002
 msgid "Need More Help?"
 msgstr ""
 
 #. translators: 1: settings link, 2: documentation link
-#: src/Admin/ListTable.php:1002
+#: src/Admin/ListTable.php:1005
 #, php-format
-msgid "Open %1$s for workflow setup, styling, notifications, and email template options. For a feature overview and practical usage examples, open %2$s."
+msgid ""
+"Open %1$s for workflow setup, styling, notifications, and email template "
+"options. For a feature overview and practical usage examples, open %2$s."
 msgstr ""
 
-#: src/Admin/ListTable.php:1051
+#: src/Admin/ListTable.php:1054
 msgid "You do not have permission to update submissions."
 msgstr ""
 
-#: src/Admin/ListTable.php:1067
+#: src/Admin/ListTable.php:1070
 msgid "Invalid update request."
 msgstr ""
 
-#: src/Admin/ListTable.php:1071
+#: src/Admin/ListTable.php:1074
 msgid "You do not have permission to edit this submission."
 msgstr ""
 
-#: src/Admin/ListTable.php:1086
+#: src/Admin/ListTable.php:1089
 msgid "Submission text cannot be empty."
 msgstr ""
 
-#: src/Admin/ListTable.php:1098
+#: src/Admin/ListTable.php:1101
 msgid "Only answered prayers can store an answer update."
 msgstr ""
 
-#: src/Admin/ListTable.php:1101
+#: src/Admin/ListTable.php:1104
 msgid "Answered note is available only for prayer requests."
 msgstr ""
 
-#: src/Admin/ListTable.php:1113
+#: src/Admin/ListTable.php:1114
 msgid "Invalid type value."
 msgstr ""
 
-#: src/Admin/ListTable.php:1140
+#: src/Admin/ListTable.php:1133
 msgid "Invalid visibility value."
 msgstr ""
 
-#: src/Admin/ListTable.php:1174
+#: src/Admin/ListTable.php:1167
 msgid "Invalid status value for this submission."
 msgstr ""
 
-#: src/Admin/ListTable.php:1216
+#: src/Admin/ListTable.php:1209
 msgid "Invalid status value for private submission."
 msgstr ""
 
-#: src/Admin/ListTable.php:1250
+#: src/Admin/ListTable.php:1243
 msgid "Unsupported inline field."
 msgstr ""
 
-#: src/Admin/ListTable.php:1253
+#: src/Admin/ListTable.php:1246
 msgid "Submission updated."
+msgstr ""
+
+#: src/Admin/ListTable.php:1258
+msgid "Could not update the submission. Please try again."
+msgstr ""
+
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:449
+#: prayerpop/core/includes/classes/class-prayer-pop-chat.php:538
+msgid "Connection lost. Retrying…"
+msgstr ""
+
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:93
+msgid "Welcome Header"
+msgstr ""
+
+#: prayerpop/core/includes/classes/settings/class-prayer-pop-settings-general.php:100
+msgid "Show the welcome header above the available actions in the popup."
+msgstr ""
+
+#: prayerpop/core/includes/classes/class-prayer-pop-settings.php:515
+msgid ""
+"Choose which submissions visitors can send and whether the welcome header "
+"appears. PrayerPop Free holds every new item for manual admin approval "
+"before it is actioned."
 msgstr ""

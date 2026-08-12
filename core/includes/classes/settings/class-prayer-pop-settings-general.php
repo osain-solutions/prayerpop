@@ -63,6 +63,45 @@ class Prayer_Pop_Settings_General {
 		);
 
 		add_settings_field(
+			'show_prayer_request_button',
+			esc_html__( 'Enable Prayer Requests', 'prayerpop' ),
+			array( $this, 'toggle_callback' ),
+			'prayer-pop-settings-general',
+			'prayer_pop_general_section',
+			array(
+				'id'          => 'show_prayer_request_button',
+				'default'     => 1,
+				'description' => esc_html__( 'Allow visitors to send prayer requests from the PrayerPop bubble.', 'prayerpop' ),
+			)
+		);
+
+		add_settings_field(
+			'show_testimony_button',
+			esc_html__( 'Enable Testimonies', 'prayerpop' ),
+			array( $this, 'toggle_callback' ),
+			'prayer-pop-settings-general',
+			'prayer_pop_general_section',
+			array(
+				'id'          => 'show_testimony_button',
+				'default'     => 1,
+				'description' => esc_html__( 'Allow visitors to share testimonies from the PrayerPop bubble. Testimonies stay in the private Submissions inbox.', 'prayerpop' ),
+			)
+		);
+
+		add_settings_field(
+			'popup_intro_enabled',
+			esc_html__( 'Welcome Header', 'prayerpop' ),
+			array( $this, 'toggle_callback' ),
+			'prayer-pop-settings-general',
+			'prayer_pop_general_section',
+			array(
+				'id'          => 'popup_intro_enabled',
+				'default'     => 1,
+				'description' => esc_html__( 'Show the welcome header above the available actions in the popup.', 'prayerpop' ),
+			)
+		);
+
+		add_settings_field(
 			'retention_period',
 			esc_html__( 'Retention Period', 'prayerpop' ),
 			array( $this, 'retention_period_callback' ),
@@ -83,6 +122,9 @@ class Prayer_Pop_Settings_General {
 		$sanitized['show_prayer_pop_bubble']      = isset( $input['show_prayer_pop_bubble'] ) ? 1 : 0;
 		$sanitized['popup_intro_image_id']        = $popup_intro_image_id && wp_attachment_is_image( $popup_intro_image_id ) ? $popup_intro_image_id : 0;
 		$sanitized['allow_anonymous']             = isset( $input['allow_anonymous'] ) ? 1 : 0;
+		$sanitized['show_prayer_request_button']  = isset( $input['show_prayer_request_button'] ) ? 1 : 0;
+		$sanitized['show_testimony_button']       = isset( $input['show_testimony_button'] ) ? 1 : 0;
+		$sanitized['popup_intro_enabled']         = isset( $input['popup_intro_enabled'] ) ? 1 : 0;
 		$sanitized['retention_period']            = isset( $input['retention_period'] ) ? absint( $input['retention_period'] ) : 0;
 		$sanitized['require_admin_approval']      = 1;
 
