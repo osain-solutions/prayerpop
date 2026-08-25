@@ -48,7 +48,6 @@ class Prayer_Pop_Settings_Text {
 		$this->add_text_field( 'text_back_button', esc_html__( 'Back Button', 'prayerpop' ), 'Back' );
 		$this->add_text_field( 'text_chat_team_help', esc_html__( 'Chat Team Help Text', 'prayerpop' ), 'The team can also help' );
 		$this->add_text_field( 'text_chat_reply_time', esc_html__( 'Chat Reply Time Text', 'prayerpop' ), 'Replies within a day' );
-		$this->add_text_field( 'text_chat_intro', esc_html__( 'Chat Intro Text', 'prayerpop' ), 'We are here to help. Leave a message and we will reply here.' );
 		$this->add_text_field( 'text_chat_step_one', esc_html__( 'Chat Step One Label', 'prayerpop' ), '1 of 3' );
 		$this->add_text_field( 'text_chat_step_two', esc_html__( 'Chat Step Two Label', 'prayerpop' ), '2 of 3' );
 		$this->add_text_field( 'text_chat_step_three', esc_html__( 'Chat Step Three Label', 'prayerpop' ), '3 of 3' );
@@ -410,7 +409,6 @@ class Prayer_Pop_Settings_Text {
 			'text_chat_button',
 			'text_chat_team_help',
 			'text_chat_reply_time',
-			'text_chat_intro',
 			'text_chat_step_one',
 			'text_chat_step_two',
 			'text_chat_step_three',

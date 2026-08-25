@@ -1,5 +1,1 @@
-/* PrayerPop workspaces keep the screen focused on the task at hand. */
-#wpbody-content > .update-nag,
-#wpbody-content > .notice:not(.prayerpop-admin-notice) {
-	display: none;
-}
+/* Notice callbacks from other plugins are removed on PrayerPop workspaces. */

@@ -460,6 +460,7 @@
 }
 
 .prayer-pop-popup-intro--hero {
+	--prayerpop-classic-intro-overlap: 24px;
     position: relative;
 	min-height: 0;
     margin: calc(0px - var(--global-padding)) calc(0px - var(--global-padding)) var(--global-margin);
@@ -474,7 +475,7 @@
 	content: "";
 	position: absolute;
 	/* Keep the welcome card visibly overlapping the header at every text length. */
-	inset: 0 0 16px;
+	inset: 0 0 var(--prayerpop-classic-intro-overlap);
 	border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
 	background: var(--global-bg-color);
 }
@@ -491,7 +492,7 @@
 
 .prayer-pop-popup-intro__media {
     position: absolute;
-	inset: 0 0 16px;
+	inset: 0 0 var(--prayerpop-classic-intro-overlap);
     width: 100%;
 	overflow: hidden;
 	border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;

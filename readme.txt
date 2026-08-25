@@ -3,7 +3,7 @@ Contributors: osain
 Tags: prayer, testimony, church, ministry, notifications
 Requires at least: 5.8
 Tested up to: 7.0
-Stable tag: 1.6.3
+Stable tag: 1.6.4
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -209,6 +209,12 @@ PrayerPop uses the direct visitor IP address for rate limits by default. If your
 * Submission posts remain in WordPress after uninstall unless you delete them manually.
 
 == Changelog ==
+
+= 1.6.4 =
+* Simplified the visitor Chat opening screen and removed unused space below its onboarding fields.
+* Kept the Classic Popup welcome card visibly overlapping its background at different content lengths.
+* Kept third-party plugin notices out of PrayerPop admin screens while leaving WordPress and PrayerPop notices visible.
+* Updated translations and third-party notice documentation.
 
 = 1.6.3 =
 * Added testimony submissions to the free popup. Churches can enable prayer requests, testimonies, or both, with dedicated wording, placeholders, confirmation messages, and saved drafts for each form.

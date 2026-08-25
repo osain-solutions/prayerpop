@@ -64,7 +64,7 @@ class Prayer_Pop_Settings {
 		add_action('admin_init', array($this, 'register_settings'));
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_workspace_notice_styles' ) );
-		add_action( 'admin_head', array( $this, 'suppress_divi_supreme_license_notice' ), 0 );
+		add_action( 'admin_head', array( $this, 'suppress_third_party_admin_notices' ), PHP_INT_MAX );
 		add_action('admin_footer-prayer-pop_page_prayer-pop-settings', array($this, 'render_frontend_overlay_preview'));
 		add_action('admin_notices', array($this, 'show_settings_messages'));
 		add_action('admin_post_prayer_pop_submit_feedback', array($this, 'handle_submit_feedback'));
@@ -114,38 +114,52 @@ class Prayer_Pop_Settings {
 	}
 
 	/**
-	 * Keep Divi Supreme's missing-license reminder off PrayerPop workspaces.
-	 *
-	 * The reminder remains available on Divi Supreme and every other WordPress
-	 * admin screen. Removing its registered callback is intentionally narrower
-	 * than hiding arbitrary notices with CSS.
+	 * Keep third-party plugin notices off PrayerPop workspaces.
 	 *
 	 * @return void
 	 */
-	public function suppress_divi_supreme_license_notice() {
+	public function suppress_third_party_admin_notices() {
 		if ( ! $this->is_prayerpop_workspace() ) {
 			return;
 		}
 
 		global $wp_filter;
-		if ( empty( $wp_filter['admin_notices'] ) || empty( $wp_filter['admin_notices']->callbacks ) ) {
-			return;
-		}
+		foreach ( array( 'all_admin_notices', 'admin_notices' ) as $hook ) {
+			if ( empty( $wp_filter[ $hook ] ) || empty( $wp_filter[ $hook ]->callbacks ) ) {
+				continue;
+			}
 
-		foreach ( $wp_filter['admin_notices']->callbacks as $priority => $callbacks ) {
-			foreach ( $callbacks as $registered_callback ) {
-				$callback = isset( $registered_callback['function'] ) ? $registered_callback['function'] : null;
-				if (
-					is_array( $callback ) &&
-					isset( $callback[0], $callback[1] ) &&
-					is_object( $callback[0] ) &&
-					'DiviSupreme\\Core\\Settings' === get_class( $callback[0] ) &&
-					'dsm_render_missing_license_notice' === $callback[1]
-				) {
-					remove_action( 'admin_notices', $callback, $priority );
+			foreach ( $wp_filter[ $hook ]->callbacks as $priority => $callbacks ) {
+				foreach ( $callbacks as $registered_callback ) {
+					$callback = isset( $registered_callback['function'] ) ? $registered_callback['function'] : null;
+					if ( $this->is_third_party_plugin_callback( $callback ) ) {
+						remove_action( $hook, $callback, $priority );
+					}
 				}
 			}
 		}
+	}
+
+	/** Return whether a notice callback comes from another plugin. */
+	private function is_third_party_plugin_callback( $callback ) {
+		try {
+			if ( is_array( $callback ) && isset( $callback[0], $callback[1] ) ) {
+				$reflection = new ReflectionMethod( $callback[0], $callback[1] );
+			} elseif ( is_string( $callback ) || $callback instanceof Closure ) {
+				$reflection = new ReflectionFunction( $callback );
+			} else {
+				return false;
+			}
+		} catch ( ReflectionException $exception ) {
+			return false;
+		}
+
+		$file = (string) $reflection->getFileName();
+		if ( '' === $file || 0 === strpos( $file, PRAYERPOP_PLUGIN_DIR ) ) {
+			return false;
+		}
+
+		return 0 === strpos( $file, WP_PLUGIN_DIR . '/' ) || ( defined( 'WPMU_PLUGIN_DIR' ) && 0 === strpos( $file, WPMU_PLUGIN_DIR . '/' ) );
 	}
 
 	/** Keep Chat in the same relative submenu position as PrayerPop Pro. */

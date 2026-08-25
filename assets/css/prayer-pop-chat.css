@@ -177,17 +177,9 @@
 
 .ppfc-start {
 	display: grid;
-	grid-template-rows: auto auto minmax(210px, 1fr);
+	grid-template-rows: auto auto;
 	padding: 18px 16px 14px;
 	overflow: hidden;
-}
-
-.ppfc-chat-intro {
-	margin: 0 8px 16px;
-	color: #343b47;
-	font-size: 15px;
-	line-height: 1.45;
-	text-align: center;
 }
 
 .ppfc-agent-welcome,
@@ -252,8 +244,8 @@
 }
 
 .ppfc-start-form {
-	grid-row: 3;
-	min-height: 210px;
+	grid-row: 2;
+	min-height: 0;
 }
 
 .ppfc-onboarding-step[hidden] {
@@ -262,9 +254,9 @@
 
 .ppfc-onboarding-step:not([hidden]) {
 	display: grid;
-	align-content: end;
-	height: 100%;
-	min-height: 210px;
+	align-content: start;
+	height: auto;
+	min-height: 0;
 	padding-bottom: 2px;
 	animation: ppfc-step-in 0.18s ease-out;
 }
