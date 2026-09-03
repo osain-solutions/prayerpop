@@ -3,7 +3,7 @@ Contributors: osain
 Tags: prayer, testimony, church, ministry, notifications
 Requires at least: 5.8
 Tested up to: 7.0
-Stable tag: 1.6.4
+Stable tag: 1.6.5
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -209,6 +209,10 @@ PrayerPop uses the direct visitor IP address for rate limits by default. If your
 * Submission posts remain in WordPress after uninstall unless you delete them manually.
 
 == Changelog ==
+
+= 1.6.5 =
+* Moved the Chat inbox save notice so it does not push the page heading down.
+* Added release-quality checks for JavaScript, PHP, WordPress Plugin Check, and browser smoke tests.
 
 = 1.6.4 =
 * Simplified the visitor Chat opening screen and removed unused space below its onboarding fields.
