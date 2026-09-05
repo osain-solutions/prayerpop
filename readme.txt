@@ -210,6 +210,10 @@ PrayerPop uses the direct visitor IP address for rate limits by default. If your
 
 == Changelog ==
 
+= 1.6.6 =
+* Made the Send One More action an outlined secondary button in the popup and standalone form, using the site primary colour.
+* Refined popup sender spacing.
+
 = 1.6.5 =
 * Moved the Chat inbox save notice so it does not push the page heading down.
 * Added release-quality checks for JavaScript, PHP, WordPress Plugin Check, and browser smoke tests.

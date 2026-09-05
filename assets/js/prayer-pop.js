@@ -739,12 +739,26 @@ jQuery(document).ready(function($) {
             'transition': 'background-color 0.3s ease'
         };
 
-        // Apply styles to all buttons
-        $('#prayer-pop-form button[type="submit"], #prayer-pop-new-request, .prayer-pop-button').css(buttonStyles)
+        const newRequestStyles = {
+            'background-color': 'transparent',
+            'color': bgColor,
+            'border': '1px solid ' + bgColor,
+            'border-radius': borderRadius,
+            'transition': 'background-color 0.3s ease, color 0.3s ease'
+        };
+
+        $('#prayer-pop-form button[type="submit"], .prayer-pop-button').not('#prayer-pop-new-request').css(buttonStyles)
         .off('mouseenter mouseleave')
         .hover(
             function() { $(this).css('background-color', buttonHoverColor); },
             function() { $(this).css('background-color', bgColor); }
+        );
+
+        $('#prayer-pop-new-request').css(newRequestStyles)
+        .off('mouseenter mouseleave')
+        .hover(
+            function() { $(this).css('background-color', 'color-mix(in srgb, ' + bgColor + ' 12%, transparent)'); },
+            function() { $(this).css('background-color', 'transparent'); }
         );
     }
 

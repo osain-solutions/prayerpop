@@ -198,6 +198,14 @@
 
 .prayer-pop-form__new-request {
     margin-top: 0;
+    border: 1px solid var(--pp-form-button-bg);
+    background: transparent;
+    color: var(--pp-form-button-bg);
+}
+
+.prayer-pop-form__new-request:hover {
+    background: color-mix(in srgb, var(--pp-form-button-bg) 12%, transparent);
+    color: var(--pp-form-button-bg);
 }
 
 .prayer-pop-form__honeypot {

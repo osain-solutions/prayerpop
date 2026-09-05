@@ -551,11 +551,11 @@
 }
 
 .prayer-pop-popup-intro__sender strong {
-	margin: 10px 0 0;
+	margin: 0;
 	color: #172033;
 	font-size: calc(var(--global-font-size) * 0.875);
 	font-weight: 500;
-	line-height: 0.7;
+	line-height: 1.25;
 }
 
 .prayer-pop-popup-intro__sender small {
@@ -911,6 +911,17 @@
 #prayer-pop-new-request:hover,
 .prayer-pop-button:hover {
     background-color: #005a8c;
+}
+
+#prayer-pop-new-request {
+    background-color: transparent;
+    color: var(--global-bg-color);
+    border: 1px solid var(--global-bg-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#prayer-pop-new-request:hover {
+    background-color: color-mix(in srgb, var(--global-bg-color) 12%, transparent);
 }
 
 /* Name container - handles margin for name input */
