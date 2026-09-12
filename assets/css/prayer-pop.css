@@ -2,31 +2,49 @@
 
 /* Global Variables */
 :root {
-    --global-bg-color: #2755AA; /* Default global color for bubble and button */
-    --global-font-color: #ffffff; /* White for text */
-    --global-label-color: #333333; /* Dark gray for label text */
-    --global-button-hover-color: #1F4A99; /* Hover color for button and bubble */
-    --global-textarea-bg-color: #f9f9f9; /* Light gray for textarea background */
-    --global-border-color: #ddd; /* Border color for inputs */
-    --global-border-radius: 8px; /* Global border radius */
-    --global-padding: 15px; /* Global padding */
-    --global-margin: 15px; /* Global margin */
-    --global-font-size: 16px; /* Global font size */
-    --global-bold-font-weight: bold; /* Global bold font weight */
-    --global-font-family: system-ui; /* Global font family */
+    --pp-bg-color: #2755AA; /* Default global color for bubble and button */
+    --pp-font-color: #ffffff; /* White for text */
+    --pp-label-color: #333333; /* Dark gray for label text */
+    --pp-button-hover-color: #1F4A99; /* Hover color for button and bubble */
+    --pp-textarea-bg-color: #f9f9f9; /* Light gray for textarea background */
+    --pp-border-color: #ddd; /* Border color for inputs */
+    --pp-border-radius: 8px; /* Global border radius */
+    --pp-panel-border-radius: 20px;
+    /* Target width of every popup/chat panel — the default form popup and the
+       footer-chat panel. One token so they stay the same size; each still
+       clamps to the viewport on small screens via
+       min(var(--pp-popup-width), calc(100vw - 32px)). */
+    --pp-popup-width: 400px;
+    --pp-padding: 15px; /* Global padding */
+    --pp-screen-inset: 20px;
+    --pp-header-height: 56px;
+    --pp-control-size: 28px;
+    --pp-control-inset: 12px;
+    --pp-header-gutter: calc(var(--pp-control-inset) + var(--pp-control-size) + 8px);
+    --pp-control-offset: calc((var(--pp-header-height) - var(--pp-control-size)) / 2);
+    --pp-control-color: #687181;
+    --pp-space-2xs: 4px;
+    --pp-space-xs: 8px;
+    --pp-space-md: 16px;
+    --pp-field-padding-y: 12px;
+    --pp-field-padding-x: 14px;
+    --pp-margin: 15px; /* Global margin */
+    --pp-font-size: 16px; /* Global font size */
+    --pp-bold-font-weight: bold; /* Global bold font weight */
+    --pp-font-family: system-ui; /* Global font family */
     
     /* Heading-specific variables */
-    --heading-font-family: var(--global-font-family); /* Heading font family */
-    --heading-font-size: 24px; /* Heading font size */
-    --heading-font-weight: 600; /* Heading font weight */
+    --pp-heading-font-family: var(--pp-font-family); /* Heading font family */
+    --pp-heading-font-size: 24px; /* Heading font size */
+    --pp-heading-font-weight: 600; /* Heading font weight */
     
     /* Bubble-specific variables */
-    --bubble-padding: 15px; /* Bubble padding */
-    --bubble-margin: 20px; /* Bubble margin */
-    --bubble-height: 60px; /* Bubble height */
+    --pp-bubble-padding: 15px; /* Bubble padding */
+    --pp-bubble-margin: 20px; /* Bubble margin */
+    --pp-bubble-height: 60px; /* Bubble height */
     
     /* Checkbox-specific variables */
-    --checkbox-margin: 8px; /* Checkbox spacing (smaller than global margin) */
+    --pp-checkbox-margin: 8px; /* Checkbox spacing (smaller than global margin) */
 
 }
 
@@ -43,7 +61,7 @@
 #prayer-pop-header h2,
 #prayer-pop-description p,
 #prayer-pop-last-time {
-    font-family: var(--global-font-family);
+    font-family: var(--pp-font-family);
 }
 
 /* Shared Bubble and popup motion. The saved Bubble Animation setting controls
@@ -127,24 +145,24 @@
 
 /* Bubble Styles */
 #prayer-pop-bubble {
-    --prayerpop-bubble-current-padding: var(--prayerpop-bubble-padding, var(--bubble-padding));
-    --prayerpop-bubble-content-size: max(12px, calc(var(--bubble-height) - (var(--prayerpop-bubble-current-padding) * 2)));
+    --prayerpop-bubble-current-padding: var(--prayerpop-bubble-padding, var(--pp-bubble-padding));
+    --prayerpop-bubble-content-size: max(12px, calc(var(--pp-bubble-height) - (var(--prayerpop-bubble-current-padding) * 2)));
     position: fixed;
-    bottom: calc(var(--bubble-margin) + var(--bubble-offset-y, 0px));
-    right: calc(var(--bubble-margin) + var(--bubble-offset-x, 0px));
+    bottom: calc(var(--pp-bubble-margin) + var(--pp-bubble-offset-y, 0px));
+    right: calc(var(--pp-bubble-margin) + var(--pp-bubble-offset-x, 0px));
     z-index: 999997;
-    background-color: var(--global-bg-color);
-    color: var(--global-font-color);
-    border-radius: var(--global-border-radius);
+    background-color: var(--pp-bg-color);
+    color: var(--pp-font-color);
+    border-radius: var(--pp-border-radius);
     padding: var(--prayerpop-bubble-current-padding);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: var(--bubble-height);
-    height: var(--bubble-height);
-    font-size: var(--global-font-size);
+    min-width: var(--pp-bubble-height);
+    height: var(--pp-bubble-height);
+    font-size: var(--pp-font-size);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-align: center;
     box-sizing: border-box;
@@ -152,7 +170,7 @@
 }
 
 #prayer-pop-bubble[data-bubble-position="left"] {
-    left: calc(var(--bubble-margin) + var(--bubble-offset-x, 0px));
+    left: calc(var(--pp-bubble-margin) + var(--pp-bubble-offset-x, 0px));
     right: auto;
     transform-origin: bottom left;
 }
@@ -160,22 +178,22 @@
 #prayer-pop-bubble[data-bubble-shape="adaptive"],
 #prayer-pop-bubble[data-bubble-shape="dynamic"] {
     width: auto;
-    height: var(--bubble-height);
-    min-width: max(var(--bubble-height), calc(var(--bubble-height) * var(--prayerpop-icon-scale, 1)));
+    height: var(--pp-bubble-height);
+    min-width: max(var(--pp-bubble-height), calc(var(--pp-bubble-height) * var(--prayerpop-icon-scale, 1)));
 }
 
 #prayer-pop-bubble[data-bubble-shape="fixed_square"],
 #prayer-pop-bubble[data-bubble-shape="square"] {
-    width: var(--bubble-height);
-    min-width: var(--bubble-height);
-    height: var(--bubble-height);
+    width: var(--pp-bubble-height);
+    min-width: var(--pp-bubble-height);
+    height: var(--pp-bubble-height);
 }
 
 #prayer-pop-bubble[data-bubble-shape="fixed_circle"],
 #prayer-pop-bubble[data-bubble-shape="circle"] {
-    width: var(--bubble-height);
-    min-width: var(--bubble-height);
-    height: var(--bubble-height);
+    width: var(--pp-bubble-height);
+    min-width: var(--pp-bubble-height);
+    height: var(--pp-bubble-height);
     border-radius: 9999px;
     overflow: hidden;
     clip-path: circle(50% at 50% 50%);
@@ -205,10 +223,10 @@
     padding: 0 5px;
     box-sizing: border-box;
     place-items: center;
-    border: 2px solid var(--bubble-bg-color, var(--global-bg-color, #2755aa));
+    border: 2px solid var(--pp-bubble-bg-color, var(--pp-bg-color, #2755aa));
     border-radius: 999px;
     background: #fff;
-    color: var(--bubble-bg-color, var(--global-bg-color, #2755aa));
+    color: var(--pp-bubble-bg-color, var(--pp-bg-color, #2755aa));
     box-shadow: 0 2px 7px rgba(15, 23, 42, .2);
     font-size: 12px;
     font-weight: 700;
@@ -227,9 +245,9 @@
 
 /* Chat Bubble Icon */
 #prayer-pop-icon {
-    font-size: var(--global-font-size);
+    font-size: var(--pp-font-size);
     font-weight: bold;
-    color: var(--global-font-color);
+    color: var(--pp-font-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -247,9 +265,9 @@
 
 /* Bubble Icon Text */
 .prayer-pop-icon-text {
-    font-size: var(--global-font-size);
+    font-size: var(--pp-font-size);
     font-weight: bold;
-    color: var(--global-font-color);
+    color: var(--pp-font-color);
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.2;
@@ -335,7 +353,7 @@
     width: 1em;
     height: 1em;
     line-height: 1;
-    color: var(--global-font-color);
+    color: var(--pp-font-color);
     transition: transform 0.3s ease;
     font-family: dashicons;
     font-weight: normal;
@@ -377,9 +395,9 @@
     /* Optimize modal positioning and spacing for mobile */
     #prayer-pop-form-container {
         width: calc(100vw - 40px);
-        max-width: 400px;
+        max-width: var(--pp-popup-width);
         right: 20px;
-        bottom: calc(var(--bubble-height) + var(--bubble-margin) + 10px);
+        bottom: calc(var(--pp-bubble-height) + var(--pp-bubble-margin) + 10px);
         padding: 15px;
         max-height: calc(100vh - 120px);
         overflow-y: auto;
@@ -415,36 +433,38 @@
     
     /* Optimize bubble for mobile */
     #prayer-pop-bubble {
-        bottom: calc(20px + var(--bubble-offset-y, 0px));
-        right: calc(20px + var(--bubble-offset-x, 0px));
+        bottom: calc(20px + var(--pp-bubble-offset-y, 0px));
+        right: calc(20px + var(--pp-bubble-offset-x, 0px));
     }
 
     #prayer-pop-modal[data-bubble-position="left"] #prayer-pop-form-container {
-        left: calc(20px + var(--bubble-offset-x, 0px));
+        left: calc(20px + var(--pp-bubble-offset-x, 0px));
         right: auto;
     }
 
     #prayer-pop-bubble[data-bubble-position="left"] {
-        left: calc(20px + var(--bubble-offset-x, 0px));
+        left: calc(20px + var(--pp-bubble-offset-x, 0px));
         right: auto;
     }
 }
 
-/* Form Container bottom: calc(var(--bubble-height) + var(--bubble-margin) + 20px); */
+/* Form Container bottom: calc(var(--pp-bubble-height) + var(--pp-bubble-margin) + 20px); */
 #prayer-pop-form-container {
     position: fixed;
-    right: calc(var(--bubble-margin) + var(--bubble-offset-x, 0px));
+    right: calc(var(--pp-bubble-margin) + var(--pp-bubble-offset-x, 0px));
     box-sizing: border-box;
-    width: min(360px, calc(100vw - 40px));
+    width: min(var(--pp-popup-width), calc(100vw - 32px));
     background-color: #ffffff;
-    border-radius: var(--global-border-radius);
+    border-radius: var(--pp-panel-border-radius);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: var(--global-padding);
+    padding: var(--pp-screen-inset);
     border: none;
-    font-size: var(--global-font-size);
+    font-size: var(--pp-font-size);
     opacity: 1;
     z-index: 999998;
     transition: transform 0.3s ease, opacity 0.3s ease, height 180ms cubic-bezier(.2, .8, .2, 1);
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     
 }
 
@@ -455,7 +475,7 @@
 }
 
 #prayer-pop-modal[data-bubble-position="left"] #prayer-pop-form-container {
-    left: calc(var(--bubble-margin) + var(--bubble-offset-x, 0px));
+    left: calc(var(--pp-bubble-margin) + var(--pp-bubble-offset-x, 0px));
     right: auto;
 }
 
@@ -463,12 +483,12 @@
 	--prayerpop-classic-intro-overlap: 24px;
     position: relative;
 	min-height: 0;
-    margin: calc(0px - var(--global-padding)) calc(0px - var(--global-padding)) var(--global-margin);
+	margin: calc(0px - var(--pp-screen-inset)) calc(0px - var(--pp-screen-inset)) var(--pp-margin);
 	padding-top: 16px;
 	overflow: visible;
-    border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+	border-radius: var(--pp-panel-border-radius) var(--pp-panel-border-radius) 0 0;
 	background: transparent;
-	color: var(--global-label-color, #172033);
+	color: var(--pp-label-color, #172033);
 }
 
 .prayer-pop-popup-intro--hero:not(.prayer-pop-popup-intro--has-image)::before {
@@ -476,8 +496,8 @@
 	position: absolute;
 	/* Keep the welcome card visibly overlapping the header at every text length. */
 	inset: 0 0 var(--prayerpop-classic-intro-overlap);
-	border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-	background: var(--global-bg-color);
+	border-radius: var(--pp-panel-border-radius) var(--pp-panel-border-radius) 0 0;
+	background: var(--pp-bg-color);
 }
 
 .prayer-pop-popup-intro__media::after {
@@ -495,8 +515,8 @@
 	inset: 0 0 var(--prayerpop-classic-intro-overlap);
     width: 100%;
 	overflow: hidden;
-	border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-	background: var(--global-bg-color);
+	border-radius: var(--pp-panel-border-radius) var(--pp-panel-border-radius) 0 0;
+	background: var(--pp-bg-color);
 }
 
 .prayer-pop-popup-intro__media img {
@@ -517,7 +537,7 @@
 	box-sizing: border-box;
 	align-content: end;
 	gap: 6px;
-	border: 1px solid var(--global-border-color, #dfe2e7);
+	border: 1px solid var(--pp-border-color, #dfe2e7);
 	border-radius: 14px;
 	background: #fff;
 	box-shadow: 0 10px 30px rgba(23, 32, 51, 0.1);
@@ -538,10 +558,12 @@
 	place-items: center;
 	width: 34px;
 	height: 34px;
+	flex: 0 0 34px;
 	border-radius: 50%;
-	background: var(--global-bg-color);
-	color: var(--global-font-color, #fff);
+	background: var(--pp-bg-color);
+	color: var(--pp-font-color, #fff);
 	font-size: 23px;
+	object-fit: cover;
 }
 
 .prayer-pop-popup-intro__sender > span:last-child {
@@ -553,9 +575,9 @@
 .prayer-pop-popup-intro__sender strong {
 	margin: 0;
 	color: #172033;
-	font-size: calc(var(--global-font-size) * 0.875);
+	font-size: calc(var(--pp-font-size) * 0.875);
 	font-weight: 500;
-	line-height: 1.25;
+	line-height: 1.1;
 }
 
 .prayer-pop-popup-intro__sender small {
@@ -563,7 +585,8 @@
 	align-items: center;
 	gap: 5px;
 	color: #737b89;
-	font-size: calc(var(--global-font-size) * 0.75);
+	font-size: calc(var(--pp-font-size) * 0.75);
+	line-height: 1.1;
 }
 
 .prayer-pop-popup-intro__sender small i {
@@ -571,7 +594,7 @@
 	width: 6px;
 	height: 6px;
 	border-radius: 50%;
-	background: var(--global-bg-color);
+	background: var(--pp-bg-color);
 }
 
 .prayer-pop-popup-intro--hero .prayer-pop-popup-intro__message {
@@ -581,22 +604,22 @@
 .prayer-pop-popup-intro__title {
 	margin: 0;
 	color: #172033;
-	font-family: var(--heading-font-family);
-	font-size: var(--global-font-size);
-    font-weight: var(--heading-font-weight);
+	font-family: var(--pp-heading-font-family);
+	font-size: var(--pp-font-size);
+    font-weight: var(--pp-heading-font-weight);
 	line-height: 1.35;
 }
 
 .prayer-pop-popup-intro--hero .prayer-pop-popup-intro__title {
-	font-size: 22px;
+	font-size: var(--popup-intro-title-font-size, 22px);
 }
 
 .prayer-pop-popup-intro__description {
 	max-width: none;
 	margin: 3px 0 0;
 	color: #4f5663;
-    font-family: var(--global-font-family);
-	font-size: calc(var(--global-font-size) * 0.875);
+    font-family: var(--pp-font-family);
+	font-size: var(--popup-intro-description-font-size, 18px);
     line-height: 1.45;
 }
 
@@ -604,7 +627,7 @@
 #prayer-pop-initial-options {
     display: flex;
     flex-direction: column;
-    gap: var(--global-margin);
+    gap: var(--pp-margin);
 }
 
 .prayer-pop-option-button {
@@ -614,28 +637,28 @@
 	gap: 11px;
     width: 100%;
 	padding: 11px 13px;
-	border: 1px solid var(--global-border-color, #dfe2e7);
+	border: 1px solid var(--pp-border-color, #dfe2e7);
 	border-radius: 12px;
 	background: #fff;
 	color: #172033;
-    font-family: var(--global-font-family);
-	font-size: calc(var(--global-font-size) * 0.92);
-    font-weight: var(--global-bold-font-weight);
+    font-family: var(--pp-font-family);
+	font-size: calc(var(--pp-font-size) * 0.92);
+    font-weight: var(--pp-bold-font-weight);
 	text-align: left;
     cursor: pointer;
 	transition: border-color .2s ease, background-color .2s ease, transform .2s ease;
 }
 
 .prayer-pop-option-button:hover {
-	border-color: var(--global-bg-color);
+	border-color: var(--pp-bg-color);
 	background: #f8f9fc;
-	background: color-mix(in srgb, var(--global-bg-color) 4%, #fff);
+	background: color-mix(in srgb, var(--pp-bg-color) 4%, #fff);
 	transform: translateY(-1px);
 }
 
 .prayer-pop-option-button:focus-visible {
 	outline: 3px solid rgba(39, 85, 170, 0.24);
-	outline: 3px solid color-mix(in srgb, var(--global-bg-color) 28%, transparent);
+	outline: 3px solid color-mix(in srgb, var(--pp-bg-color) 28%, transparent);
 	outline-offset: 2px;
 }
 
@@ -646,8 +669,8 @@
 	height: 34px;
 	border-radius: 50%;
 	background: #eef2fb;
-	background: color-mix(in srgb, var(--global-bg-color) 10%, #fff);
-	color: var(--global-bg-color);
+	background: color-mix(in srgb, var(--pp-bg-color) 10%, #fff);
+	color: var(--pp-bg-color);
 	font-size: 18px;
 }
 
@@ -660,50 +683,61 @@
 	font-size: 18px;
 }
 
-/* Shared Pro-style icon-only back control and aligned classic header. */
 #prayer-pop-back-button {
     display: grid;
     place-items: center;
-    width: 38px;
-    height: 38px;
+    width: var(--pp-control-size);
+    height: var(--pp-control-size);
     margin: 0 !important;
     padding: 0 !important;
-    border: 1px solid var(--global-border-color, #d5d9e0) !important;
-    border-radius: 50% !important;
-    background: var(--global-textarea-bg-color, #fff) !important;
-    color: var(--global-label-color);
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: var(--pp-control-color);
     cursor: pointer;
 }
 
 #prayer-pop-back-button:hover {
-    color: var(--global-bg-color);
-    border-color: var(--global-bg-color) !important;
+    color: var(--pp-bubble-bg-color, var(--pp-bg-color));
 }
 
 #prayer-pop-back-button:focus-visible {
-    outline: 3px solid color-mix(in srgb, var(--global-bg-color) 28%, transparent);
+    outline: 3px solid color-mix(in srgb, var(--pp-bg-color) 28%, transparent);
     outline-offset: 2px;
 }
 
 .ppm-classic-screen-header {
-    display: grid;
-    grid-template-columns: 38px minmax(0, 1fr);
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
     align-items: center;
-    gap: 14px;
-    margin: 0 0 var(--global-margin);
-    padding: 0 0 var(--global-margin);
-    border-bottom: 1px solid var(--global-border-color, #dfe2e7);
+    min-height: var(--pp-header-height);
+    margin: calc(0px - var(--pp-screen-inset)) calc(0px - var(--pp-screen-inset)) var(--pp-screen-inset);
+    padding: 8px var(--pp-header-gutter) 8px var(--pp-control-inset);
+    border-bottom: 1px solid var(--pp-border-color, #dfe2e7);
 }
 
-.ppm-classic-screen-header #prayer-pop-header,
-.ppm-classic-screen-header .prayer-pop-heading {
+.ppm-classic-screen-header #prayer-pop-header {
+    position: absolute;
+    top: 50%;
+    right: var(--pp-header-gutter);
+    left: var(--pp-header-gutter);
     margin: 0;
+    transform: translateY(-50%);
+    text-align: center;
 }
 
 .ppm-classic-screen-header .prayer-pop-heading,
 .ppm-classic-screen-header #prayer-pop-header h2 {
-	font-size: calc(var(--global-font-size) * 1.125);
-	line-height: 1.3;
+	margin: 0;
+	padding: 0;
+	font-family: inherit;
+	font-size: 15px;
+	font-weight: 700;
+    line-height: 1.25;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .ppm-classic-screen-header .dashicons {
@@ -716,72 +750,90 @@
 #prayer-pop-form {
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: var(--pp-space-md);
+    margin-top: var(--pp-space-md);
+}
+
+#prayer-pop-form .prayer-pop-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pp-space-xs);
+}
+
+#prayer-pop-form .prayer-pop-field-group #prayer-pop-name-container {
+    margin: 0;
 }
 
 /* Text Area */
 #prayer-pop-form textarea {
     width: 100%;
-    margin-bottom: var(--global-margin);
-    padding: var(--global-padding);
-    border: 1px solid var(--global-border-color);
-    border-radius: var(--global-border-radius);
-	font-size: var(--global-font-size);
-    background-color: var(--global-textarea-bg-color);
-    color: var(--global-label-color);
+    margin: 0;
+    padding: var(--pp-field-padding-y) var(--pp-field-padding-x);
+    border: 1px solid var(--pp-border-color);
+    border-radius: var(--pp-border-radius);
+	font-size: var(--pp-font-size);
+    background-color: var(--pp-textarea-bg-color);
+    color: var(--pp-label-color);
     box-sizing: border-box;
-    height: 120px;
+    height: 96px;
     resize: vertical;
 }
 
 #prayer-pop-form textarea::placeholder {
-    color: var(--global-label-color);
+    color: var(--pp-label-color);
     opacity: 0.7;
 }
 
 /* Input Field - No margin as containers handle spacing */
-#prayer-pop-form input[type="text"] {
+#prayer-pop-form input[type="text"],
+#prayer-pop-form input[type="email"] {
     width: 100%;
     margin: 0;
-    padding: var(--global-padding);
-    border: 1px solid var(--global-border-color);
-    border-radius: var(--global-border-radius);
-	font-size: var(--global-font-size);
-    background-color: var(--global-textarea-bg-color);
+    padding: var(--pp-field-padding-y) var(--pp-field-padding-x);
+    border: 1px solid var(--pp-border-color);
+    border-radius: var(--pp-border-radius);
+	font-size: var(--pp-font-size);
+    background-color: var(--pp-textarea-bg-color);
     box-sizing: border-box;
 }
 
-/* Submit Button */
-#prayer-pop-form button[type="submit"] {
+/* Submit Button
+   "Send One More" (#prayer-pop-new-request) shares this rule on purpose: it
+   repeats the same action, so it should look and feel like the same button,
+   not a secondary/outline variant. */
+#prayer-pop-form button[type="submit"],
+#prayer-pop-new-request {
     width: 100%;
-    background-color: var(--global-bg-color);
-    color: var(--global-font-color);
+    background-color: var(--pp-bg-color);
+    color: var(--pp-font-color);
     border: none;
-    border-radius: var(--global-border-radius);
-    padding: var(--global-padding);
-	font-size: var(--global-font-size);
-    font-weight: var(--global-bold-font-weight);
+    border-radius: var(--pp-border-radius);
+    padding: var(--pp-padding);
+	font-size: var(--pp-font-size);
+    font-weight: var(--pp-bold-font-weight);
     cursor: pointer;
     text-align: center;
     transition: background-color 0.3s ease;
-    margin-top: calc(var(--global-margin) / 2);
+    margin-top: 0;
 }
 
-#prayer-pop-form button[type="submit"]:hover {
-    background-color: var(--global-button-hover-color);
+#prayer-pop-form button[type="submit"]:hover,
+#prayer-pop-new-request:hover {
+    background-color: var(--pp-button-hover-color);
 }
 
 /* Success and Error Messages */
 #prayer-pop-success,
 #prayer-pop-error {
-    padding: var(--global-padding);
-    border-radius: var(--global-border-radius);
-    margin: var(--global-margin) 0;
-    font-size: var(--global-font-size);
+    padding: var(--pp-padding);
+    border-radius: var(--pp-border-radius);
+    margin: var(--pp-margin) 0;
+    font-size: var(--pp-font-size);
     text-align: left;
 }
 
 #prayer-pop-success {
+    margin-top: 0;
     background-color: #dff0d8;
     color: #3c763d;
     border: 1px solid #d6e9c6;
@@ -806,35 +858,30 @@
 
 /* Header Style */
 #prayer-pop-header {
-    margin-bottom: calc(var(--global-margin) / 2);
+    margin-bottom: var(--pp-space-2xs);
 }
 
 .prayer-pop-heading,
 #prayer-pop-header h2 {
-    font-size: var(--heading-font-size);
-    color: var(--global-label-color);
+    font-size: var(--pp-heading-font-size);
+    color: var(--pp-label-color);
     margin: 0;
     padding: 0;
-    font-weight: var(--heading-font-weight);
-    font-family: var(--heading-font-family);
+    font-weight: var(--pp-heading-font-weight);
+    font-family: var(--pp-heading-font-family);
 }
 
 /* Description Style */
 #prayer-pop-description {
-    margin-bottom: var(--global-margin);
+    margin-bottom: 0;
 }
 
 #prayer-pop-description p {
-    font-size: var(--global-font-size);
-    color: var(--global-label-color);
+    font-size: var(--pp-font-size);
+    color: var(--pp-label-color);
     margin: 0;
     padding: 0;
     line-height: 1.4;
-}
-
-#prayer-pop-form-wrapper > #prayer-pop-description p {
-	font-size: calc(var(--global-font-size) * 0.9);
-	line-height: 1.45;
 }
 
 /* Adjust form wrapper */
@@ -845,7 +892,7 @@
 
 /* Last Time Message */
 #prayer-pop-last-time {
-    margin-bottom: var(--global-margin);
+    margin-bottom: var(--pp-margin);
     padding: 2px 2px;
     background-color: transparent;
     border-radius: 0;
@@ -893,54 +940,45 @@
     display: none !important;
 }
 
-#prayer-pop-new-request,
+/* #prayer-pop-new-request itself is styled with #prayer-pop-form
+   button[type="submit"] above, so it matches Submit exactly. .prayer-pop-button
+   stays as a reusable alias of that same look for any other "repeat the
+   primary action" button. */
 .prayer-pop-button {
     width: 100%;
-    background-color: var(--global-bg-color);
-    color: var(--global-font-color);
+    background-color: var(--pp-bg-color);
+    color: var(--pp-font-color);
     border: none;
-    border-radius: var(--global-border-radius);
-    padding: var(--global-padding);
-    font-size: var(--global-font-size);
-    font-weight: var(--global-bold-font-weight);
+    border-radius: var(--pp-border-radius);
+    padding: var(--pp-padding);
+    font-size: var(--pp-font-size);
+    font-weight: var(--pp-bold-font-weight);
     cursor: pointer;
     text-align: center;
     transition: background-color 0.3s ease;
 }
 
-#prayer-pop-new-request:hover,
 .prayer-pop-button:hover {
-    background-color: #005a8c;
-}
-
-#prayer-pop-new-request {
-    background-color: transparent;
-    color: var(--global-bg-color);
-    border: 1px solid var(--global-bg-color);
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-#prayer-pop-new-request:hover {
-    background-color: color-mix(in srgb, var(--global-bg-color) 12%, transparent);
+    background-color: var(--pp-button-hover-color);
 }
 
 /* Name container - handles margin for name input */
 #prayer-pop-name-container {
-    margin-bottom: var(--global-margin);
+    margin-bottom: var(--pp-margin);
 }
 
 /* Checkbox spacing/layout must beat theme-level #id label/input rules */
 #prayer-pop-form .prayer-pop-checkbox-container {
-    margin: 0 0 var(--checkbox-margin);
+    margin: 0 0 var(--pp-checkbox-margin);
     padding: 0;
 }
 
 #prayer-pop-form .prayer-pop-checkbox-label {
     display: inline-flex;
     align-items: center;
-    gap: calc(var(--global-margin) / 2);
-    font-size: var(--global-font-size);
-    color: var(--global-label-color);
+    gap: calc(var(--pp-margin) / 2);
+    font-size: var(--pp-font-size);
+    color: var(--pp-label-color);
     cursor: pointer;
     line-height: 1.3;
     margin: 0;
@@ -955,16 +993,16 @@
     width: 1.15em;
     height: 1.15em;
     box-sizing: border-box;
-    border: 1px solid var(--global-border-color);
+    border: 1px solid var(--pp-border-color);
     border-radius: 4px;
-    background-color: var(--global-textarea-bg-color);
+    background-color: var(--pp-textarea-bg-color);
     -webkit-appearance: none;
     appearance: none;
 }
 
 #prayer-pop-form .prayer-pop-checkbox-label input[type="checkbox"]:checked {
-    border-color: var(--global-bg-color);
-    background-color: var(--global-bg-color);
+    border-color: var(--pp-bg-color);
+    background-color: var(--pp-bg-color);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3 8 3 3 7-7' fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.2'/%3E%3C/svg%3E");
     background-position: center;
     background-repeat: no-repeat;
@@ -972,20 +1010,20 @@
 }
 
 #prayer-pop-form :where(textarea, input[type="text"], input[type="email"]):focus-visible {
-    border-color: var(--global-bg-color);
-    outline: 3px solid color-mix(in srgb, var(--global-bg-color) 24%, transparent);
+    border-color: var(--pp-bg-color);
+    outline: 3px solid color-mix(in srgb, var(--pp-bg-color) 24%, transparent);
     outline-offset: 1px;
 }
 
 #prayer-pop-form .prayer-pop-checkbox-label input[type="checkbox"]:focus-visible {
-    outline: 3px solid color-mix(in srgb, var(--global-bg-color) 28%, transparent);
+    outline: 3px solid color-mix(in srgb, var(--pp-bg-color) 28%, transparent);
     outline-offset: 2px;
 }
 
 #prayer-pop-form button[type="submit"]:focus-visible,
 #prayer-pop-new-request:focus-visible,
 .prayer-pop-button:focus-visible {
-    outline: 3px solid color-mix(in srgb, var(--global-bg-color) 32%, transparent);
+    outline: 3px solid color-mix(in srgb, var(--pp-bg-color) 32%, transparent);
     outline-offset: 3px;
 }
 
@@ -1009,18 +1047,32 @@
 #prayer-pop-header h2 {
     margin: 0;
     padding: 0;
-    color: var(--global-label-color);
-    font-family: var(--heading-font-family);
-    font-size: var(--heading-font-size);
-    font-weight: var(--heading-font-weight);
+    color: var(--pp-label-color);
+    font-family: var(--pp-heading-font-family);
+    font-size: var(--pp-heading-font-size);
+    font-weight: var(--pp-heading-font-weight);
 }
 
 #prayer-pop-bubble {
-    background-color: var(--bubble-bg-color, var(--global-bg-color));
-    border-radius: var(--bubble-border-radius, var(--global-border-radius));
+    background-color: var(--pp-bubble-bg-color, var(--pp-bg-color));
+    border-radius: var(--pp-bubble-border-radius, var(--pp-border-radius));
     transform: scale(var(--prayerpop-bubble-scale, 1));
 }
 
 #prayer-pop-bubble:hover {
     transform: scale(var(--prayerpop-bubble-hover-scale, 1.03));
+}
+
+/* Visually hidden labels for the popup form fields. The fields show
+   placeholders, which are not a reliable labeling mechanism on their own. */
+.prayer-pop-screen-reader-text {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }

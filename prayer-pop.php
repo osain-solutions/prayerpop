@@ -4,7 +4,7 @@
  * Plugin URI: https://prayerpop.eu/
  * Update URI: https://wordpress.org/plugins/prayerpop/
  * Description: Receive prayer requests and testimonies, with simple visitor chat, WordPress inboxes, and email notifications.
- * Version: 1.6.6
+ * Version: 1.7.0
  * Author: Ösain OÜ
  * Author URI: https://osain.ee/
  * Text Domain: prayerpop
@@ -20,9 +20,48 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
+/**
+ * Block activating PrayerPop while PrayerPop Pro is active.
+ *
+ * @return void
+ */
+function prayer_pop_free_block_activation_when_pro_active() {
+	$message = __( 'PrayerPop cannot be activated while PrayerPop Pro is active. Please deactivate PrayerPop Pro first.', 'prayerpop' );
+
+	if ( defined( 'WP_CLI' ) && WP_CLI && class_exists( 'WP_CLI' ) ) {
+		WP_CLI::error( $message );
+	}
+
+	wp_die(
+		esc_html( $message ),
+		esc_html__( 'PrayerPop activation blocked', 'prayerpop' ),
+		array(
+			'back_link' => true,
+			'response'  => 409,
+		)
+	);
+}
+
+// Prevent dual-edition loading: if Pro is already active, do not declare any
+// of this edition's functions/classes at all (avoids "Cannot redeclare"
+// fatals when something activates this plugin without going through the
+// wp-admin Plugins screen — WP-CLI, REST, or another plugin calling
+// activate_plugin() directly, none of which trigger admin-only hooks).
+$prayerpop_other_plugin = 'prayerpop-pro/prayer-pop.php';
+$prayerpop_other_active = in_array( $prayerpop_other_plugin, (array) get_option( 'active_plugins', array() ), true );
+if ( is_multisite() ) {
+	$prayerpop_network_active = (array) get_site_option( 'active_sitewide_plugins', array() );
+	$prayerpop_other_active   = $prayerpop_other_active || isset( $prayerpop_network_active[ $prayerpop_other_plugin ] );
+}
+
+if ( $prayerpop_other_active ) {
+	register_activation_hook( __FILE__, 'prayer_pop_free_block_activation_when_pro_active' );
+	return;
+}
+
 // Define plugin constants
 if ( ! defined( 'PRAYERPOP_VERSION' ) ) {
-	define( 'PRAYERPOP_VERSION', '1.6.6' );
+	define( 'PRAYERPOP_VERSION', '1.7.0' );
 }
 if ( ! defined( 'PRAYERPOP_PLUGIN_DIR' ) ) {
 	define( 'PRAYERPOP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -423,9 +462,9 @@ function prayer_pop_plugins_api( $result, $action, $args ) {
 			'high' => PRAYERPOP_PLUGIN_URL . 'assets/images/prayer-pop-cover.jpg',
 		),
 		'icons'         => array(
-			'1x'  => PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-favicon-512x512.png',
-			'2x'  => PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-favicon-512x512.png',
-			'svg' => PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-icon.svg',
+			'1x'  => PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-plugin-icon-128x128.png',
+			'2x'  => PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-plugin-icon-256x256.png',
+			'svg' => PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-plugin-icon.svg',
 		),
 	);
 }

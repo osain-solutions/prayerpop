@@ -19,7 +19,7 @@ class Prayer_Pop_Ajax {
 	 *
 	 * @since 1.5.1
 	 */
-	const MAX_MESSAGE_LENGTH = 5000;
+	const MAX_MESSAGE_LENGTH = 10000;
 
 	/**
 	 * Maximum name length in characters.
@@ -79,7 +79,7 @@ class Prayer_Pop_Ajax {
 		$raw_data = isset( $_POST['data'] ) ? sanitize_textarea_field( wp_unslash( $_POST['data'] ) ) : '';
 		$data     = is_string( $raw_data ) ? $raw_data : '';
 		if ( '' === $data ) {
-			wp_send_json_error( esc_html__( 'Invalid form data.', 'prayerpop' ) );
+			$this->send_submission_error( 'form_data_empty', esc_html__( 'Invalid form data.', 'prayerpop' ) );
 		}
 		parse_str( $data, $form_data );
 
@@ -89,7 +89,7 @@ class Prayer_Pop_Ajax {
 
 		// If honeypot field is filled, treat as spam and fail silently with a generic error.
 		if ( '' !== $honeypot ) {
-			wp_send_json_error( esc_html__( 'There was an error processing your request.', 'prayerpop' ) );
+			$this->send_submission_error( 'spam_honeypot', esc_html__( 'There was an error processing your request.', 'prayerpop' ) );
 		}
 
 		// Time-based spam check: submissions that arrive too quickly after the form is shown.
@@ -100,13 +100,14 @@ class Prayer_Pop_Ajax {
 
 			// Only treat as spam if the difference is non-negative and very small.
 			if ( $delta >= 0 && $delta < self::MIN_SUBMISSION_TIME ) {
-				wp_send_json_error( esc_html__( 'There was an error processing your request.', 'prayerpop' ) );
+				$this->send_submission_error( 'spam_too_fast', esc_html__( 'There was an error processing your request.', 'prayerpop' ) );
 			}
 		}
 
 		$rate_limit = $this->register_submission_attempt_and_check_limit();
 		if ( ! empty( $rate_limit['limited'] ) ) {
-			wp_send_json_error(
+			$this->send_submission_error(
+				'rate_limited',
 				Prayer_Pop_Defaults::get_text(
 					'text_error_rate_limit',
 					esc_html__( 'Too many submissions right now. Please wait a few minutes and try again.', 'prayerpop' )
@@ -125,23 +126,24 @@ class Prayer_Pop_Ajax {
 		$ready_to_share = '0';
 
 		if ( ! in_array( $type, array( 'prayer_request', 'testimony' ), true ) ) {
-			wp_send_json_error( esc_html__( 'Invalid submission type.', 'prayerpop' ) );
+			$this->send_submission_error( 'invalid_submission_type', esc_html__( 'Invalid submission type.', 'prayerpop' ) );
 		}
 
 		$settings = Prayer_Pop_Defaults::get_settings();
 		$prayer_enabled = ! array_key_exists( 'show_prayer_request_button', $settings ) || ! empty( $settings['show_prayer_request_button'] );
 		$testimony_enabled = ! array_key_exists( 'show_testimony_button', $settings ) || ! empty( $settings['show_testimony_button'] );
 		if ( ( 'prayer_request' === $type && ! $prayer_enabled ) || ( 'testimony' === $type && ! $testimony_enabled ) ) {
-			wp_send_json_error( esc_html__( 'This submission type is not available.', 'prayerpop' ) );
+			$this->send_submission_error( 'submission_type_unavailable', esc_html__( 'This submission type is not available.', 'prayerpop' ) );
 		}
 
 		if ( empty( trim( $message ) ) ) {
-			wp_send_json_error( esc_html__( 'Message cannot be empty.', 'prayerpop' ) );
+			$this->send_submission_error( 'message_empty', esc_html__( 'Message cannot be empty.', 'prayerpop' ) );
 		}
 
 		// Limit message length to prevent abuse
 		if ( $this->utf8_strlen( $message ) > self::MAX_MESSAGE_LENGTH ) {
-			wp_send_json_error(
+			$this->send_submission_error(
+				'message_too_long',
 				sprintf(
 					/* translators: %d: maximum number of allowed characters. */
 					esc_html__( 'Message is too long. Maximum %d characters allowed.', 'prayerpop' ),
@@ -152,7 +154,8 @@ class Prayer_Pop_Ajax {
 
 		// Limit name length for display consistency for non-anonymous names.
 		if ( ! $is_anonymous && $this->utf8_strlen( $name ) > self::MAX_NAME_LENGTH ) {
-			wp_send_json_error(
+			$this->send_submission_error(
+				'name_too_long',
 				sprintf(
 					/* translators: %d: maximum number of allowed characters. */
 					esc_html__( 'Name is too long. Maximum %d characters allowed.', 'prayerpop' ),
@@ -164,7 +167,7 @@ class Prayer_Pop_Ajax {
 		if ( ! $is_anonymous ) {
 			$name_validation_error = $this->validate_submission_name( $name );
 			if ( is_wp_error( $name_validation_error ) ) {
-				wp_send_json_error( $name_validation_error->get_error_message() );
+				$this->send_submission_error( 'invalid_name', $name_validation_error->get_error_message() );
 			}
 		}
 
@@ -200,7 +203,7 @@ class Prayer_Pop_Ajax {
 		// Do not continue with metadata, notifications, or a success response
 		// unless WordPress created a real post.
 		if ( is_wp_error( $post_id ) || (int) $post_id <= 0 ) {
-			wp_send_json_error( esc_html__( 'Failed to submit your request. Please try again.', 'prayerpop' ) );
+			$this->send_submission_error( 'submit_failed', esc_html__( 'Failed to submit your request. Please try again.', 'prayerpop' ) );
 		}
 
 		// Store additional meta data
@@ -462,6 +465,21 @@ class Prayer_Pop_Ajax {
 		if ( is_wp_error( $result ) ) {
 			error_log( 'PrayerPop: immediate notification queued for recovery after scheduling failure: ' . $result->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 		}
+	}
+
+	/**
+	 * Send a JSON error for a submission failure, carrying a stable error
+	 * code alongside the translated message. The front end always displays
+	 * the same generic, translated sentence to visitors and appends the
+	 * code for support/debugging, so this message never needs its own
+	 * translation and the code never needs to change once shipped.
+	 *
+	 * @param string $code    Stable, untranslated identifier for this failure reason.
+	 * @param string $message Translated message (kept for logging/back-compat, not shown as-is to visitors).
+	 * @return void
+	 */
+	private function send_submission_error( $code, $message ) {
+		wp_send_json_error( array( 'code' => $code, 'message' => $message ) );
 	}
 
 	/**

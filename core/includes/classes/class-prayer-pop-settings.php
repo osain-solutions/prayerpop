@@ -42,6 +42,7 @@ class Prayer_Pop_Settings {
 		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/settings/class-prayer-pop-settings-email-template.php';
 		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/settings/class-prayer-pop-settings-style.php';
 		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/settings/class-prayer-pop-settings-text.php';
+		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/class-prayer-pop-setup-wizard.php';
 	}
 
 	/**
@@ -59,6 +60,7 @@ class Prayer_Pop_Settings {
 	 * Add WordPress hooks.
 	 */
 	private function add_hooks() {
+		Prayer_Pop_Setup_Wizard::init();
 		add_action('admin_menu', array($this, 'add_settings_page'));
 		add_action( 'admin_menu', array( $this, 'reorder_admin_menu_items' ), 999 );
 		add_action('admin_init', array($this, 'register_settings'));
@@ -68,6 +70,7 @@ class Prayer_Pop_Settings {
 		add_action('admin_footer-prayer-pop_page_prayer-pop-settings', array($this, 'render_frontend_overlay_preview'));
 		add_action('admin_notices', array($this, 'show_settings_messages'));
 		add_action('admin_post_prayer_pop_submit_feedback', array($this, 'handle_submit_feedback'));
+		add_action( 'wp_ajax_prayer_pop_send_test_email', array( $this, 'handle_send_test_email' ) );
 	}
 
 	/**
@@ -288,6 +291,10 @@ class Prayer_Pop_Settings {
 			array(
 				'activeTab' => $active_tab,
 				'nonce' => wp_create_nonce( 'prayer_pop_admin_actions' ),
+				'setupWizard' => array(
+					/* translators: 1: Current step number. 2: Total number of steps. */
+					'stepOfLabel' => __( 'Step %1$d of %2$d', 'prayerpop' ),
+				),
 				'textImport' => array(
 					'nonce'             => wp_create_nonce( 'prayer_pop_import_texts' ),
 					'selectFile'        => __( 'Please select a file to import.', 'prayerpop' ),
@@ -316,6 +323,11 @@ class Prayer_Pop_Settings {
 					'layout' => $layout_defaults,
 					'styleCustomization' => $style_customization_defaults,
 					'translations' => Prayer_Pop_Defaults::get_default_texts_raw(),
+				),
+				'emailTemplate' => array(
+					'sendLabel'     => __( 'Send Test Email', 'prayerpop' ),
+					'sendingLabel'  => __( 'Sending...', 'prayerpop' ),
+					'failedMessage' => __( 'Failed to send test email.', 'prayerpop' ),
 				),
 			)
 		);
@@ -456,11 +468,11 @@ class Prayer_Pop_Settings {
 							</tr>
 							<tr>
 								<th scope="row"><label id="prayer-pop-feedback-description-label" for="prayer-pop-feedback-description"><?php esc_html_e( 'What happened? What did you expect?', 'prayerpop' ); ?></label></th>
-								<td><textarea id="prayer-pop-feedback-description" name="feedback_description" rows="8" class="large-text" placeholder="<?php esc_attr_e( 'Describe the issue or the feature you have in mind.', 'prayerpop' ); ?>" required></textarea></td>
+								<td><textarea id="prayer-pop-feedback-description" name="feedback_description" rows="3" class="large-text" placeholder="<?php esc_attr_e( 'Describe the issue or the feature you have in mind.', 'prayerpop' ); ?>" required></textarea></td>
 							</tr>
 							<tr id="prayer-pop-feedback-steps-row">
 								<th scope="row"><label for="prayer-pop-feedback-steps"><?php esc_html_e( 'Steps to reproduce (bug only)', 'prayerpop' ); ?></label></th>
-								<td><textarea id="prayer-pop-feedback-steps" name="feedback_steps" rows="6" class="large-text" placeholder="<?php esc_attr_e( 'One step per line', 'prayerpop' ); ?>"></textarea></td>
+								<td><textarea id="prayer-pop-feedback-steps" name="feedback_steps" rows="2" class="large-text" placeholder="<?php esc_attr_e( 'One step per line', 'prayerpop' ); ?>"></textarea></td>
 							</tr>
 						</tbody>
 					</table>
@@ -480,7 +492,9 @@ class Prayer_Pop_Settings {
 
 					<?php
 					$this->render_admin_footer_row(
-						'<button type="submit" class="button button-primary button-large">' . esc_html__( 'Send', 'prayerpop' ) . '</button>'
+						'<button type="submit" class="button button-primary button-large">' . esc_html__( 'Send', 'prayerpop' ) . '</button>',
+						'',
+						'feedback'
 					);
 					?>
 				</form>
@@ -521,6 +535,14 @@ class Prayer_Pop_Settings {
 		?>
 		<div class="wrap">
 			<h1><?php esc_html_e('PrayerPop Settings', 'prayerpop' ); ?></h1>
+
+			<?php if ( ! $show_welcome_modal && ! get_option( Prayer_Pop_Setup_Wizard::COMPLETED_OPTION, false ) ) : ?>
+				<div class="prayer-pop-doc-note is-tip">
+					<strong><?php esc_html_e( 'Setup isn’t finished yet.', 'prayerpop' ); ?></strong>
+					<?php esc_html_e( 'Pick up where you left off with the guided setup.', 'prayerpop' ); ?>
+					<a href="<?php echo esc_url( add_query_arg( array( 'page' => 'prayer-pop-settings', 'tab' => 'popup', 'prayer_pop_welcome' => '1' ), admin_url( 'admin.php' ) ) ); ?>"><?php esc_html_e( 'Resume setup guide', 'prayerpop' ); ?></a>
+				</div>
+			<?php endif; ?>
 
 			<?php settings_errors(); ?>
 
@@ -583,14 +605,14 @@ class Prayer_Pop_Settings {
 				if ( 'documentation' === $active_tab ) {
 					$footer_classes .= ' is-hidden';
 				}
-				$this->render_admin_footer_row( get_submit_button( null, 'primary', 'submit', false ), $footer_classes );
+				$this->render_admin_footer_row( get_submit_button( null, 'primary', 'submit', false ), $footer_classes, 'settings' );
 				?>
 				</form>
 					</div>
 					<?php $this->render_feature_rail(); ?>
 				</div>
 
-			<?php $this->render_welcome_modal( $show_welcome_modal ); ?>
+			<?php Prayer_Pop_Setup_Wizard::render( $show_welcome_modal ); ?>
 		</div>
 		<?php
 		}
@@ -613,10 +635,10 @@ class Prayer_Pop_Settings {
 				$this->render_field_card( __( 'Submission alerts', 'prayerpop' ), __( 'Set recipients and delivery timing for new prayer request alerts.', 'prayerpop' ), 'prayer-pop-settings-notifications', 'prayer_pop_notification_section', array( 'enable_notifications', 'notification_email', 'notification_frequency', 'notification_time', 'notification_day' ) );
 				?>
 				<section class="prayer-pop-subsection-card prayer-pop-email-template-card">
-					<h3 class="prayer-pop-subsection-title"><span class="dashicons dashicons-media-text" aria-hidden="true"></span><?php esc_html_e( 'Submission email template', 'prayerpop' ); ?></h3>
-					<p class="prayer-pop-subsection-description"><?php esc_html_e( 'Set the subject and body, then send a test to the submission-alert recipient.', 'prayerpop' ); ?></p>
-					<?php do_settings_sections( 'prayer-pop-settings-email-template' ); ?>
-					<?php $this->email_template_settings->render_section_description(); ?>
+					<h3 class="prayer-pop-subsection-title"><span class="dashicons dashicons-media-text" aria-hidden="true"></span><?php esc_html_e( 'Email wording', 'prayerpop' ); ?></h3>
+					<p class="prayer-pop-subsection-description"><?php esc_html_e( 'Translate email text. PrayerPop keeps email layout and links safe.', 'prayerpop' ); ?></p>
+					<?php $this->text_settings->render_export_import_section( 'email' ); ?>
+					<?php $this->text_settings->render_email_tab_content(); ?>
 				</section>
 				<details class="prayer-pop-advanced-panel"><summary><?php esc_html_e( 'Advanced diagnostics', 'prayerpop' ); ?></summary><div class="prayer-pop-advanced-panel__content"><table class="form-table" role="presentation"><?php $this->render_settings_field_rows( 'prayer-pop-settings-notifications', 'prayer_pop_notification_debug_section', array( 'show_debug_info' ) ); ?></table></div></details>
 				<?php
@@ -791,7 +813,7 @@ class Prayer_Pop_Settings {
 	 * @param string $variant full|icon.
 	 * @return string
 	 */
-	private function get_logo_markup( $variant = 'full' ) {
+	public static function get_logo_markup( $variant = 'full' ) {
 		$file_name = ( 'icon' === $variant ) ? 'prayer-pop-logo-icon.svg' : 'prayer-pop-logo-full.svg';
 		$path      = PRAYERPOP_PLUGIN_DIR . 'assets/images/' . $file_name;
 
@@ -814,9 +836,9 @@ class Prayer_Pop_Settings {
 		$svg = preg_replace( '/\s+xml:space="[^"]*"/i', '', $svg );
 		$svg = preg_replace( '/\s+(width|height)="100%"/i', '', $svg );
 		$svg = preg_replace( '/\sid="[^"]*"/i', '', $svg );
-		$svg = $this->normalize_svg_style_attributes( $svg );
+		$svg = self::normalize_svg_style_attributes( $svg );
 
-		$svg = wp_kses( $svg, $this->get_svg_allowed_html() );
+		$svg = wp_kses( $svg, self::get_svg_allowed_html() );
 		if ( '' === trim( $svg ) ) {
 			return '';
 		}
@@ -835,7 +857,7 @@ class Prayer_Pop_Settings {
 	 *
 	 * @return array<string, array<string, bool>>
 	 */
-	private function get_svg_allowed_html() {
+	private static function get_svg_allowed_html() {
 		$global = array(
 			'class'              => true,
 			'fill'               => true,
@@ -939,7 +961,7 @@ class Prayer_Pop_Settings {
 	 * @param string $svg Raw svg markup.
 	 * @return string
 	 */
-	private function normalize_svg_style_attributes( $svg ) {
+	private static function normalize_svg_style_attributes( $svg ) {
 		return preg_replace_callback(
 			'/<([a-zA-Z0-9:_-]+)\b([^>]*)\sstyle="([^"]*)"([^>]*?)(\s*\/?)>/',
 			static function ( $matches ) {
@@ -984,72 +1006,6 @@ class Prayer_Pop_Settings {
 			},
 			$svg
 		);
-	}
-
-	/**
-	 * Render one-time welcome modal shown after activation.
-	 *
-	 * @param bool $is_open Whether the modal should be visible.
-	 * @return void
-	 */
-	private function render_welcome_modal( $is_open ) {
-		$modal_class = $is_open ? 'prayer-pop-welcome-modal is-open' : 'prayer-pop-welcome-modal';
-		$submissions_url = add_query_arg(
-			array(
-				'post_type' => 'prayer_request',
-			),
-			admin_url( 'edit.php' )
-		);
-		$settings_url = add_query_arg(
-			array(
-				'page' => 'prayer-pop-settings',
-				'tab'  => 'general',
-			),
-			admin_url( 'admin.php' )
-		);
-		$docs_url = add_query_arg(
-			array(
-				'page' => 'prayer-pop-settings',
-				'tab'  => 'documentation',
-			),
-			admin_url( 'admin.php' )
-		);
-		?>
-		<div id="prayer-pop-welcome-modal" class="<?php echo esc_attr( $modal_class ); ?>" role="dialog" aria-modal="true" aria-labelledby="prayer-pop-welcome-title" aria-hidden="<?php echo $is_open ? 'false' : 'true'; ?>">
-			<div class="prayer-pop-welcome-modal__backdrop"></div>
-			<div class="prayer-pop-welcome-modal__dialog">
-				<a href="<?php echo esc_url( $settings_url ); ?>" class="button-link prayer-pop-welcome-modal__close" data-welcome-close="1" aria-label="<?php esc_attr_e( 'Close welcome message', 'prayerpop' ); ?>" role="button">✕</a>
-				<div class="prayer-pop-welcome-step prayer-pop-welcome-step-onboarding">
-					<h2 id="prayer-pop-welcome-title"><?php esc_html_e( 'Welcome to PrayerPop', 'prayerpop' ); ?></h2>
-					<p><?php esc_html_e( 'PrayerPop helps your church receive prayer requests through a simple frontend bubble and review them inside WordPress admin.', 'prayerpop' ); ?></p>
-					<p><strong><?php esc_html_e( 'How it works:', 'prayerpop' ); ?></strong></p>
-					<p><?php esc_html_e( 'People submit prayer requests through the bubble on your website. Those submissions appear in WordPress admin, where your team can review them, approve or decline them, archive old items, or mark approved prayers as answered.', 'prayerpop' ); ?></p>
-					<p><strong><?php esc_html_e( 'Your next steps:', 'prayerpop' ); ?></strong></p>
-					<ol class="prayer-pop-welcome-modal__quicklist">
-						<li><strong><?php esc_html_e( 'Confirm the bubble is enabled', 'prayerpop' ); ?></strong><br><?php esc_html_e( 'Open General settings and keep Show PrayerPop Bubble turned on.', 'prayerpop' ); ?></li>
-						<li><strong><?php esc_html_e( 'Check your submissions', 'prayerpop' ); ?></strong><br><?php esc_html_e( 'Go to Admin Submissions to see incoming prayer requests and manage them.', 'prayerpop' ); ?></li>
-						<li><strong><?php esc_html_e( 'Adjust your settings', 'prayerpop' ); ?></strong><br><?php esc_html_e( 'Customize the bubble style, form text, notifications, and retention cleanup.', 'prayerpop' ); ?></li>
-					</ol>
-					<div class="prayer-pop-welcome-modal__actions">
-						<div class="prayer-pop-welcome-modal__action">
-							<a href="<?php echo esc_url( $settings_url ); ?>" class="button button-secondary"><?php esc_html_e( 'Settings & Setup', 'prayerpop' ); ?></a>
-							<p><?php esc_html_e( 'Configure bubble behavior, admin approval, style, text, notifications, and retention cleanup.', 'prayerpop' ); ?></p>
-						</div>
-						<div class="prayer-pop-welcome-modal__action">
-							<a href="<?php echo esc_url( $submissions_url ); ?>" class="button button-secondary"><?php esc_html_e( 'Admin Submissions', 'prayerpop' ); ?></a>
-							<p><?php esc_html_e( 'Review incoming prayer requests, approve or decline items, archive old items, and mark answered prayers.', 'prayerpop' ); ?></p>
-						</div>
-						<div class="prayer-pop-welcome-modal__action">
-							<a href="<?php echo esc_url( $docs_url ); ?>" class="button button-secondary"><?php esc_html_e( 'Documentation', 'prayerpop' ); ?></a>
-							<p><?php esc_html_e( 'Open practical setup guides and workflow explanations for your team.', 'prayerpop' ); ?></p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<?php
-		?>
-		<?php
 	}
 
 	/**
@@ -1109,13 +1065,13 @@ class Prayer_Pop_Settings {
 				<h2><?php esc_html_e( 'Quick Start Guide', 'prayerpop' ); ?></h2>
 				<p><?php esc_html_e( 'PrayerPop is bubble-first. Follow these steps to collect and review prayer requests and testimonies.', 'prayerpop' ); ?></p>
 				<ol>
-					<li><?php esc_html_e( 'Open General settings and confirm Show PrayerPop Bubble is enabled.', 'prayerpop' ); ?></li>
+					<li><?php esc_html_e( 'Open Popup & Submissions settings and confirm Show PrayerPop Bubble is enabled.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Choose whether to enable PrayerPop Chat. Leave it off when you want visitors to use prayer-request submissions only.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Choose whether visitors may leave the name field empty.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Set the retention period if old approved or answered requests should be archived and later cleaned up.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'In Notifications, set your recipient email and schedule, then send a test email.', 'prayerpop' ); ?></li>
-					<li><?php esc_html_e( 'In Style, adjust the bubble color, icon, position, animation, and font.', 'prayerpop' ); ?></li>
-					<li><?php esc_html_e( 'In Text Customization, edit the visible prayer request and testimony labels and messages if needed.', 'prayerpop' ); ?></li>
+					<li><?php esc_html_e( 'In Design, adjust the bubble color, icon, position, animation, and font.', 'prayerpop' ); ?></li>
+					<li><?php esc_html_e( 'In Language & Text, edit the visible prayer request and testimony labels and messages if needed.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Visit the frontend of your site, click the bubble, and submit a test prayer request or testimony.', 'prayerpop' ); ?></li>
 					<li><?php esc_html_e( 'Open PrayerPop -> Submissions and process the test submission.', 'prayerpop' ); ?></li>
 				</ol>
@@ -1141,8 +1097,7 @@ class Prayer_Pop_Settings {
 
 			<section class="prayer-pop-doc-section" id="prayer-pop-doc-managing-submissions">
 				<h2><?php esc_html_e( 'Managing Submissions', 'prayerpop' ); ?></h2>
-				<p><?php esc_html_e( 'This is where your church team will spend most time. New submissions appear in WordPress -> Submissions.', 'prayerpop' ); ?></p>
-				<p><?php esc_html_e( 'Usually WordPress administrators handle this work in PrayerPop Free.', 'prayerpop' ); ?></p>
+				<p><?php esc_html_e( 'This is where your church team will spend most time. New submissions appear in PrayerPop -> Submissions.', 'prayerpop' ); ?></p>
 
 				<h3><?php esc_html_e( 'What happens when someone submits', 'prayerpop' ); ?></h3>
 				<ul>
@@ -1188,7 +1143,7 @@ class Prayer_Pop_Settings {
 				<h2><?php esc_html_e( 'What Each Settings Tab Does', 'prayerpop' ); ?></h2>
 				<p><?php esc_html_e( 'Use this section to find the right setting quickly. Each tab description explains what it does and when to use it.', 'prayerpop' ); ?></p>
 
-				<h3><?php esc_html_e( 'General Tab', 'prayerpop' ); ?></h3>
+				<h3><?php esc_html_e( 'Popup & Submissions Tab', 'prayerpop' ); ?></h3>
 				<p><strong><?php esc_html_e( 'What it does:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Controls the prayer request, testimony, and Chat workflow.', 'prayerpop' ); ?></p>
 				<p><strong><?php esc_html_e( 'Use it when:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'You want to show or hide the bubble, choose submissions only or Chat, or allow anonymous names.', 'prayerpop' ); ?></p>
 				<ul>
@@ -1197,7 +1152,6 @@ class Prayer_Pop_Settings {
 					<li><strong><?php esc_html_e( 'Enable PrayerPop Chat:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Lets visitors start Chat conversations. Turn it off to offer only the enabled submission forms. Existing Chat records remain stored until you delete them or the Chat retention rule removes them.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Anonymous submissions:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Allows visitors to leave the name field empty.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Admin review:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Every request starts in Pending Action for review.', 'prayerpop' ); ?></li>
-					<li><strong><?php esc_html_e( 'Retention period:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Older approved/answered submissions move to archive first. Later, archived submissions can be auto-deleted based on this time window.', 'prayerpop' ); ?></li>
 				</ul>
 
 				<h3><?php esc_html_e( 'Notifications', 'prayerpop' ); ?></h3>
@@ -1210,11 +1164,11 @@ class Prayer_Pop_Settings {
 					<li><?php esc_html_e( 'Daily and weekly alerts run through WordPress cron. On a low-traffic site, ask your host or developer to run WordPress cron from the server so scheduled alerts run on time.', 'prayerpop' ); ?></li>
 				</ul>
 
-				<h3><?php esc_html_e( 'Style Tab', 'prayerpop' ); ?></h3>
+				<h3><?php esc_html_e( 'Design Tab', 'prayerpop' ); ?></h3>
 				<p><strong><?php esc_html_e( 'What it does:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Controls how PrayerPop looks on your website.', 'prayerpop' ); ?></p>
 				<p><strong><?php esc_html_e( 'Use it when:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'You want to adjust colors, typography, bubble design, icon, position, animation, and spacing.', 'prayerpop' ); ?></p>
 
-				<h3><?php esc_html_e( 'Text Customization Tab', 'prayerpop' ); ?></h3>
+				<h3><?php esc_html_e( 'Language & Text Tab', 'prayerpop' ); ?></h3>
 				<p><strong><?php esc_html_e( 'What it does:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Lets you rewrite visible prayer request and testimony form text, labels, and messages.', 'prayerpop' ); ?></p>
 				<p><strong><?php esc_html_e( 'Use it when:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'You want your own tone, wording, or single-language translation.', 'prayerpop' ); ?></p>
 				<ol>
@@ -1307,7 +1261,7 @@ class Prayer_Pop_Settings {
 	 * @param string $classes      Optional extra classes.
 	 * @return void
 	 */
-	private function render_admin_footer_row( $actions_html = '', $classes = '' ) {
+	private function render_admin_footer_row( $actions_html = '', $classes = '', $verse_key = '' ) {
 		$row_classes = trim( 'prayer-pop-save-row ' . $classes );
 		$allowed_actions_html = array(
 			'button' => array(
@@ -1334,6 +1288,7 @@ class Prayer_Pop_Settings {
 			<div class="prayer-pop-save-row__actions">
 				<?php echo wp_kses( $actions_html, $allowed_actions_html ); ?>
 			</div>
+			<?php Prayer_Pop_Defaults::render_admin_verse_signature( $verse_key ); ?>
 			<?php $this->render_brand_footer_logo(); ?>
 		</div>
 		<?php
@@ -1478,6 +1433,55 @@ class Prayer_Pop_Settings {
 			)
 		);
 		exit;
+	}
+
+	/**
+	 * Handle the "Send Test Email" action on the submission email template.
+	 *
+	 * @return void
+	 */
+	public function handle_send_test_email() {
+		check_ajax_referer( 'prayer_pop_admin_actions', '_wpnonce' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( esc_html__( 'Permission denied.', 'prayerpop' ) );
+		}
+
+		$recipient      = Prayer_Pop_Settings_Notifications::get_notification_recipient();
+		if ( '' === $recipient ) {
+			wp_send_json_error( esc_html__( 'Please enter a valid recipient email.', 'prayerpop' ) );
+		}
+
+		$subject = Prayer_Pop_Defaults::get_email_text( 'text_email_submission_subject', esc_html__( 'Test PrayerPop Email', 'prayerpop' ) );
+		$body    = Prayer_Pop_Defaults::get_email_text( 'text_email_submission_body', esc_html__( 'This is a test email from PrayerPop. If you received this, email notifications are working!', 'prayerpop' ) );
+
+		// Replace placeholders with test data.
+		$post_counts   = wp_count_posts( 'prayer_request' );
+		$pending_count = isset( $post_counts->pending ) ? absint( $post_counts->pending ) : 0;
+		$placeholders  = array(
+			'{type}'          => __( 'Test', 'prayerpop' ),
+			'{name}'          => __( 'Admin', 'prayerpop' ),
+			'{message}'       => __( 'This is a test message from PrayerPop.', 'prayerpop' ),
+			'{pending_count}' => $pending_count,
+			'{admin_url}'     => admin_url( 'edit.php?post_type=prayer_request' ),
+			'{site_url}'      => home_url(),
+			'{site_name}'     => wp_strip_all_tags( get_bloginfo( 'name' ) ),
+		);
+		$subject = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $subject );
+		$body    = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $body );
+
+		$sent = wp_mail( $recipient, $subject, $body );
+
+		if ( $sent ) {
+			wp_send_json_success(
+				sprintf(
+					/* translators: %s: destination email address */
+					esc_html__( 'Test email sent to: %s', 'prayerpop' ),
+					esc_html( $recipient )
+				)
+			);
+		} else {
+			wp_send_json_error( esc_html__( 'Failed to send test email.', 'prayerpop' ) );
+		}
 	}
 
 	/**

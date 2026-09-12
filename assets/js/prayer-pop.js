@@ -133,7 +133,17 @@ jQuery(document).ready(function($) {
 
         return {betweenHeights: betweenHeights};
     }());
-    var lastTimeInterval;
+    var lastTimeInterval = null;
+
+    // One owner for the "last submission" minute timer. Close and the timer
+    // creator used to reference different variables, leaving a hidden popup
+    // updating every minute.
+    function stopLastTimeInterval() {
+        if (lastTimeInterval) {
+            clearInterval(lastTimeInterval);
+            lastTimeInterval = null;
+        }
+    }
     
     function keepFirstById(id) {
         var $elements = $('#' + id);
@@ -246,18 +256,18 @@ jQuery(document).ready(function($) {
         var $moduleContainer = $moduleAnchor.closest('.prayerpop_bubble_module__inner');
         if ($moduleContainer.length && window.getComputedStyle) {
             var moduleStyles = window.getComputedStyle($moduleContainer.get(0));
-            var moduleGap = moduleStyles.getPropertyValue('--global-margin');
-            var moduleCheckboxGap = moduleStyles.getPropertyValue('--checkbox-margin');
+            var moduleGap = moduleStyles.getPropertyValue('--pp-margin');
+            var moduleCheckboxGap = moduleStyles.getPropertyValue('--pp-checkbox-margin');
             if (moduleGap) {
                 moduleGap = String(moduleGap).trim();
                 if (moduleGap) {
-                    $modalElement.get(0).style.setProperty('--global-margin', moduleGap);
+                    $modalElement.get(0).style.setProperty('--pp-margin', moduleGap);
                 }
             }
             if (moduleCheckboxGap) {
                 moduleCheckboxGap = String(moduleCheckboxGap).trim();
                 if (moduleCheckboxGap) {
-                    $modalElement.get(0).style.setProperty('--checkbox-margin', moduleCheckboxGap);
+                    $modalElement.get(0).style.setProperty('--pp-checkbox-margin', moduleCheckboxGap);
                 }
             }
         }
@@ -616,10 +626,7 @@ jQuery(document).ready(function($) {
             $('#prayer-pop-header').show();
             $('#prayer-pop-description').show();
             $('#prayer-pop-last-time').hide().empty();
-            if (lastTimeInterval) {
-                clearInterval(lastTimeInterval);
-                lastTimeInterval = null;
-            }
+            stopLastTimeInterval();
             resetPopupFormState('');
             $modalElement.attr('aria-hidden', 'true');
             $bubbleElement.attr('aria-expanded', 'false');
@@ -726,10 +733,10 @@ jQuery(document).ready(function($) {
 
     // Function to update button styles
     function updateButtonStyles() {
-        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--global-bg-color').trim();
-        const fontColor = getComputedStyle(document.documentElement).getPropertyValue('--global-font-color').trim();
-        const buttonHoverColor = getComputedStyle(document.documentElement).getPropertyValue('--global-button-hover-color').trim();
-        const borderRadius = getComputedStyle(document.documentElement).getPropertyValue('--global-border-radius').trim();
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--pp-bg-color').trim();
+        const fontColor = getComputedStyle(document.documentElement).getPropertyValue('--pp-font-color').trim();
+        const buttonHoverColor = getComputedStyle(document.documentElement).getPropertyValue('--pp-button-hover-color').trim();
+        const borderRadius = getComputedStyle(document.documentElement).getPropertyValue('--pp-border-radius').trim();
 
         const buttonStyles = {
             'background-color': bgColor,
@@ -739,26 +746,14 @@ jQuery(document).ready(function($) {
             'transition': 'background-color 0.3s ease'
         };
 
-        const newRequestStyles = {
-            'background-color': 'transparent',
-            'color': bgColor,
-            'border': '1px solid ' + bgColor,
-            'border-radius': borderRadius,
-            'transition': 'background-color 0.3s ease, color 0.3s ease'
-        };
-
-        $('#prayer-pop-form button[type="submit"], .prayer-pop-button').not('#prayer-pop-new-request').css(buttonStyles)
+        // #prayer-pop-new-request ("Send One More") repeats the same action as
+        // Submit, so it gets the exact same styling and hover behavior here
+        // too, not a separate outline treatment.
+        $('#prayer-pop-form button[type="submit"], #prayer-pop-new-request, .prayer-pop-button').css(buttonStyles)
         .off('mouseenter mouseleave')
         .hover(
             function() { $(this).css('background-color', buttonHoverColor); },
             function() { $(this).css('background-color', bgColor); }
-        );
-
-        $('#prayer-pop-new-request').css(newRequestStyles)
-        .off('mouseenter mouseleave')
-        .hover(
-            function() { $(this).css('background-color', 'color-mix(in srgb, ' + bgColor + ' 12%, transparent)'); },
-            function() { $(this).css('background-color', 'transparent'); }
         );
     }
 
@@ -796,7 +791,7 @@ jQuery(document).ready(function($) {
         var $form = $(this);
         var $nameInput = $('#prayer-pop-name');
         var $submitButton = $form.find('button[type="submit"]');
-        var type = $('input[name="prayer_pop_type"]').val();
+        var type = $form.find('input[name="prayer_pop_type"]').val();
         var originalButtonText = $submitButton.data('original-label') || $.trim($submitButton.text());
         var submittingText = (window.prayerPopConfig.messages && window.prayerPopConfig.messages.submitting)
             ? window.prayerPopConfig.messages.submitting
@@ -846,7 +841,11 @@ jQuery(document).ready(function($) {
                     $('#prayer-pop-header').hide();
                     $('#prayer-pop-description').hide();
                     $('#prayer-pop-last-time').hide();
-                    
+                    // updateLastTime() above just started a 1-minute refresh interval
+                    // for the form view; stop it here or it re-shows the "last
+                    // submission" line on top of this success screen a minute later.
+                    stopLastTimeInterval();
+
                     // Show success message
                     var typeConfig = getPopupTypeConfig(type);
                     var successMessage = (response.data && response.data.message) || (typeConfig && typeConfig.successMessage) || window.prayerPopConfig.messages.success;
@@ -861,9 +860,11 @@ jQuery(document).ready(function($) {
                         );
                     }
                 } else {
-                    var errorMessage = (response && typeof response.data === 'string' && response.data.trim() !== '')
-                        ? response.data
-                        : window.prayerPopConfig.messages.error;
+                    var errorMessage = window.prayerPopConfig.messages.error;
+                    var errorCode = response && response.data && response.data.code;
+                    if (errorCode) {
+                        errorMessage += ' (Ref: ' + errorCode + ')';
+                    }
                     $('#prayer-pop-error').text(errorMessage).show();
                 }
                 
@@ -947,10 +948,8 @@ jQuery(document).ready(function($) {
         }).show();
 
         // Update every minute
-        if (window.lastTimeInterval) {
-            clearInterval(window.lastTimeInterval);
-        }
-        window.lastTimeInterval = setInterval(function() {
+        stopLastTimeInterval();
+        lastTimeInterval = setInterval(function() {
             updateLastTime(optionType);
         }, 60000);
     }

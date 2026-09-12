@@ -94,12 +94,20 @@ class Prayer_Pop_Settings_Notifications {
 	 * Sanitize settings.
 	 */
 	public function sanitize_settings( $input ) {
+		$existing  = get_option( 'prayer_pop_notification_settings', array() );
+		$existing  = is_array( $existing ) ? $existing : array();
+		$reset_action = isset( $_POST['prayer_pop_reset_action'] )
+			? sanitize_key( wp_unslash( $_POST['prayer_pop_reset_action'] ) )
+			: '';
+		if ( 'translations' === $reset_action ) {
+			return $existing;
+		}
+
 		if ( is_array( $input ) ) {
 			$input = wp_unslash( $input );
 		}
 		$input     = is_array( $input ) ? $input : array();
-		$existing  = get_option( 'prayer_pop_notification_settings', array() );
-		$sanitized = is_array( $existing ) ? $existing : array();
+		$sanitized = $existing;
 		$sanitized['enable_notifications'] = isset( $input['enable_notifications'] ) ? 1 : 0;
 
 		// Disabled form controls are not submitted. Preserve their configured values
@@ -109,15 +117,6 @@ class Prayer_Pop_Settings_Notifications {
 		}
 
 		$sanitized['notification_email'] = isset( $input['notification_email'] ) ? sanitize_email( $input['notification_email'] ) : '';
-		if ( ! empty( $sanitized['notification_emails'] ) && is_email( $sanitized['notification_email'] ) ) {
-			$recipients = array_values( array_filter( array_map( 'sanitize_email', preg_split( '/[\s,;]+/', (string) $sanitized['notification_emails'] ) ) ) );
-			if ( empty( $recipients ) ) {
-				$recipients[] = $sanitized['notification_email'];
-			} else {
-				$recipients[0] = $sanitized['notification_email'];
-			}
-			$sanitized['notification_emails'] = implode( "\n", array_unique( $recipients ) );
-		}
 		$allowed_frequencies = array( 'immediately', 'daily', 'weekly' );
 		$sanitized['notification_frequency'] = ( isset( $input['notification_frequency'] ) && in_array( $input['notification_frequency'], $allowed_frequencies, true ) ) ? $input['notification_frequency'] : 'immediately';
 		$time = isset( $input['notification_time'] ) ? sanitize_text_field( $input['notification_time'] ) : '08:00';
@@ -145,6 +144,28 @@ class Prayer_Pop_Settings_Notifications {
 		echo '</label>';
 		echo '<p class="description">' . esc_html__('Enable email notifications for new prayer requests', 'prayerpop' ) . '</p>';
 		echo '</div>';
+	}
+
+	/**
+	 * Resolve the single notification recipient from settings, falling back to the site admin email.
+	 *
+	 * PrayerPop Free supports one notification recipient; multiple recipients are a Pro feature.
+	 *
+	 * @param array|null $options Settings array.
+	 * @return string Validated email address, or an empty string if none is available.
+	 */
+	public static function get_notification_recipient( $options = null ) {
+		if ( ! is_array( $options ) ) {
+			$options = get_option( 'prayer_pop_notification_settings', array() );
+		}
+
+		$email = isset( $options['notification_email'] ) ? sanitize_email( $options['notification_email'] ) : '';
+		if ( $email && is_email( $email ) ) {
+			return $email;
+		}
+
+		$fallback = sanitize_email( get_option( 'admin_email' ) );
+		return is_email( $fallback ) ? $fallback : '';
 	}
 
 	/**

@@ -214,6 +214,14 @@
         if (target) window.setTimeout(function () { target.focus(); }, 30);
     }
 
+    function syncComposerSendState() {
+        var form = panel.querySelector('.ppfc-composer');
+        var textarea = form && form.querySelector('textarea');
+        var button = form && form.querySelector('button[type="submit"]');
+        if (!textarea || !button) return;
+        button.disabled = !textarea.value.trim();
+    }
+
     function request(path, options) {
         options = options || {};
         options.credentials = 'same-origin';
@@ -665,14 +673,33 @@
         if (!current) return;
         var form = event.currentTarget;
         var textarea = form.querySelector('textarea');
-        var button = form.querySelector('button');
+        var button = form.querySelector('button[type="submit"]');
         if (!textarea.value.trim()) return;
         button.disabled = true;
         request('messages', {method: 'POST', body: JSON.stringify({conversation_id: current.id, message: textarea.value})}).then(function (payload) {
             textarea.value = '';
+			textarea.style.removeProperty('height');
             applyConversation(payload, {forceScroll: true});
-        }).catch(showError).finally(function () { button.disabled = false; });
+        }).catch(showError).finally(syncComposerSendState);
     });
+
+	panel.querySelector('.ppfc-composer textarea').addEventListener('input', function () {
+		var bounds = getComputedStyle(this);
+		var collapsedHeight = parseFloat(bounds.minHeight) || this.offsetHeight;
+		var maxHeight = parseFloat(bounds.maxHeight) || Infinity;
+		this.style.height = collapsedHeight + 'px';
+		this.style.height = Math.min(this.scrollHeight, maxHeight) + 'px';
+		syncComposerSendState();
+	});
+
+	panel.querySelector('.ppfc-composer textarea').addEventListener('keydown', function (event) {
+		if (event.key === 'Enter' && !event.shiftKey) {
+			event.preventDefault();
+			this.form.requestSubmit();
+		}
+	});
+
+	syncComposerSendState();
 
     panel.querySelector('.ppfc-closed button').addEventListener('click', function () {
         current = null;

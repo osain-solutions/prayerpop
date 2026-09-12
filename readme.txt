@@ -2,8 +2,8 @@
 Contributors: osain
 Tags: prayer, testimony, church, ministry, notifications
 Requires at least: 5.8
-Tested up to: 7.0
-Stable tag: 1.6.5
+Tested up to: 7.1
+Stable tag: 1.7.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -53,7 +53,7 @@ The free plugin focuses on collecting and reviewing prayer requests and testimon
 **Simple visitor chat**
 
 * One classic chat layout using your existing PrayerPop styling
-* Required visitor name and message, with an optional reply email
+* Three-step first-contact flow: visitor name, optional reply email, then message
 * Shared WordPress inbox with conversation history and unread indicators
 * Admin replies plus close, reopen, and permanent deletion controls
 * Email alerts for new visitor messages and team replies
@@ -67,7 +67,7 @@ The free plugin focuses on collecting and reviewing prayer requests and testimon
 * Required admin review for incoming requests
 * Retention period cleanup controls
 * Primary color, global font family, bubble position, bubble animation, and bubble icon settings
-* Text customization with JSON export and import
+* Language & Text controls for forms, bubble navigation, and the visitor Chat flow, with JSON export and import
 * Built-in documentation
 
 = Need a larger prayer workflow? =
@@ -103,15 +103,19 @@ See the full [PrayerPop Features](https://prayerpop.eu/features/) page or the [s
 
 = Setup =
 
-1. Open `PrayerPop -> Settings`.
-2. In General, confirm the [PrayerPop](https://prayerpop.eu/) bubble is enabled.
-3. In Notifications, set the recipient email and notification schedule.
-4. In Style, adjust the bubble color, icon, position, animation, and font.
-5. In Text Customization, edit the visible form labels and messages if needed.
-6. Visit the frontend of your site and click the [PrayerPop](https://prayerpop.eu/) bubble to test a prayer request or testimony.
-7. Review incoming submissions in `PrayerPop -> Submissions`.
-8. To use Chat, open `PrayerPop -> Chat`, enable Chat, and confirm the team name and notification email. With Chat off, the visitor bubble offers the enabled prayer request and testimony forms; when only one is enabled, it opens that form straight away.
-9. Send a test message from the frontend and reply from the Chat inbox when Chat is on.
+On first activation, PrayerPop opens the guided setup. You can close it and finish later. The guided setup helps you configure:
+
+1. **Your church:** Add the team name and an optional church image. Choose whether visitors can submit prayer requests, testimonies, or both.
+2. **Appearance:** Set the primary colour, bubble background colour, hover colour, bubble position, and animation.
+3. **Notifications:** Choose the recipient email address and notification schedule.
+4. **Grow adoption:** Plan how to introduce PrayerPop during a service, in your bulletin, on screens, and in follow-up reminders.
+5. **Finish:** Complete setup, test a visitor submission, then review new items in `PrayerPop -> Submissions`.
+
+You can change these settings later in `PrayerPop -> Settings`.
+
+To use Chat, open `PrayerPop -> Chat`, enable Chat, and confirm the team name and notification email. A first-time visitor enters a name, can add or skip an email address, and then writes their message. The same browser can return to that conversation. Free Chat does not support file attachments. With Chat off, the visitor bubble offers the enabled prayer request and testimony forms. When only one form is enabled, it opens directly.
+
+Use `PrayerPop -> Settings -> Language & Text` to change the visible wording for forms, bubble navigation, and every step of the visitor Chat flow.
 
 == Screenshots ==
 
@@ -120,8 +124,8 @@ See the full [PrayerPop Features](https://prayerpop.eu/features/) page or the [s
 3. Submissions list for reviewing incoming prayer requests.
 4. Notification settings for immediate, daily, or weekly email updates.
 5. Style settings for customizing the bubble and form.
-6. Text customization settings for changing visitor-facing wording.
-7. Simple visitor chat and the shared WordPress inbox.
+6. Language & Text settings for changing visitor-facing wording.
+7. Simple visitor chat, its three-step first-contact flow, and the shared WordPress inbox.
 
 == Frequently Asked Questions ==
 
@@ -145,17 +149,25 @@ The request starts as `Pending Action` until an admin reviews it.
 
 Yes. Notifications can be sent immediately, daily, or weekly to the configured recipient email address.
 
-= Can I change the form wording? =
+= Can I change the form and Chat wording? =
 
-Yes. Open `PrayerPop -> Settings -> Text Customization`.
+Yes. Open `PrayerPop -> Settings -> Language & Text`. You can change form labels, bubble navigation, Chat prompts, placeholders, buttons, validation messages, closed-conversation text, and other visitor-facing wording.
 
 = Can I change the bubble appearance? =
 
-Yes. Open `PrayerPop -> Settings -> Style`.
+Yes. Open `PrayerPop -> Settings -> Design`.
 
 = Does the free plugin include chat? =
 
-Yes. Free includes one simple classic chat layout, a shared WordPress inbox, email notifications, conversation history, unread indicators, and close/reopen controls. It does not include internal notes, priorities, categories, assignments, FAQ tabs, or advanced chat layouts.
+Yes. Free includes one simple classic chat layout, a three-step first-contact flow, a shared WordPress inbox, email notifications, conversation history, unread indicators, and close/reopen controls. It does not include file attachments, internal notes, priorities, categories, assignments, FAQ tabs, or advanced chat layouts.
+
+= How does a visitor start a Chat conversation? =
+
+The visitor enters a name first. They can add an email address for reply notifications or skip it. They then write their first message. PrayerPop stores a secure browser cookie so the same browser can return to its conversation.
+
+= Can visitors attach files in Free Chat? =
+
+No. File attachments are available only in PrayerPop Pro when an administrator enables them.
 
 = What happens when I turn Chat off? =
 
@@ -190,7 +202,7 @@ Free can receive testimonies in its private Submissions inbox, alongside prayer 
 
 = Retention cleanup =
 
-* Retention period is configurable in General settings.
+* Retention period is configurable in the Data tab.
 * Older approved or answered items can be archived first and cleaned later.
 * Chat permanently removes conversations after the Chat retention period you choose, counted from the last activity. The default period is 365 days. Choose `Keep indefinitely` only when your own data policy calls for it.
 * Closing a conversation does not delete it.
@@ -209,6 +221,15 @@ PrayerPop uses the direct visitor IP address for rate limits by default. If your
 * Submission posts remain in WordPress after uninstall unless you delete them manually.
 
 == Changelog ==
+
+= 1.7.0 =
+* Added a guided first-time setup flow for church details, appearance, welcome text, notification recipients, and final checks.
+* Refined the visitor Chat interface with shared headers, consistent message lists, improved popup spacing, and a unified message input.
+* Added a three-step Chat start flow for visitor name, optional reply email, and the first message.
+* Improved the Chat screen controls, form titles, and responsive behavior.
+* Added Email wording settings so administrators can translate supported email text without editing email HTML, layout, or links.
+* Added separate Email wording JSON export and import. Simplified Language & Text import so selecting a file starts the import.
+* Updated the PrayerPop plugin icon assets and tested compatibility with WordPress 7.1.
 
 = 1.6.6 =
 * Made the Send One More action an outlined secondary button in the popup and standalone form, using the site primary colour.

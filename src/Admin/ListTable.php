@@ -1033,6 +1033,7 @@ class ListTable {
 		?>
 		<div id="prayer-pop-submissions-footer" class="prayer-pop-save-row prayer-pop-save-row--logo-only" hidden>
 			<div class="prayer-pop-save-row__actions"></div>
+			<?php \Prayer_Pop_Defaults::render_admin_verse_signature( 'submissions' ); ?>
 			<div class="prayer-pop-brand-footer" aria-hidden="true">
 				<a class="prayer-pop-brand-logo prayer-pop-brand-logo-full" href="<?php echo esc_url( 'https://prayerpop.eu/' ); ?>" target="_blank" rel="noopener noreferrer">
 					<img

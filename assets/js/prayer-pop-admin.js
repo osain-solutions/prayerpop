@@ -295,6 +295,13 @@ jQuery(document).ready(function($) {
         if (!$welcomeModal.length) {
             return;
         }
+        // The close control itself still has focus at this point (it was just
+        // clicked, or Escape was pressed while inside the dialog). Setting
+        // aria-hidden on an ancestor of the focused element is invalid per the
+        // ARIA spec, so move focus out first.
+        if (document.activeElement && $welcomeModal[0].contains(document.activeElement)) {
+            document.activeElement.blur();
+        }
         $welcomeModal.removeClass('is-open').attr('aria-hidden', 'true');
         $('body').css('overflow', '');
 
@@ -329,6 +336,120 @@ jQuery(document).ready(function($) {
             closeWelcomeModal();
         }
     });
+
+    // Setup wizard step navigation. Free's step list is fixed (no license,
+    // no conditional chat step) so this stays much simpler than Pro's.
+    var setupWizardSteps = ['welcome', 'church', 'appearance', 'notifications', 'grow', 'complete'];
+
+    function setWelcomeStep(step) {
+        var $dialog = $('#prayer-pop-welcome-modal .prayer-pop-welcome-modal__dialog');
+        if (!$dialog.length) {
+            return;
+        }
+        var normalizedStep = setupWizardSteps.indexOf(step) === -1 ? 'welcome' : step;
+        $dialog.attr('data-welcome-step', normalizedStep);
+
+        var countableSteps = setupWizardSteps.slice(0, -1);
+        var stepPosition = countableSteps.indexOf(normalizedStep);
+        $dialog.find('[data-setup-progress]').css('width', stepPosition === -1 ? '0%' : (((stepPosition + 1) / countableSteps.length) * 100) + '%');
+
+        var stepLabelTemplate = (window.prayerPopAdmin && prayerPopAdmin.setupWizard && prayerPopAdmin.setupWizard.stepOfLabel) || 'Step %1$d of %2$d';
+        var stepLabelText = stepPosition === -1 ? '' : stepLabelTemplate.replace('%1$d', stepPosition + 1).replace('%2$d', countableSteps.length);
+        $dialog.find('[data-setup-progress-label]').text(stepLabelText);
+
+        if ('complete' !== normalizedStep) {
+            window.fetch(window.ajaxurl, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                body: new URLSearchParams({
+                    action: 'prayer_pop_setup_wizard_track_step',
+                    nonce: $dialog.attr('data-nonce') || '',
+                    step: normalizedStep
+                }).toString()
+            }).catch(function() {});
+        }
+    }
+
+    function setupValues(step) {
+        var values = {};
+        $('#prayer-pop-welcome-modal [data-setup-step="' + step + '"] input, #prayer-pop-welcome-modal [data-setup-step="' + step + '"] textarea, #prayer-pop-welcome-modal [data-setup-step="' + step + '"] select').each(function() {
+            if (!this.name) { return; }
+            if ((this.type === 'checkbox' || this.type === 'radio') && !this.checked) { return; }
+            values[this.name] = this.value;
+        });
+        return values;
+    }
+
+    function saveSetupStep(step) {
+        var $dialog = $('#prayer-pop-welcome-modal .prayer-pop-setup-wizard');
+        var nonce = $dialog.attr('data-nonce') || '';
+        return window.fetch(window.ajaxurl, {
+            method: 'POST', credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            body: new URLSearchParams({ action: 'prayer_pop_setup_wizard_save', nonce: nonce, step: step, values: JSON.stringify(setupValues(step)) }).toString()
+        }).then(function(response) { return response.json(); });
+    }
+
+    var setupWizardImageFrame = null;
+
+    $(document).on('click', '[data-setup-image]', function(e) {
+        e.preventDefault();
+        var $button = $(this);
+        var $wrap = $button.closest('.prayer-pop-setup-image-picker');
+        if (setupWizardImageFrame) {
+            setupWizardImageFrame.open();
+            return;
+        }
+        setupWizardImageFrame = wp.media({ title: 'Choose image', button: { text: 'Use this image' }, library: { type: 'image' }, multiple: false });
+        setupWizardImageFrame.on('select', function() {
+            var attachment = setupWizardImageFrame.state().get('selection').first().toJSON();
+            var previewUrl = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+            $wrap.find('input[type="hidden"]').val(attachment.id);
+            $wrap.find('.prayer-pop-setup-image-preview').attr('src', previewUrl).prop('hidden', false);
+            $wrap.find('.prayer-pop-setup-image-status').text('Image selected');
+        });
+        setupWizardImageFrame.open();
+    });
+
+    $(document).on('click', '[data-setup-next]', function(e) {
+        e.preventDefault();
+        var $button = $(this).prop('disabled', true);
+        var current = $('#prayer-pop-welcome-modal .prayer-pop-welcome-modal__dialog').attr('data-welcome-step');
+        var next = $(this).attr('data-setup-next');
+        saveSetupStep(current)
+            .then(function(payload) { if (payload && payload.success) { setWelcomeStep(next); return; } window.alert('Could not save. Please try again.'); })
+            .catch(function() { window.alert('Could not save. Please try again.'); })
+            .finally(function() { $button.prop('disabled', false); });
+    });
+
+    $(document).on('click', '[data-setup-back]', function(e) {
+        e.preventDefault();
+        setWelcomeStep($(this).attr('data-setup-back'));
+    });
+
+    $(document).on('click', '[data-setup-finish]', function(e) {
+        e.preventDefault();
+        var $dialog = $('#prayer-pop-welcome-modal .prayer-pop-setup-wizard');
+        var $button = $(this).prop('disabled', true);
+        window.fetch(window.ajaxurl, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }, body: new URLSearchParams({ action: 'prayer_pop_setup_wizard_finish', nonce: $dialog.attr('data-nonce') || '' }).toString() })
+            .then(function(response) { return response.json(); })
+            .then(function(payload) { if (payload && payload.success) { setWelcomeStep('complete'); return; } window.alert('Could not complete setup.'); })
+            .catch(function() { window.alert('Could not complete setup.'); })
+            .finally(function() { $button.prop('disabled', false); });
+    });
+
+    $(document).on('click', '[data-setup-preview]', function(e) {
+        var $link = $(this);
+        if (!$link.is('[data-setup-preview-save]')) { return; }
+        var step = $('#prayer-pop-welcome-modal .prayer-pop-welcome-modal__dialog').attr('data-welcome-step');
+        saveSetupStep(step).catch(function() {});
+    });
+
+    if ($welcomeModal.length) {
+        var initialStep = ($welcomeModal.find('.prayer-pop-welcome-modal__dialog').attr('data-welcome-initial-step') || '').toString();
+        setWelcomeStep(initialStep);
+    }
 
     // Handle notification frequency changes
     $('#prayer_pop_notification_frequency').on('change', function() {
@@ -491,10 +612,70 @@ jQuery(document).ready(function($) {
         $field.trigger('input').trigger('change');
     });
 
+    $('#prayer-pop-send-test-email').on('click', function() {
+        var config = (window.prayerPopAdmin && prayerPopAdmin.emailTemplate) || {};
+        var $button = $(this);
+        var $result = $('#prayer-pop-test-email-result');
+        var sendLabel = config.sendLabel || 'Send Test Email';
+        var failedMessage = config.failedMessage || 'Failed to send test email.';
+        $button.prop('disabled', true).text(config.sendingLabel || 'Sending...');
+        $result.removeClass('is-error is-success').text('');
+
+        $.post(window.ajaxurl, {
+            action: 'prayer_pop_send_test_email',
+            _wpnonce: (window.prayerPopAdmin && prayerPopAdmin.nonce) || ''
+        }).done(function(response) {
+            var message = response && response.data ? response.data : failedMessage;
+            $result.addClass(response && response.success ? 'is-success' : 'is-error').text(message);
+        }).fail(function() {
+            $result.addClass('is-error').text(failedMessage);
+        }).always(function() {
+            $button.prop('disabled', false).text(sendLabel);
+        });
+    });
+
+    // Live preview of the submission-alert email, filled with sample data.
+    (function () {
+        var $preview = $('.prayer-pop-email-preview');
+        if (!$preview.length) {
+            return;
+        }
+
+        var values = {};
+        try {
+            values = JSON.parse($preview.attr('data-preview-values') || '{}');
+        } catch (e) {
+            values = {};
+        }
+
+        var $subject = $($preview.attr('data-preview-subject'));
+        var $body = $($preview.attr('data-preview-body'));
+
+        function fill(text) {
+            var result = text || '';
+            $.each(values, function (placeholder, value) {
+                result = result.split(placeholder).join(value);
+            });
+            return result;
+        }
+
+        function render() {
+            var subjectText = fill($subject.val());
+            var bodyText = fill($body.val());
+            var $box = $('<div>', { 'class': 'prayer-pop-email-preview__box' });
+            $('<p>', { 'class': 'prayer-pop-email-preview__subject', text: subjectText }).appendTo($box);
+            $('<pre>', { 'class': 'prayer-pop-email-preview__body', text: bodyText }).appendTo($box);
+            $preview.empty().append($box);
+        }
+
+        $subject.add($body).on('input', render);
+        render();
+    }());
+
     // Text customization JSON import.
-    $('#import_translations_btn').on('click', function() {
+    function importTextFields(button) {
         var config = (window.prayerPopAdmin && prayerPopAdmin.textImport) || {};
-        var fileInput = $('#translation_file').get(0);
+        var fileInput = document.getElementById($(button).data('input-id'));
         var file = fileInput && fileInput.files ? fileInput.files[0] : null;
         if (!file) {
             window.alert(config.selectFile || 'Please select a file to import.');
@@ -505,10 +686,11 @@ jQuery(document).ready(function($) {
             return;
         }
 
-        var $button = $(this);
+        var $button = $(button);
         var originalText = $button.text();
         var formData = new FormData();
         formData.append('translation_file', file);
+        formData.append('text_scope', $(button).data('scope') || 'all');
         formData.append('action', 'prayer_pop_import_translations');
         formData.append('_wpnonce', config.nonce || '');
         $button.prop('disabled', true).text(config.importing || 'Importing...');
@@ -533,6 +715,23 @@ jQuery(document).ready(function($) {
             $button.prop('disabled', false).text(originalText);
             fileInput.value = '';
         });
+    }
+
+    $(document).on('click', '.prayer-pop-import-text-fields', function() {
+        var fileInput = document.getElementById($(this).data('input-id'));
+        if (!fileInput) return;
+        fileInput.value = '';
+        fileInput.click();
+    });
+
+    $(document).on('change', '.prayer-pop-import-text-file', function() {
+        var inputId = this.id;
+        var button = $('.prayer-pop-import-text-fields').filter(function() {
+            return $(this).data('input-id') === inputId;
+        }).get(0);
+        if (button && this.files && this.files.length) {
+            importTextFields(button);
+        }
     });
 
 	// Search and expand the Free-only Language & Text groups.

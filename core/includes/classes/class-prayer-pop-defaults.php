@@ -85,10 +85,33 @@ class Prayer_Pop_Defaults {
 			'text_chat_send_label'            => __( 'Send message', 'prayerpop' ),
 			'text_chat_closed'                => __( 'This conversation is closed.', 'prayerpop' ),
 			'text_chat_new_conversation'       => __( 'Start a new conversation', 'prayerpop' ),
+			'text_email_submission_subject'    => __( 'New PrayerPop Submission', 'prayerpop' ),
+			'text_email_submission_body'       => __( "Type: {type}\nName: {name}\nMessage:\n{message}", 'prayerpop' ),
+			'text_email_scheduled_subject'     => __( 'Scheduled PrayerPop Submissions', 'prayerpop' ),
+			'text_email_scheduled_body'        => __( "Type: {type}\nName: {name}\nMessage:\n{message}", 'prayerpop' ),
+			/* translators: %d: Total pending submissions count. */
+			'text_email_scheduled_header'      => __( "Total pending submissions: %d\n\n", 'prayerpop' ),
+			/* translators: %s: URL to manage submissions. */
+			'text_email_scheduled_footer'      => __( "\nManage submissions: %s", 'prayerpop' ),
+			'text_email_chat_admin_subject'    => __( 'New PrayerPop Chat message', 'prayerpop' ),
+			'text_email_chat_admin_heading'    => __( 'New message', 'prayerpop' ),
+			'text_email_chat_admin_button'     => __( 'Open Chat', 'prayerpop' ),
+			'text_email_chat_visitor_subject'  => __( 'We replied to your message', 'prayerpop' ),
+			'text_email_chat_visitor_heading'  => __( 'We’re here to help', 'prayerpop' ),
+			'text_email_chat_visitor_button'   => __( 'Open PrayerPop Chat', 'prayerpop' ),
+			'text_email_chat_footer'           => __( 'Continue the conversation in PrayerPop Chat. Replies to this email are not added to the chat.', 'prayerpop' ),
+			'text_email_bulk_heading'          => __( 'New PrayerPop Submission', 'prayerpop' ),
+			/* translators: %s: Number of selected submissions (singular). */
+			'text_email_bulk_count_singular'   => __( '%s selected prayer request', 'prayerpop' ),
+			/* translators: %s: Number of selected submissions (plural). */
+			'text_email_bulk_count_plural'     => __( '%s selected prayer requests', 'prayerpop' ),
+			'text_email_bulk_open_button'      => __( 'Open', 'prayerpop' ),
+			'text_email_bulk_answer_heading'   => __( 'Answer Note', 'prayerpop' ),
+			'text_email_bulk_footer'           => __( 'This email was generated from the PrayerPop submissions bulk action.', 'prayerpop' ),
 
 			// Headers and Descriptions
-			'text_popup_intro_title'          => __( 'Hi there, prayer warrior!', 'prayerpop' ),
-			'text_popup_intro_description'    => __( 'Send us a message and we will get back to you.', 'prayerpop' ),
+			'text_popup_intro_title'          => __( 'We\'d love to hear from you', 'prayerpop' ),
+			'text_popup_intro_description'    => __( 'Share your prayer request or testimony with us.', 'prayerpop' ),
 			'text_prayer_request_header'      => __( 'Submit a Prayer Request', 'prayerpop' ),
 			'text_prayer_request_description' => __( 'Please fill out the form below to submit your prayer request.', 'prayerpop' ),
 			'text_testimony_header'            => __( 'Share a testimony', 'prayerpop' ),
@@ -167,7 +190,76 @@ class Prayer_Pop_Defaults {
 	 */
 	public static function get_text( $key, $default = '' ) {
 		$texts = self::get_texts();
-		return isset( $texts[ $key ] ) ? $texts[ $key ] : $default;
+		// A blank saved value (as opposed to the key being absent) must still
+		// fall back to $default — same guard get_email_text() already has —
+		// or a visitor clearing a text field in Language & Text blanks that
+		// label sitewide instead of reverting to the plugin's own copy.
+		return isset( $texts[ $key ] ) && '' !== $texts[ $key ] ? $texts[ $key ] : $default;
+	}
+
+	public static function get_email_text( $key, $default = '' ) {
+		$custom = get_option( 'prayer_pop_texts', array() );
+		if ( is_array( $custom ) && isset( $custom[ $key ] ) && '' !== $custom[ $key ] ) {
+			return (string) $custom[ $key ];
+		}
+		$legacy_keys = array(
+			'text_email_submission_subject' => 'email_subject',
+			'text_email_submission_body'    => 'email_body',
+			'text_email_scheduled_subject'  => 'email_subject',
+			'text_email_scheduled_body'     => 'email_body',
+		);
+		if ( isset( $legacy_keys[ $key ] ) ) {
+			$legacy = get_option( 'prayer_pop_email_template', array() );
+			if ( is_array( $legacy ) && ! empty( $legacy[ $legacy_keys[ $key ] ] ) ) {
+				return (string) $legacy[ $legacy_keys[ $key ] ];
+			}
+		}
+		return self::get_text( $key, $default );
+	}
+
+	/**
+	 * Verse signatures shown in the shared admin footer bar, keyed by page.
+	 * World English Bible (WEB) wording only — public domain, safe for
+	 * commercial redistribution (unlike ESV/NIV). Kept in one place so the
+	 * set can be edited or extended without touching each admin page.
+	 *
+	 * @param string $key Page key: submissions|feedback|settings.
+	 * @return array{text: string, reference: string}|null
+	 */
+	public static function get_admin_verse( $key ) {
+		$verses = array(
+			'submissions' => array(
+				'text'      => __( 'Bear one another’s burdens, and so fulfill the law of Christ.', 'prayerpop' ),
+				'reference' => __( 'Galatians 6:2, WEB', 'prayerpop' ),
+			),
+			'feedback'    => array(
+				'text'      => __( 'But if any of you lacks wisdom, let him ask of God, who gives to all liberally and without reproach, and it will be given to him.', 'prayerpop' ),
+				'reference' => __( 'James 1:5, WEB', 'prayerpop' ),
+			),
+			'settings'    => array(
+				'text'      => __( 'Commit your deeds to Yahweh, and your plans shall succeed.', 'prayerpop' ),
+				'reference' => __( 'Proverbs 16:3, WEB', 'prayerpop' ),
+			),
+		);
+
+		return isset( $verses[ $key ] ) ? $verses[ $key ] : null;
+	}
+
+	/**
+	 * Render the verse signature for a given admin footer bar, if one is
+	 * configured for that page. Renders nothing for an unknown/empty key.
+	 *
+	 * @param string $key Page key, see get_admin_verse().
+	 * @return void
+	 */
+	public static function render_admin_verse_signature( $key ) {
+		$verse = '' !== (string) $key ? self::get_admin_verse( $key ) : null;
+		if ( ! $verse ) {
+			return;
+		}
+		?>
+		<p class="prayer-pop-verse-signature"><?php echo esc_html( $verse['text'] ); ?><cite><?php echo esc_html( $verse['reference'] ); ?></cite></p>
+		<?php
 	}
 
 	/**
@@ -372,8 +464,27 @@ class Prayer_Pop_Defaults {
 			'text_chat_send_label'            => 'Send message',
 			'text_chat_closed'                => 'This conversation is closed.',
 			'text_chat_new_conversation'       => 'Start a new conversation',
-			'text_popup_intro_title'          => 'Hi there, prayer warrior!',
-			'text_popup_intro_description'    => 'Send us a message and we will get back to you.',
+			'text_email_submission_subject'    => 'New PrayerPop Submission',
+			'text_email_submission_body'       => "Type: {type}\nName: {name}\nMessage:\n{message}",
+			'text_email_scheduled_subject'     => 'Scheduled PrayerPop Submissions',
+			'text_email_scheduled_body'        => "Type: {type}\nName: {name}\nMessage:\n{message}",
+			'text_email_scheduled_header'      => "Total pending submissions: %d\n\n",
+			'text_email_scheduled_footer'      => "\nManage submissions: %s",
+			'text_email_chat_admin_subject'    => 'New PrayerPop Chat message',
+			'text_email_chat_admin_heading'    => 'New message',
+			'text_email_chat_admin_button'     => 'Open Chat',
+			'text_email_chat_visitor_subject'  => 'We replied to your message',
+			'text_email_chat_visitor_heading'  => 'We’re here to help',
+			'text_email_chat_visitor_button'   => 'Open PrayerPop Chat',
+			'text_email_chat_footer'           => 'Continue the conversation in PrayerPop Chat. Replies to this email are not added to the chat.',
+			'text_email_bulk_heading'          => 'New PrayerPop Submission',
+			'text_email_bulk_count_singular'   => '%s selected prayer request',
+			'text_email_bulk_count_plural'     => '%s selected prayer requests',
+			'text_email_bulk_open_button'      => 'Open',
+			'text_email_bulk_answer_heading'   => 'Answer Note',
+			'text_email_bulk_footer'           => 'This email was generated from the PrayerPop submissions bulk action.',
+			'text_popup_intro_title'          => 'We\'d love to hear from you',
+			'text_popup_intro_description'    => 'Share your prayer request or testimony with us.',
 			'text_prayer_request_header'      => 'Submit a Prayer Request',
 			'text_prayer_request_description' => 'Please fill out the form below to submit your prayer request.',
 			'text_testimony_header'            => 'Share a testimony',

@@ -289,9 +289,11 @@
                         );
                     }
                 } else {
-                    var errorMessage = (response && typeof response.data === 'string' && response.data.trim() !== '')
-                        ? response.data
-                        : config.messages.error;
+                    var errorMessage = config.messages.error;
+                    var errorCode = response && response.data && response.data.code;
+                    if (errorCode) {
+                        errorMessage += ' (Ref: ' + errorCode + ')';
+                    }
                     $root.find('.prayer-pop-form__error').text(errorMessage).show();
                 }
 

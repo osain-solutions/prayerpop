@@ -38,6 +38,7 @@ class Prayer_Pop_Settings_Text {
 		$this->register_content_section( 'form', esc_html__( 'Submission Forms', 'prayerpop' ), esc_html__( 'Headings, fields, buttons, and accessibility labels used by the prayer request and testimony forms.', 'prayerpop' ) );
 		$this->register_content_section( 'messages', esc_html__( 'Confirmations & Errors', 'prayerpop' ), esc_html__( 'Success, validation, preview, and error messages shown to visitors.', 'prayerpop' ) );
 		$this->register_content_section( 'activity', esc_html__( 'Activity & Time', 'prayerpop' ), esc_html__( 'Recent-submission wording and the time units used in relative dates.', 'prayerpop' ) );
+		$this->register_content_section( 'email', esc_html__( 'Email wording', 'prayerpop' ), esc_html__( 'Text used in submission and chat emails. Links and email layout stay protected.', 'prayerpop' ) );
 
 		// Bubble and Main Menu
 		$this->add_text_field( 'text_bubble_label', esc_html__( 'Bubble Label', 'prayerpop' ), 'PrayerPop' );
@@ -65,8 +66,8 @@ class Prayer_Pop_Settings_Text {
 		$this->add_text_field( 'text_chat_new_conversation', esc_html__( 'New Conversation Button', 'prayerpop' ), 'Start a new conversation' );
 
 		// Headers and Descriptions
-		$this->add_text_field( 'text_popup_intro_title', esc_html__( 'Popup Intro Title', 'prayerpop' ), 'Hi there, prayer warrior!' );
-		$this->add_textarea_field( 'text_popup_intro_description', esc_html__( 'Popup Intro Description', 'prayerpop' ), 'Send us a message and we will get back to you.' );
+		$this->add_text_field( 'text_popup_intro_title', esc_html__( 'Popup Intro Title', 'prayerpop' ), 'We\'d love to hear from you' );
+		$this->add_textarea_field( 'text_popup_intro_description', esc_html__( 'Popup Intro Description', 'prayerpop' ), 'Share your prayer request or testimony with us.' );
 		$this->add_text_field( 'text_prayer_request_header', esc_html__( 'Prayer Request Header', 'prayerpop' ), 'Submit a Prayer Request' );
 		$this->add_text_field( 'text_prayer_request_description', esc_html__( 'Prayer Request Description', 'prayerpop' ), 'Please fill out the form below to submit your prayer request.' );
 		$this->add_text_field( 'text_testimony_header', esc_html__( 'Testimony Header', 'prayerpop' ), 'Share a testimony' );
@@ -109,6 +110,38 @@ class Prayer_Pop_Settings_Text {
 
 		// Admin answered-prayer note.
 		$this->add_text_field( 'text_answered_message_label', esc_html__( 'Answered Message Label', 'prayerpop' ), 'Answer Update' );
+
+		$this->add_text_field( 'text_email_submission_subject', esc_html__( 'Submission Alert Subject', 'prayerpop' ), 'New PrayerPop Submission' );
+		$this->add_textarea_field( 'text_email_submission_body', esc_html__( 'Submission Alert Body', 'prayerpop' ), "Type: {type}\nName: {name}\nMessage:\n{message}" );
+		$this->add_text_field( 'text_email_scheduled_subject', esc_html__( 'Scheduled Alert Subject', 'prayerpop' ), 'Scheduled PrayerPop Submissions' );
+		$this->add_textarea_field( 'text_email_scheduled_body', esc_html__( 'Scheduled Alert Body', 'prayerpop' ), "Type: {type}\nName: {name}\nMessage:\n{message}" );
+		$this->add_text_field( 'text_email_scheduled_header', esc_html__( 'Scheduled Alert Header', 'prayerpop' ), 'Total pending submissions: %d' );
+		$this->add_text_field( 'text_email_scheduled_footer', esc_html__( 'Scheduled Alert Footer', 'prayerpop' ), 'Manage submissions: %s' );
+		$this->add_text_field( 'text_email_chat_admin_subject', esc_html__( 'Chat Team Subject', 'prayerpop' ), 'New PrayerPop Chat message' );
+		$this->add_text_field( 'text_email_chat_admin_heading', esc_html__( 'Chat Team Heading', 'prayerpop' ), 'New message' );
+		$this->add_text_field( 'text_email_chat_admin_button', esc_html__( 'Chat Team Button', 'prayerpop' ), 'Open Chat' );
+		$this->add_text_field( 'text_email_chat_visitor_subject', esc_html__( 'Chat Visitor Subject', 'prayerpop' ), 'We replied to your message' );
+		$this->add_text_field( 'text_email_chat_visitor_heading', esc_html__( 'Chat Visitor Heading', 'prayerpop' ), 'We’re here to help' );
+		$this->add_text_field( 'text_email_chat_visitor_button', esc_html__( 'Chat Visitor Button', 'prayerpop' ), 'Open PrayerPop Chat' );
+		$this->add_text_field( 'text_email_chat_footer', esc_html__( 'Chat Email Footer', 'prayerpop' ), 'Continue the conversation in PrayerPop Chat. Replies to this email are not added to the chat.' );
+		$this->add_text_field( 'text_email_bulk_heading', esc_html__( 'Bulk Submission Heading', 'prayerpop' ), 'New PrayerPop Submission' );
+		$this->add_text_field( 'text_email_bulk_count_singular', esc_html__( 'Bulk Submission Count (Singular)', 'prayerpop' ), '%s selected prayer request' );
+		$this->add_text_field( 'text_email_bulk_count_plural', esc_html__( 'Bulk Submission Count (Plural)', 'prayerpop' ), '%s selected prayer requests' );
+		$this->add_text_field( 'text_email_bulk_open_button', esc_html__( 'Bulk Submission Open Button', 'prayerpop' ), 'Open' );
+		$this->add_text_field( 'text_email_bulk_answer_heading', esc_html__( 'Bulk Submission Answer Heading', 'prayerpop' ), 'Answer Note' );
+		$this->add_text_field( 'text_email_bulk_footer', esc_html__( 'Bulk Submission Footer', 'prayerpop' ), 'This email was generated from the PrayerPop submissions bulk action.' );
+	}
+
+	public function render_email_tab_content() {
+		$groups = array(
+			esc_html__( 'Submission alerts', 'prayerpop' ) => array( 'text_email_submission_subject', 'text_email_submission_body' ),
+			esc_html__( 'Scheduled submission alerts', 'prayerpop' ) => array( 'text_email_scheduled_subject', 'text_email_scheduled_body', 'text_email_scheduled_header', 'text_email_scheduled_footer' ),
+			esc_html__( 'Chat emails', 'prayerpop' ) => array( 'text_email_chat_admin_subject', 'text_email_chat_admin_heading', 'text_email_chat_admin_button', 'text_email_chat_visitor_subject', 'text_email_chat_visitor_heading', 'text_email_chat_visitor_button', 'text_email_chat_footer' ),
+			esc_html__( 'Selected submissions email', 'prayerpop' ) => array( 'text_email_bulk_heading', 'text_email_bulk_count_singular', 'text_email_bulk_count_plural', 'text_email_bulk_open_button', 'text_email_bulk_answer_heading', 'text_email_bulk_footer' ),
+		);
+		foreach ( $groups as $title => $field_ids ) {
+			?><details class="prayer-pop-text-group"><summary><span><?php echo esc_html( $title ); ?></span><span class="prayer-pop-text-group-count"><?php echo esc_html( count( $field_ids ) ); ?></span></summary><div class="prayer-pop-advanced-panel__content"><table class="form-table" role="presentation"><?php $this->render_text_field_rows( $field_ids, true ); ?></table></div></details><?php
+		}
 	}
 
 	/**
@@ -159,7 +192,7 @@ class Prayer_Pop_Settings_Text {
 		<div class="prayer-pop-text-groups">
 			<?php
 			foreach ( (array) ( $wp_settings_sections[ $page ] ?? array() ) as $section ) {
-				if ( 'prayer_pop_text_section' === $section['id'] ) {
+				if ( in_array( $section['id'], array( 'prayer_pop_text_section', 'prayer_pop_text_email_section' ), true ) ) {
 					continue;
 				}
 				$registered = array_keys( (array) ( $wp_settings_fields[ $page ][ $section['id'] ] ?? array() ) );
@@ -190,7 +223,7 @@ class Prayer_Pop_Settings_Text {
 	 * @param array<int, string> $field_ids Field identifiers.
 	 * @return void
 	 */
-	private function render_text_field_rows( $field_ids ) {
+	private function render_text_field_rows( $field_ids, $show_email_help = false ) {
 		global $wp_settings_fields;
 		$all_sections = (array) ( $wp_settings_fields['prayer-pop-settings-text'] ?? array() );
 
@@ -208,11 +241,49 @@ class Prayer_Pop_Settings_Text {
 			$search_text = implode( ' ', array( $field_id, wp_strip_all_tags( $field['title'] ), (string) ( $field['args']['default'] ?? '' ) ) );
 			?>
 			<tr class="prayer-pop-text-field-row" data-text-search="<?php echo esc_attr( strtolower( $search_text ) ); ?>">
-				<th scope="row"><label for="<?php echo esc_attr( $field['args']['label_for'] ?? $field_id ); ?>"><?php echo wp_kses_post( $field['title'] ); ?></label></th>
+				<th scope="row"><label for="<?php echo esc_attr( $field['args']['label_for'] ?? $field_id ); ?>"><?php echo wp_kses_post( $field['title'] ); ?></label><?php if ( $show_email_help ) { $this->render_email_field_tooltip( $field_id ); } ?></th>
 				<td><?php call_user_func( $field['callback'], $field['args'] ); ?></td>
 			</tr>
 			<?php
 		}
+	}
+
+	private function render_email_field_tooltip( $field_id ) {
+		$placeholders = array(
+			'text_email_submission_body' => array(
+				'{type}'    => __( 'The submission type, such as Prayer request or Testimony.', 'prayerpop' ),
+				'{name}'    => __( 'The name provided by the submitter.', 'prayerpop' ),
+				'{message}' => __( 'The submission message.', 'prayerpop' ),
+			),
+			'text_email_scheduled_body' => array(
+				'{type}'    => __( 'The submission type, such as Prayer request or Testimony.', 'prayerpop' ),
+				'{name}'    => __( 'The name provided by the submitter.', 'prayerpop' ),
+				'{message}' => __( 'The submission message.', 'prayerpop' ),
+			),
+			'text_email_scheduled_header' => array(
+				'%d' => __( 'The number of pending submissions.', 'prayerpop' ),
+			),
+			'text_email_scheduled_footer' => array(
+				'%s' => __( 'The secure link to manage submissions in WordPress.', 'prayerpop' ),
+			),
+			'text_email_bulk_count_singular' => array(
+				'%s' => __( 'The number of selected submissions.', 'prayerpop' ),
+			),
+			'text_email_bulk_count_plural' => array(
+				'%s' => __( 'The number of selected submissions.', 'prayerpop' ),
+			),
+		);
+		if ( empty( $placeholders[ $field_id ] ) ) {
+			return;
+		}
+		?>
+		<span class="prayer-pop-info-tooltip-wrap">
+			<button type="button" class="prayer-pop-info-tooltip-button" aria-label="<?php esc_attr_e( 'Placeholder information', 'prayerpop' ); ?>">
+				<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>
+			</button>
+			<span class="prayer-pop-info-tooltip-content" role="tooltip"><?php foreach ( $placeholders[ $field_id ] as $placeholder => $description ) : ?><span><code><?php echo esc_html( $placeholder ); ?></code> &ndash; <?php echo esc_html( $description ); ?></span><br><?php endforeach; ?></span>
+		</span>
+		<?php
 	}
 
 	/**
@@ -296,6 +367,9 @@ class Prayer_Pop_Settings_Text {
 	}
 
 	private function get_field_section( $id ) {
+		if ( 0 === strpos( $id, 'text_email_' ) ) {
+			return 'prayer_pop_text_email_section';
+		}
 		if ( 0 === strpos( $id, 'text_chat_' ) && 'text_chat_button' !== $id ) {
 			return 'prayer_pop_text_chat_section';
 		}
@@ -320,6 +394,9 @@ class Prayer_Pop_Settings_Text {
 		$id      = $args['id'];
 		$default = $args['default'];
 		$value   = isset( $options[ $id ] ) ? $options[ $id ] : $default;
+		if ( 'text_email_submission_subject' === $id || 'text_email_submission_body' === $id ) {
+			$value = Prayer_Pop_Defaults::get_email_text( $id, $default );
+		}
 		if ( 'text_prayer_request_label' === $id && 'Prayer Request' === $value ) {
 			$value = $default;
 		}
@@ -342,6 +419,9 @@ class Prayer_Pop_Settings_Text {
 		$id      = $args['id'];
 		$default = $args['default'];
 		$value   = isset( $options[ $id ] ) ? $options[ $id ] : $default;
+		if ( 'text_email_submission_subject' === $id || 'text_email_submission_body' === $id ) {
+			$value = Prayer_Pop_Defaults::get_email_text( $id, $default );
+		}
 		?>
 		<textarea id="<?php echo esc_attr( $id ); ?>"
 				  name="prayer_pop_texts[<?php echo esc_attr( $id ); ?>]"
@@ -380,12 +460,14 @@ class Prayer_Pop_Settings_Text {
 
 		$sanitized = $existing_texts;
 		foreach ( $input as $key => $value ) {
-			if ( ! in_array( $key, $managed_keys, true ) || ! is_scalar( $value ) ) {
+			if ( ( ! in_array( $key, $managed_keys, true ) && 0 !== strpos( $key, 'text_email_' ) ) || ! array_key_exists( $key, $defaults_raw ) || ! is_scalar( $value ) ) {
 				continue;
 			}
 			$value = $this->normalize_utf8_text( (string) $value );
 			if ( strpos( $key, 'description' ) !== false ) {
 				$sanitized[ $key ] = wp_kses_post( $value );
+			} elseif ( in_array( $key, array( 'text_email_submission_body', 'text_email_scheduled_body' ), true ) ) {
+				$sanitized[ $key ] = sanitize_textarea_field( $value );
 			} else {
 				$sanitized[ $key ] = sanitize_text_field( $value );
 		}
@@ -566,16 +648,26 @@ class Prayer_Pop_Settings_Text {
 	 * Handle export/import actions.
 	 */
 	public function handle_export_import() {
-		// Handle export
 		if ( isset( $_GET['prayer_pop_export_texts'] ) && current_user_can( 'manage_options' ) ) {
-			$this->export_translations();
+			$scope = isset( $_GET['prayer_pop_text_scope'] ) ? sanitize_key( wp_unslash( $_GET['prayer_pop_text_scope'] ) ) : 'all';
+			$this->export_translations( $scope );
 		}
+	}
+
+	private function get_text_scope_defaults( $scope ) {
+		$defaults = Prayer_Pop_Defaults::get_default_texts_raw();
+		if ( 'email' === $scope ) {
+			return array_filter( $defaults, static function( $key ) {
+				return 0 === strpos( $key, 'text_email_' );
+			}, ARRAY_FILTER_USE_KEY );
+		}
+		return array_intersect_key( $defaults, array_flip( $this->get_managed_text_keys() ) );
 	}
 
 	/**
 	 * Export text fields to JSON file.
 	 */
-	private function export_translations() {
+	private function export_translations( $scope = 'all' ) {
 		// Verify nonce
 		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
 		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'prayer_pop_export_texts' ) ) {
@@ -583,7 +675,8 @@ class Prayer_Pop_Settings_Text {
 		}
 
 		// Get raw default values (without translation functions)
-		$defaults = array_intersect_key( Prayer_Pop_Defaults::get_default_texts_raw(), array_flip( $this->get_managed_text_keys() ) );
+		$scope    = 'email' === $scope ? 'email' : 'all';
+		$defaults = $this->get_text_scope_defaults( $scope );
 		
 		// Get saved texts
 		$saved_texts = array_intersect_key( (array) get_option( 'prayer_pop_texts', array() ), $defaults );
@@ -596,10 +689,11 @@ class Prayer_Pop_Settings_Text {
 			'plugin' => 'PrayerPop',
 			'version' => PRAYERPOP_VERSION,
 			'exported_at' => current_time( 'mysql' ),
+			'scope' => $scope,
 			'texts' => $all_texts
 		);
 
-		$filename = 'prayerpop-text-fields-' . gmdate( 'Y-m-d-H-i-s' ) . '.json';
+		$filename = 'email' === $scope ? 'prayerpop-email-wording-' . gmdate( 'Y-m-d-H-i-s' ) . '.json' : 'prayerpop-text-fields-' . gmdate( 'Y-m-d-H-i-s' ) . '.json';
 		
 		header( 'Content-Type: application/json' );
 		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
@@ -620,6 +714,7 @@ class Prayer_Pop_Settings_Text {
 		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'prayer_pop_import_texts' ) || ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( esc_html__( 'Security check failed.', 'prayerpop' ) );
 		}
+		$scope = isset( $_POST['text_scope'] ) && 'email' === sanitize_key( wp_unslash( $_POST['text_scope'] ) ) ? 'email' : 'all';
 
 		if ( ! isset( $_FILES['translation_file'] ) || ! is_array( $_FILES['translation_file'] ) ) {
 			wp_send_json_error( esc_html__( 'No file selected for import.', 'prayerpop' ) );
@@ -677,7 +772,7 @@ class Prayer_Pop_Settings_Text {
 		$current_texts = get_option( 'prayer_pop_texts', array() );
 		
 		// Get default texts (raw keys only for validation)
-		$defaults = array_intersect_key( Prayer_Pop_Defaults::get_default_texts_raw(), array_flip( $this->get_managed_text_keys() ) );
+		$defaults = $this->get_text_scope_defaults( $scope );
 		
 		// Only import valid text keys that exist in defaults
 		$imported_texts = array();
@@ -712,11 +807,37 @@ class Prayer_Pop_Settings_Text {
 	/**
 	 * Render export/import section.
 	 */
-	public function render_export_import_section() {
+	public function render_export_import_section( $scope = 'all' ) {
+		$scope      = 'email' === $scope ? 'email' : 'all';
+		$is_email   = 'email' === $scope;
+		$input_id   = $is_email ? 'translation_file_email' : 'translation_file';
 		$export_url = wp_nonce_url(
-			admin_url( 'admin.php?page=prayer-pop-settings&tab=language-text&prayer_pop_export_texts=1' ),
+			add_query_arg( 'prayer_pop_text_scope', $scope, admin_url( 'admin.php?page=prayer-pop-settings&tab=' . ( $is_email ? 'notifications-email' : 'language-text' ) . '&prayer_pop_export_texts=1' ) ),
 			'prayer_pop_export_texts'
 		);
+
+		if ( $is_email ) {
+			?>
+			<div class="prayer-pop-export-import-row prayer-pop-export-import-row--email">
+				<a href="<?php echo esc_url( $export_url ); ?>" class="button button-secondary">
+					<span class="dashicons dashicons-download"></span>
+					<?php esc_html_e( 'Export Email Wording', 'prayerpop' ); ?>
+				</a>
+				<input type="file" id="<?php echo esc_attr( $input_id ); ?>" class="prayer-pop-import-text-file" accept=".json" tabindex="-1" aria-hidden="true">
+				<button type="button" class="button button-primary prayer-pop-import-text-fields" data-input-id="<?php echo esc_attr( $input_id ); ?>" data-scope="<?php echo esc_attr( $scope ); ?>">
+					<span class="dashicons dashicons-upload"></span>
+					<?php esc_html_e( 'Import Email Wording', 'prayerpop' ); ?>
+				</button>
+				<span class="prayer-pop-info-tooltip-wrap">
+					<button type="button" class="prayer-pop-info-tooltip-button" aria-label="<?php esc_attr_e( 'About email wording import and export', 'prayerpop' ); ?>">
+						<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>
+					</button>
+					<span class="prayer-pop-info-tooltip-content" role="tooltip"><?php esc_html_e( 'Export the email wording to a JSON file. You can translate that file with AI, then import the edited file here. Language & Text uses the same process for visitor-facing text.', 'prayerpop' ); ?></span>
+				</span>
+			</div>
+			<?php
+			return;
+		}
 		?>
 				<div class="prayer-pop-export-import-section prayer-pop-text-card">
 				<h3><?php esc_html_e( 'Export / Import Text Fields', 'prayerpop' ); ?></h3>
@@ -725,7 +846,6 @@ class Prayer_Pop_Settings_Text {
 				<div class="prayer-pop-export-import-row">
 					<div class="prayer-pop-export-section">
 						<h4><?php esc_html_e( 'Export Text Fields', 'prayerpop' ); ?></h4>
-						<p><?php esc_html_e( 'Download all current text customization fields as a JSON file. This includes all text strings with their current values (custom or default).', 'prayerpop' ); ?></p>
 						<a href="<?php echo esc_url( $export_url ); ?>" class="button button-secondary">
 							<span class="dashicons dashicons-download"></span>
 							<?php esc_html_e( 'Export Text Fields', 'prayerpop' ); ?>
@@ -734,10 +854,9 @@ class Prayer_Pop_Settings_Text {
 
 					<div class="prayer-pop-import-section">
 						<h4><?php esc_html_e( 'Import Text Fields', 'prayerpop' ); ?></h4>
-						<p><?php esc_html_e( 'Upload a text fields JSON file to update text strings. Imported strings are merged with your current settings.', 'prayerpop' ); ?></p>
 						<div class="prayer-pop-import-form">
-							<input type="file" id="translation_file" accept=".json">
-							<button type="button" id="import_translations_btn" class="button button-primary">
+							<input type="file" id="<?php echo esc_attr( $input_id ); ?>" class="prayer-pop-import-text-file" accept=".json" tabindex="-1" aria-hidden="true">
+							<button type="button" class="button button-primary prayer-pop-import-text-fields" data-input-id="<?php echo esc_attr( $input_id ); ?>" data-scope="<?php echo esc_attr( $scope ); ?>">
 								<span class="dashicons dashicons-upload"></span>
 								<?php esc_html_e( 'Import Text Fields', 'prayerpop' ); ?>
 							</button>

@@ -26,6 +26,11 @@ $testimony_description      = $texts['text_testimony_description'];
 $allow_anonymous = isset($settings['allow_anonymous']) ? $settings['allow_anonymous'] : true;
 $chat_settings   = class_exists( 'Prayer_Pop_Chat' ) ? Prayer_Pop_Chat::settings() : array();
 $chat_enabled    = ! empty( $chat_settings['enabled'] );
+$chat_team_name  = trim( (string) ( $chat_settings['team_name'] ?? '' ) );
+$chat_team_name  = '' !== $chat_team_name ? $chat_team_name : (string) $texts['text_bubble_label'];
+$chat_profile_image = ! empty( $chat_settings['profile_image_id'] ) ? wp_get_attachment_image_url( absint( $chat_settings['profile_image_id'] ), 'thumbnail' ) : '';
+$chat_reply_time = trim( (string) ( $texts['text_chat_reply_time'] ?? '' ) );
+$chat_reply_time = '' !== $chat_reply_time ? $chat_reply_time : __( 'Replies within a day', 'prayerpop' );
 $prayer_enabled  = ! array_key_exists( 'show_prayer_request_button', $settings ) || ! empty( $settings['show_prayer_request_button'] );
 $testimony_enabled = ! array_key_exists( 'show_testimony_button', $settings ) || ! empty( $settings['show_testimony_button'] );
 $popup_intro_enabled = ! array_key_exists( 'popup_intro_enabled', $settings ) || ! empty( $settings['popup_intro_enabled'] );
@@ -58,7 +63,10 @@ $bubble_styles    = $styles;
 $icon_type        = isset( $bubble_styles['bubble_icon_type'] ) ? sanitize_key( $bubble_styles['bubble_icon_type'] ) : 'dashicon';
 $dashicon         = isset( $bubble_styles['bubble_dashicon'] ) ? sanitize_key( $bubble_styles['bubble_dashicon'] ) : 'prayerpop';
 $tabler_svg       = isset( $bubble_styles['bubble_tabler_svg'] ) ? (string) $bubble_styles['bubble_tabler_svg'] : '';
-$prayerpop_icon_url = PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-icon.svg';
+// The bubble sits on the brand colour, so the white mark reads on any
+// bubble background. The full-colour icon stays the one shown in the
+// icon browser, where tiles sit on a light admin surface.
+$prayerpop_icon_url = PRAYERPOP_PLUGIN_URL . 'assets/images/prayerpop-icon-white.svg';
 $icon_color       = isset( $bubble_styles['bubble_icon_color'] ) ? $bubble_styles['bubble_icon_color'] : '#ffffff';
 $icon_size        = isset( $bubble_styles['bubble_icon_size'] ) ? (int) $bubble_styles['bubble_icon_size'] : 170;
 
@@ -184,7 +192,7 @@ $bubble_style_attr = sprintf(
                     <div class="prayer-pop-popup-intro__media"><img src="<?php echo esc_url( $popup_intro_image_url ); ?>" alt="<?php echo esc_attr( $popup_intro_image_alt ); ?>"></div>
                 <?php endif; ?>
 	                <?php if ( $popup_intro_text_enabled ) : ?><div class="prayer-pop-popup-intro__content">
-						<div class="prayer-pop-popup-intro__sender"><span class="prayer-pop-popup-intro__avatar dashicons dashicons-groups" aria-hidden="true"></span><span><strong><?php echo esc_html( $chat_settings['team_name'] ); ?></strong><small><i aria-hidden="true"></i><?php echo esc_html( $texts['text_chat_reply_time'] ); ?></small></span></div>
+						<div class="prayer-pop-popup-intro__sender"><?php if ( $chat_profile_image ) : ?><img class="prayer-pop-popup-intro__avatar" src="<?php echo esc_url( $chat_profile_image ); ?>" alt=""><?php else : ?><span class="prayer-pop-popup-intro__avatar dashicons dashicons-groups" aria-hidden="true"></span><?php endif; ?><span><strong><?php echo esc_html( $chat_team_name ); ?></strong><small><i aria-hidden="true"></i><?php echo esc_html( $chat_reply_time ); ?></small></span></div>
 						<div class="prayer-pop-popup-intro__message">
 							<?php if ( '' !== trim( (string) $texts['text_popup_intro_title'] ) ) : ?><h2 class="prayer-pop-popup-intro__title"><?php echo esc_html( $texts['text_popup_intro_title'] ); ?></h2><?php endif; ?>
 							<?php if ( '' !== trim( (string) $texts['text_popup_intro_description'] ) ) : ?><p class="prayer-pop-popup-intro__description"><?php echo nl2br( esc_html( $texts['text_popup_intro_description'] ) ); ?></p><?php endif; ?>
@@ -195,13 +203,13 @@ $bubble_style_attr = sprintf(
 	        <?php if ( $show_initial_options ) : ?>
 	            <div id="prayer-pop-initial-options">
 				<?php if ( $chat_enabled ) : ?>
-				<button type="button" class="prayer-pop-option-button ppm-classic-chat-launch"><span class="prayer-pop-option-button__icon dashicons dashicons-format-chat" aria-hidden="true"></span><span class="prayer-pop-option-button__label"><?php echo esc_html( $texts['text_chat_button'] ); ?></span><span class="prayer-pop-option-button__chevron dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span></button>
+				<button type="button" class="prayer-pop-option-button prayer-pop-option-button--menu ppm-classic-chat-launch"><span class="prayer-pop-option-button__icon dashicons dashicons-format-chat" aria-hidden="true"></span><span class="prayer-pop-option-button__label"><?php echo esc_html( $texts['text_chat_button'] ); ?></span><span class="prayer-pop-option-button__chevron dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span></button>
 				<?php endif; ?>
 				<?php if ( $prayer_enabled ) : ?>
-				<button type="button" class="prayer-pop-option-button" data-option="prayer_request"><span class="prayer-pop-option-button__icon dashicons dashicons-heart" aria-hidden="true"></span><span class="prayer-pop-option-button__label"><?php echo esc_html( $texts['text_prayer_request_label'] ); ?></span><span class="prayer-pop-option-button__chevron dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span></button>
+				<button type="button" class="prayer-pop-option-button prayer-pop-option-button--menu" data-option="prayer_request"><span class="prayer-pop-option-button__icon dashicons dashicons-heart" aria-hidden="true"></span><span class="prayer-pop-option-button__label"><?php echo esc_html( $texts['text_prayer_request_label'] ); ?></span><span class="prayer-pop-option-button__chevron dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span></button>
 				<?php endif; ?>
 				<?php if ( $testimony_enabled ) : ?>
-				<button type="button" class="prayer-pop-option-button" data-option="testimony"><span class="prayer-pop-option-button__icon dashicons dashicons-awards" aria-hidden="true"></span><span class="prayer-pop-option-button__label"><?php echo esc_html( $texts['text_testimony_label'] ); ?></span><span class="prayer-pop-option-button__chevron dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span></button>
+				<button type="button" class="prayer-pop-option-button prayer-pop-option-button--menu" data-option="testimony"><span class="prayer-pop-option-button__icon dashicons dashicons-awards" aria-hidden="true"></span><span class="prayer-pop-option-button__label"><?php echo esc_html( $texts['text_testimony_label'] ); ?></span><span class="prayer-pop-option-button__chevron dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span></button>
 				<?php endif; ?>
             </div>
         <?php endif; ?>
@@ -241,35 +249,40 @@ $bubble_style_attr = sprintf(
                 <input type="hidden" name="prayer_pop_start_time" id="prayer-pop-start-time" value="">
 
 	                <input type="hidden" name="prayer_pop_type" value="<?php echo esc_attr( $default_submission_type ); ?>">
-                <textarea 
-                    name="prayer_pop_message" 
-                    maxlength="<?php echo esc_attr( (string) absint( Prayer_Pop_Ajax::MAX_MESSAGE_LENGTH ) ); ?>" 
-                    required 
-                    oninvalid="this.setCustomValidity('<?php echo esc_js($texts['text_required_field']); ?>')"
-                    oninput="this.setCustomValidity('')"
-	                    placeholder="<?php echo esc_attr( $default_message_placeholder ); ?>"></textarea>
-                
-                <div id="prayer-pop-name-container">
-                    <input 
-                        type="text" 
-                        name="prayer_pop_name" 
-                        id="prayer-pop-name" 
-                        maxlength="<?php echo esc_attr( (string) absint( Prayer_Pop_Ajax::MAX_NAME_LENGTH ) ); ?>"
-                        placeholder="<?php echo esc_attr($allow_anonymous ? $texts['text_name_placeholder'] : $texts['text_name_placeholder_required']); ?>"
-                        <?php if (!$allow_anonymous): ?>
+                <div class="prayer-pop-field-group">
+                    <label class="prayer-pop-screen-reader-text" for="prayer-pop-message"><?php echo esc_html__( 'Message', 'prayerpop' ); ?></label>
+                    <textarea
+                        id="prayer-pop-message"
+                        name="prayer_pop_message"
+                        maxlength="<?php echo esc_attr( (string) absint( Prayer_Pop_Ajax::MAX_MESSAGE_LENGTH ) ); ?>"
                         required
                         oninvalid="this.setCustomValidity('<?php echo esc_js($texts['text_required_field']); ?>')"
                         oninput="this.setCustomValidity('')"
-                        <?php endif; ?>>
+	                        placeholder="<?php echo esc_attr( $default_message_placeholder ); ?>"></textarea>
+
+                    <div id="prayer-pop-name-container">
+                        <label class="prayer-pop-screen-reader-text" for="prayer-pop-name"><?php echo esc_html__( 'Name', 'prayerpop' ); ?></label>
+                        <input
+                            type="text"
+                            name="prayer_pop_name"
+                            id="prayer-pop-name"
+                            maxlength="<?php echo esc_attr( (string) absint( Prayer_Pop_Ajax::MAX_NAME_LENGTH ) ); ?>"
+                            placeholder="<?php echo esc_attr($allow_anonymous ? $texts['text_name_placeholder'] : $texts['text_name_placeholder_required']); ?>"
+                            <?php if (!$allow_anonymous): ?>
+                            required
+                            oninvalid="this.setCustomValidity('<?php echo esc_js($texts['text_required_field']); ?>')"
+                            oninput="this.setCustomValidity('')"
+                            <?php endif; ?>>
+                    </div>
                 </div>
 
-                <div id="prayer-pop-error" style="display: none;">
+                <div id="prayer-pop-error" role="alert" aria-live="assertive" style="display: none;">
                     <!-- Error Message will be inserted by JS -->
                 </div>
 
 	                <button type="submit"><?php echo esc_html( $default_submit_label ); ?></button>
             </form>
-            <div id="prayer-pop-success" style="display: none;">
+            <div id="prayer-pop-success" role="status" aria-live="polite" style="display: none;">
                 <!-- Success Message will be inserted by JS -->
             </div>
         </div>

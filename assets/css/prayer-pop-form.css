@@ -20,7 +20,7 @@
     --pp-form-button-text: #ffffff;
     --pp-form-button-bg-hover: #0a5f93;
 
-    font-family: var(--global-font-family, system-ui);
+    font-family: var(--pp-font-family, system-ui);
     color: var(--pp-form-text);
 	width: 100%;
 	max-width: none;

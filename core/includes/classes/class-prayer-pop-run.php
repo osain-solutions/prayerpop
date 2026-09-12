@@ -756,6 +756,31 @@ class Prayer_Pop_Run {
 
 		$options      = Prayer_Pop_Defaults::get_styles();
 		$declarations = array();
+		$css_variables = array(
+			'global_bg_color'          => '--pp-bg-color',
+			'global_font_color'        => '--pp-font-color',
+			'global_label_color'       => '--pp-label-color',
+			'global_button_hover_color' => '--pp-button-hover-color',
+			'global_textarea_bg_color' => '--pp-textarea-bg-color',
+			'global_border_color'      => '--pp-border-color',
+			'global_border_radius'     => '--pp-border-radius',
+			'global_padding'           => '--pp-padding',
+			'global_margin'            => '--pp-margin',
+			'global_font_size'         => '--pp-font-size',
+			'global_bold_font_weight'  => '--pp-bold-font-weight',
+			'global_font_family'       => '--pp-font-family',
+			'heading_font_family'      => '--pp-heading-font-family',
+			'heading_font_size'        => '--pp-heading-font-size',
+			'heading_font_weight'      => '--pp-heading-font-weight',
+			'bubble_bg_color'          => '--pp-bubble-bg-color',
+			'bubble_border_radius'     => '--pp-bubble-border-radius',
+			'bubble_padding'           => '--pp-bubble-padding',
+			'bubble_margin'            => '--pp-bubble-margin',
+			'bubble_height'            => '--pp-bubble-height',
+			'bubble_offset_x'          => '--pp-bubble-offset-x',
+			'bubble_offset_y'          => '--pp-bubble-offset-y',
+			'checkbox_margin'          => '--pp-checkbox-margin',
+		);
 
 		if ( is_array( $options ) ) {
 			foreach ( $options as $key => $value ) {
@@ -764,7 +789,9 @@ class Prayer_Pop_Run {
 					continue;
 				}
 
-				$css_variable  = '--' . str_replace( '_', '-', sanitize_key( $key ) );
+				$css_variable   = isset( $css_variables[ $key ] )
+					? $css_variables[ $key ]
+					: '--' . str_replace( '_', '-', sanitize_key( $key ) );
 				$declarations[] = $css_variable . ':' . $value;
 			}
 		}
@@ -1537,10 +1564,9 @@ class Prayer_Pop_Run {
             return 0;
         }
 
-	        $email_template        = get_option( 'prayer_pop_email_template', array() );
 	        $default_body_template = __( "Type: {type}\nName: {name}\nMessage:\n{message}", 'prayerpop' );
-	        $subject               = isset( $email_template['email_subject'] ) && ! empty( $email_template['email_subject'] ) ? $email_template['email_subject'] : __( 'New PrayerPop Submission', 'prayerpop' );
-	        $body_template         = isset( $email_template['email_body'] ) && ! empty( $email_template['email_body'] ) ? $email_template['email_body'] : '{message}';
+	        $subject               = Prayer_Pop_Defaults::get_email_text( 'text_email_submission_subject', __( 'New PrayerPop Submission', 'prayerpop' ) );
+	        $body_template         = Prayer_Pop_Defaults::get_email_text( 'text_email_submission_body', $default_body_template );
 
 	        if ( $default_body_template === $body_template ) {
 	            $body_template = '{message}';
@@ -1594,6 +1620,19 @@ class Prayer_Pop_Run {
 	        $site_name   = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 	        $count       = is_array( $items ) ? count( $items ) : 0;
 	        $email_styles = Prayer_Pop_Defaults::get_email_style_tokens();
+	        $headline    = Prayer_Pop_Defaults::get_text( 'text_email_bulk_heading', __( 'New PrayerPop Submission', 'prayerpop' ) );
+	        $count_text  = str_replace(
+			'%s',
+			number_format_i18n( $count ),
+			1 === $count
+				/* translators: %s: Number of selected submissions (singular). */
+				? Prayer_Pop_Defaults::get_text( 'text_email_bulk_count_singular', __( '%s selected prayer request', 'prayerpop' ) )
+				/* translators: %s: Number of selected submissions (plural). */
+				: Prayer_Pop_Defaults::get_text( 'text_email_bulk_count_plural', __( '%s selected prayer requests', 'prayerpop' ) )
+		);
+	        $open_button = Prayer_Pop_Defaults::get_text( 'text_email_bulk_open_button', __( 'Open', 'prayerpop' ) );
+	        $answer_heading = Prayer_Pop_Defaults::get_text( 'text_email_bulk_answer_heading', __( 'Answer Note', 'prayerpop' ) );
+	        $footer = Prayer_Pop_Defaults::get_text( 'text_email_bulk_footer', __( 'This email was generated from the PrayerPop submissions bulk action.', 'prayerpop' ) );
 
 	        ob_start();
 	        ?>
@@ -1608,12 +1647,12 @@ class Prayer_Pop_Run {
 	            <div style="max-width:680px;margin:0 auto;">
 	                <div style="padding:28px 24px;border:1px solid <?php echo esc_attr( $email_styles['border'] ); ?>;border-radius:22px;background:<?php echo esc_attr( $email_styles['card'] ); ?>;box-shadow:0 14px 40px rgba(49,74,151,.08);text-align:center;">
 	                    <div style="margin:0 0 6px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:<?php echo esc_attr( $email_styles['muted'] ); ?>;"><?php echo esc_html( $site_name ); ?></div>
-	                    <div style="margin:0 0 8px;font-size:26px;line-height:1.2;font-weight:700;"><?php echo esc_html__( 'New PrayerPop Submission', 'prayerpop' ); ?></div>
+	                    <div style="margin:0 0 8px;font-size:26px;line-height:1.2;font-weight:700;"><?php echo esc_html( $headline ); ?></div>
 	                    <div style="margin:14px 0 18px;padding:14px 16px;border:1px solid <?php echo esc_attr( $email_styles['border'] ); ?>;border-radius:16px;background:<?php echo esc_attr( $email_styles['surface'] ); ?>;text-align:left;">
 	                        <strong>
 							<?php
 							/* translators: %s: Number of selected prayer requests. */
-							printf( esc_html( _n( '%s selected prayer request', '%s selected prayer requests', $count, 'prayerpop' ) ), esc_html( number_format_i18n( $count ) ) );
+							echo esc_html( $count_text );
 							?>
 						</strong>
 	                    </div>
@@ -1622,14 +1661,14 @@ class Prayer_Pop_Run {
 	                            <div style="margin:0 0 14px;padding:16px;border:1px solid <?php echo esc_attr( $email_styles['border'] ); ?>;border-radius:18px;background:<?php echo esc_attr( $email_styles['surface'] ); ?>;">
 	                                <table role="presentation" cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;margin:0 0 12px;"><tr>
 	                                    <td style="vertical-align:top;padding-right:12px;"><div style="font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:<?php echo esc_attr( $email_styles['muted'] ); ?>;"><?php echo esc_html( $item['type'] ); ?></div><div style="margin-top:6px;font-size:22px;font-weight:700;"><?php echo esc_html( $item['name'] ); ?></div><div style="margin-top:3px;font-size:13px;color:<?php echo esc_attr( $email_styles['muted'] ); ?>;"><?php echo esc_html( $item['submitted'] ); ?></div></td>
-	                                    <?php if ( ! empty( $item['edit_url'] ) ) : ?><td align="right" style="vertical-align:top;white-space:nowrap;"><a href="<?php echo esc_url( $item['edit_url'] ); ?>" style="display:inline-block;padding:9px 14px;border-radius:999px;background:<?php echo esc_attr( $email_styles['primary'] ); ?>;color:<?php echo esc_attr( $email_styles['primary_text'] ); ?>;text-decoration:none;font-size:13px;font-weight:700;"><?php echo esc_html__( 'Open', 'prayerpop' ); ?></a></td><?php endif; ?>
+	                                    <?php if ( ! empty( $item['edit_url'] ) ) : ?><td align="right" style="vertical-align:top;white-space:nowrap;"><a href="<?php echo esc_url( $item['edit_url'] ); ?>" style="display:inline-block;padding:9px 14px;border-radius:999px;background:<?php echo esc_attr( $email_styles['primary'] ); ?>;color:<?php echo esc_attr( $email_styles['primary_text'] ); ?>;text-decoration:none;font-size:13px;font-weight:700;"><?php echo esc_html( $open_button ); ?></a></td><?php endif; ?>
 	                                </tr></table>
 	                                <div style="padding:14px 16px;border:1px solid <?php echo esc_attr( $email_styles['border'] ); ?>;border-radius:14px;background:#fff;font-size:15px;line-height:1.6;"><?php echo wp_kses_post( nl2br( esc_html( $item['body'] ) ) ); ?></div>
-	                                <?php if ( ! empty( $item['answer_note'] ) ) : ?><div style="margin-top:10px;padding:12px 14px;border:1px solid <?php echo esc_attr( $email_styles['border'] ); ?>;border-radius:14px;background:#fff;font-size:14px;line-height:1.6;"><strong style="display:block;margin-bottom:6px;"><?php echo esc_html__( 'Answer Note', 'prayerpop' ); ?></strong><?php echo wp_kses_post( nl2br( esc_html( $item['answer_note'] ) ) ); ?></div><?php endif; ?>
+	                                <?php if ( ! empty( $item['answer_note'] ) ) : ?><div style="margin-top:10px;padding:12px 14px;border:1px solid <?php echo esc_attr( $email_styles['border'] ); ?>;border-radius:14px;background:#fff;font-size:14px;line-height:1.6;"><strong style="display:block;margin-bottom:6px;"><?php echo esc_html( $answer_heading ); ?></strong><?php echo wp_kses_post( nl2br( esc_html( $item['answer_note'] ) ) ); ?></div><?php endif; ?>
 	                            </div>
 	                        <?php endforeach; ?>
 	                    </div>
-	                    <p style="margin:14px 0 0;color:<?php echo esc_attr( $email_styles['muted'] ); ?>;font-size:12px;text-align:center;"><?php echo esc_html__( 'This email was generated from the PrayerPop submissions bulk action.', 'prayerpop' ); ?></p>
+	                    <p style="margin:14px 0 0;color:<?php echo esc_attr( $email_styles['muted'] ); ?>;font-size:12px;text-align:center;"><?php echo esc_html( $footer ); ?></p>
 	                </div>
 	            </div>
 	        </body>
@@ -2960,9 +2999,8 @@ class Prayer_Pop_Run {
 			return;
 		}
 
-		$email_template = get_option( 'prayer_pop_email_template', array() );
-		$subject        = ! empty( $email_template['email_subject'] ) ? $email_template['email_subject'] : __( 'New PrayerPop Submission', 'prayerpop' );
-		$body_template  = ! empty( $email_template['email_body'] ) ? $email_template['email_body'] : __( "Type: {type}\nName: {name}\nMessage:\n{message}", 'prayerpop' );
+		$subject        = Prayer_Pop_Defaults::get_email_text( 'text_email_submission_subject', __( 'New PrayerPop Submission', 'prayerpop' ) );
+		$body_template  = Prayer_Pop_Defaults::get_email_text( 'text_email_submission_body', __( "Type: {type}\nName: {name}\nMessage:\n{message}", 'prayerpop' ) );
 		$type           = sanitize_key( (string) get_post_meta( $post_id, 'prayer_pop_type', true ) );
 		$placeholders   = array(
 			'{type}'          => 'prayer_request' === $type ? __( 'Prayer Request', 'prayerpop' ) : __( 'Testimony', 'prayerpop' ),
@@ -3068,9 +3106,8 @@ class Prayer_Pop_Run {
 	    public function send_scheduled_notifications( $frequency ) {
 	        $options      = get_option( 'prayer_pop_notification_settings', array() );
         $admin_email  = ! empty( $options['notification_email'] ) ? sanitize_email( $options['notification_email'] ) : get_option( 'admin_email' );
-        $email_template = get_option( 'prayer_pop_email_template', array() );
-        $subject        = isset( $email_template['email_subject'] ) && ! empty( $email_template['email_subject'] ) ? $email_template['email_subject'] : __( 'Scheduled PrayerPop Submissions', 'prayerpop' );
-        $body_template  = isset( $email_template['email_body'] ) && ! empty( $email_template['email_body'] ) ? $email_template['email_body'] : __( "Type: {type}\nName: {name}\nMessage:\n{message}", "prayerpop" );
+	        $subject        = Prayer_Pop_Defaults::get_email_text( 'text_email_scheduled_subject', __( 'Scheduled PrayerPop Submissions', 'prayerpop' ) );
+	        $body_template  = Prayer_Pop_Defaults::get_email_text( 'text_email_scheduled_body', __( "Type: {type}\nName: {name}\nMessage:\n{message}", 'prayerpop' ) );
 
 	        // Get pending submissions since last notification.
         $last_sent = get_option( 'prayer_pop_last_notification_time', 0 );
@@ -3140,7 +3177,7 @@ class Prayer_Pop_Run {
 
             // Add header with pending count
             /* translators: %d: number of pending submissions. */
-            $message .= sprintf( __( "Total pending submissions: %d\n\n", "prayerpop" ), $pending_count );
+            $message .= sprintf( Prayer_Pop_Defaults::get_text( 'text_email_scheduled_header', __( "Total pending submissions: %d\n\n", 'prayerpop' ) ), $pending_count );
 
             foreach ( $submission_ids as $submission_id ) {
 				$submission_id = absint( $submission_id );
@@ -3171,7 +3208,7 @@ class Prayer_Pop_Run {
 
             // Add footer with admin link
             /* translators: %s: admin URL to manage submissions. */
-            $message .= sprintf( __( "\nManage submissions: %s", "prayerpop" ), admin_url( 'edit.php?post_type=prayer_request' ) );
+            $message .= sprintf( Prayer_Pop_Defaults::get_text( 'text_email_scheduled_footer', __( "\nManage submissions: %s", 'prayerpop' ) ), admin_url( 'edit.php?post_type=prayer_request' ) );
 
 	            $advance_notification_cursor = (bool) wp_mail( $admin_email, $subject, $message );
 	        }
