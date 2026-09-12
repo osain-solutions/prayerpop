@@ -2,9 +2,9 @@
   <title id="prayerpop-icon-title">PrayerPop</title>
   
   <g transform="rotate(0 476 780)">
-    <animateTransform attributeName="transform" type="rotate" dur="4.8s" repeatCount="indefinite"
+    <animateTransform attributeName="transform" type="rotate" dur="3.3s" repeatCount="indefinite"
       values="0 476 780; 0 476 780; -7 476 780; 6 476 780; -4.5 476 780; 2.5 476 780; 0 476 780"
-      keyTimes="0; 0.52; 0.60; 0.67; 0.74; 0.82; 1"
+      keyTimes="0; 0.303; 0.419; 0.521; 0.623; 0.739; 1"
       calcMode="spline" keySplines="0 0 1 1; .34 1 .45 1; .34 1 .45 1; .34 1 .45 1; .34 1 .45 1; .5 0 .3 1"/>
 
     <path d="M368.318,889.031c-14.922,-14.904 -35.149,-23.275 -56.239,-23.275c-20.969,0 -44.21,0 -44.21,0c-144.406,0 -261.645,-117.239 -261.645,-261.645l0,-337.171c0,-144.406 117.239,-261.645 261.645,-261.645l410.219,0c144.406,0 261.645,117.239 261.645,261.645l0,337.171c0,144.406 -117.239,261.645 -261.645,261.645l-44.21,-0c-21.09,0 -41.317,8.371 -56.239,23.275c-25.368,25.337 -62.367,62.29 -62.367,62.29c-23.366,23.338 -61.22,23.338 -84.587,0c0,-0 -36.998,-36.953 -62.367,-62.29Z" fill="#2755aa"></path>
@@ -12,15 +12,15 @@
     <path d="M746.232,195.546c-22.734,9.526 -21.776,12.177 -30.645,35.066c-0.189,0.489 -6.53,24.938 -26.673,18.338c-21.03,-6.891 -7.269,-37.402 -37.475,-50.092c-16.075,-6.754 -33.509,-10.82 -33.734,-25.059c-0.389,-24.653 43.317,-16.947 53.766,-43.283c1.881,-4.74 7.675,-39.388 30.21,-32.318c19.138,6.004 7.749,41.63 42.943,52.652c14.051,4.4 14.718,2.972 21.111,8.116c13.479,10.846 6.42,22.416 3.391,26.211c-3.496,4.382 -20.981,9.749 -22.893,10.369Z" fill="#e76b77"></path>
   </g>
   <circle cx="690" cy="150" r="26" fill="#e76b77" opacity="0">
-    <animate attributeName="opacity" dur="4.8s" repeatCount="indefinite" values="0; 0; 1; 0; 0" keyTimes="0; 0.52; 0.60; 0.80; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
-    <animateTransform attributeName="transform" type="translate" dur="4.8s" repeatCount="indefinite" values="0 0; 0 0; -30 -96; -43 -139; 0 0" keyTimes="0; 0.52; 0.60; 0.80; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
+    <animate attributeName="opacity" dur="3.3s" repeatCount="indefinite" values="0; 0; 1; 0; 0" keyTimes="0; 0.303; 0.419; 0.710; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
+    <animateTransform attributeName="transform" type="translate" dur="3.3s" repeatCount="indefinite" values="0 0; 0 0; -30 -96; -43 -139; 0 0" keyTimes="0; 0.303; 0.419; 0.710; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
   </circle>
   <circle cx="690" cy="150" r="20" fill="#e76b77" opacity="0">
-    <animate attributeName="opacity" dur="4.8s" repeatCount="indefinite" values="0; 0; 1; 0; 0" keyTimes="0; 0.52; 0.60; 0.80; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
-    <animateTransform attributeName="transform" type="translate" dur="4.8s" repeatCount="indefinite" values="0 0; 0 0; 96 -52; 139 -75; 0 0" keyTimes="0; 0.52; 0.60; 0.80; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
+    <animate attributeName="opacity" dur="3.3s" repeatCount="indefinite" values="0; 0; 1; 0; 0" keyTimes="0; 0.303; 0.419; 0.710; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
+    <animateTransform attributeName="transform" type="translate" dur="3.3s" repeatCount="indefinite" values="0 0; 0 0; 96 -52; 139 -75; 0 0" keyTimes="0; 0.303; 0.419; 0.710; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
   </circle>
   <circle cx="690" cy="150" r="16" fill="#e76b77" opacity="0">
-    <animate attributeName="opacity" dur="4.8s" repeatCount="indefinite" values="0; 0; 1; 0; 0" keyTimes="0; 0.52; 0.60; 0.80; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
-    <animateTransform attributeName="transform" type="translate" dur="4.8s" repeatCount="indefinite" values="0 0; 0 0; 113 96; 146 124; 0 0" keyTimes="0; 0.52; 0.60; 0.80; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
+    <animate attributeName="opacity" dur="3.3s" repeatCount="indefinite" values="0; 0; 1; 0; 0" keyTimes="0; 0.303; 0.419; 0.710; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
+    <animateTransform attributeName="transform" type="translate" dur="3.3s" repeatCount="indefinite" values="0 0; 0 0; 113 96; 146 124; 0 0" keyTimes="0; 0.303; 0.419; 0.710; 1" calcMode="spline" keySplines="0 0 1 1; .33 0 .2 1; .5 0 .3 1; 0 0 1 1"/>
   </circle>
 </svg>
