@@ -62,6 +62,8 @@
     function esc(value) { return String(value || '').replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]; }); }
     function api(path, options) {
         options = options || {};
+        // Bypass HTTP caches: hosts/CDNs have served stale responses for the constant-URL list GET on client sites.
+        options.cache = 'no-store';
         options.headers = Object.assign({'Content-Type':'application/json','X-WP-Nonce':cfg.nonce}, options.headers || {});
         return fetch(cfg.root + path, options).then(function (response) { return response.json().then(function (json) { if (!response.ok) throw json; return json; }); });
     }

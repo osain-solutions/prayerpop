@@ -97,15 +97,12 @@ if ( ! in_array( $bubble_position, array( 'right', 'left' ), true ) ) {
 	$bubble_position = 'right';
 }
 
-$bubble_padding = isset( $attrs['bubble']['advanced']['bubblePadding']['desktop']['value'] ) ? (string) $attrs['bubble']['advanced']['bubblePadding']['desktop']['value'] : '15px';
-if ( ! preg_match( '/^\d+(?:\.\d+)?px$/', $bubble_padding ) ) {
-	$bubble_padding = '15px';
-}
-
-$bubble_shape_size = isset( $attrs['bubble']['advanced']['shapeSize']['desktop']['value'] ) ? (string) $attrs['bubble']['advanced']['shapeSize']['desktop']['value'] : '64px';
-if ( ! preg_match( '/^\d+(?:\.\d+)?px$/', $bubble_shape_size ) ) {
-	$bubble_shape_size = '64px';
-}
+// Bubble padding comes from Style Customization through --pp-bubble-padding.
+// These two read $attrs, a builder-module context this template is never
+// included with, so they always resolved to their constants — and the inline
+// --prayerpop-bubble-padding then shadowed the saved setting in the fallback
+// chain, leaving the padding control with no effect.
+// --prayerpop-bubble-shape-size was read by no rule at all.
 
 // Prepare icon/image content.
 $icon_content = '';
@@ -119,9 +116,7 @@ if ( in_array( $icon_type, array( 'dashicon', 'tabler' ), true ) && $icon_color 
 
 $icon_inline_style = ! empty( $icon_styles ) ? implode( '; ', $icon_styles ) : '';
 $bubble_style_attr = sprintf(
-	'--prayerpop-bubble-padding: %1$s; --prayerpop-bubble-shape-size: %2$s; --prayerpop-icon-scale: %3$s;',
-	esc_attr( $bubble_padding ),
-	esc_attr( $bubble_shape_size ),
+	'--prayerpop-icon-scale: %1$s;',
 	esc_attr( rtrim( rtrim( sprintf( '%.3F', $icon_scale ), '0' ), '.' ) )
 );
 ?>

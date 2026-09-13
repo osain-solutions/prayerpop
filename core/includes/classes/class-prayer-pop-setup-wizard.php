@@ -117,12 +117,11 @@ class Prayer_Pop_Setup_Wizard {
 
 				<section class="prayer-pop-welcome-step" data-setup-step="notifications">
 					<h2><?php esc_html_e( 'Notifications', 'prayerpop' ); ?></h2>
-					<p><?php esc_html_e( 'Add the email addresses that should be notified about new submissions, and choose whether submissions need your approval first.', 'prayerpop' ); ?></p>
+					<p><?php esc_html_e( 'Add the email address that should be notified about new submissions. Every new submission always waits for your review before it is actioned.', 'prayerpop' ); ?></p>
 					<?php
-					self::textarea_field( 'notification_emails', __( 'Notification recipients', 'prayerpop' ), $notifications['notification_emails'] ?? get_option( 'admin_email' ), array( 'description' => __( 'Add one or more email addresses, separated by commas or new lines. This does not create a WordPress account or give access to your website.', 'prayerpop' ) ) );
+					self::text_field( 'notification_email', __( 'Notification email', 'prayerpop' ), $notifications['notification_email'] ?? get_option( 'admin_email' ) );
 					?>
 					<label class="prayer-pop-setup-check"><input type="checkbox" name="enable_notifications" value="1" <?php checked( ! empty( $notifications['enable_notifications'] ) ); ?>> <?php esc_html_e( 'Send new submission notifications', 'prayerpop' ); ?></label>
-					<label class="prayer-pop-setup-check"><input type="checkbox" name="require_admin_approval" value="1" <?php checked( ! empty( $general['require_admin_approval'] ) ); ?>> <?php esc_html_e( 'Review submissions before they are actioned', 'prayerpop' ); ?></label>
 					<?php self::actions( 'appearance', 'grow' ); ?>
 				</section>
 
@@ -322,15 +321,16 @@ class Prayer_Pop_Setup_Wizard {
 			$allowed_animations = array( 'none', 'fade-in', 'gentle-rise', 'soft-scale', 'slide-up', 'bounce-in' );
 			$styles['bubble_animation'] = in_array( $animation, $allowed_animations, true ) ? $animation : 'gentle-rise';
 		} elseif ( 'notifications' === $step ) {
-			$recipients     = self::emails( $values['notification_emails'] ?? '' );
 			$notifications  = get_option( 'prayer_pop_notification_settings', array() );
 			$notifications  = is_array( $notifications ) ? $notifications : array();
 			$notifications['enable_notifications'] = empty( $values['enable_notifications'] ) ? 0 : 1;
-			$notifications['notification_emails']  = implode( "\n", $recipients );
-			$notifications['notification_email']   = ! empty( $recipients ) ? $recipients[0] : '';
+			$recipient   = sanitize_email( $values['notification_email'] ?? '' );
+			$notifications['notification_email'] = is_email( $recipient ) ? $recipient : sanitize_email( get_option( 'admin_email' ) );
 			$notifications['notification_frequency'] = $notifications['notification_frequency'] ?? 'immediately';
+			unset( $notifications['notification_emails'] );
 			update_option( 'prayer_pop_notification_settings', $notifications );
-			$general['require_admin_approval'] = empty( $values['require_admin_approval'] ) ? 0 : 1;
+			// Free always holds new submissions for admin review.
+			$general['require_admin_approval'] = 1;
 		}
 		update_option( 'prayer_pop_general_settings', $general );
 		update_option( 'prayer_pop_styles', $styles );
@@ -371,9 +371,5 @@ class Prayer_Pop_Setup_Wizard {
 	private static function values() {
 		$raw = isset( $_POST['values'] ) ? json_decode( wp_unslash( $_POST['values'] ), true ) : array();
 		return is_array( $raw ) ? $raw : array();
-	}
-
-	private static function emails( $value ) {
-		return array_values( array_filter( array_unique( array_map( 'sanitize_email', preg_split( '/[\s,;]+/', (string) $value ) ) ) ) );
 	}
 }

@@ -79,10 +79,6 @@ class Prayer_Pop_Chat {
 	public static function settings() {
 		$settings = get_option( self::SETTINGS_OPTION, array() );
 		$settings = is_array( $settings ) ? $settings : array();
-		if ( empty( $settings['notification_email'] ) && ! empty( $settings['notification_emails'] ) ) {
-			$emails = array_filter( array_map( 'sanitize_email', preg_split( '/[\s,;]+/', (string) $settings['notification_emails'] ) ) );
-			$settings['notification_email'] = ! empty( $emails ) ? reset( $emails ) : '';
-		}
 		return wp_parse_args( $settings, self::defaults() );
 	}
 
@@ -260,16 +256,6 @@ class Prayer_Pop_Chat {
 			$sanitized['initial_opening_message'] = self::sanitize_initial_opening_message( $input['initial_opening_message'] );
 		} elseif ( array_key_exists( 'initial_opening_message', $existing ) ) {
 			$sanitized['initial_opening_message'] = self::sanitize_initial_opening_message( $existing['initial_opening_message'] );
-		}
-
-		if ( ! empty( $sanitized['notification_emails'] ) ) {
-			$emails = array_values( array_filter( array_map( 'sanitize_email', preg_split( '/[\s,;]+/', (string) $sanitized['notification_emails'] ) ) ) );
-			if ( empty( $emails ) ) {
-				$emails[] = $email;
-			} else {
-				$emails[0] = $email;
-			}
-			$sanitized['notification_emails'] = implode( ', ', array_unique( $emails ) );
 		}
 
 		return $sanitized;

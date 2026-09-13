@@ -2796,7 +2796,7 @@ class Prayer_Pop_Run {
     public function cleanup_old_submissions() {
         // Use general settings for retention period using cache.
         $options        = Prayer_Pop_Defaults::get_settings();
-        $retention_days = isset( $options['retention_period'] ) ? intval( $options['retention_period'] ) : 90;
+        $retention_days = isset( $options['retention_period'] ) ? intval( $options['retention_period'] ) : 0;
         $now_timestamp  = current_time( 'timestamp' );
         $batch_size     = 200;
 

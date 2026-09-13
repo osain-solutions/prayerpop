@@ -202,18 +202,6 @@ class Prayer_Pop_Defaults {
 		if ( is_array( $custom ) && isset( $custom[ $key ] ) && '' !== $custom[ $key ] ) {
 			return (string) $custom[ $key ];
 		}
-		$legacy_keys = array(
-			'text_email_submission_subject' => 'email_subject',
-			'text_email_submission_body'    => 'email_body',
-			'text_email_scheduled_subject'  => 'email_subject',
-			'text_email_scheduled_body'     => 'email_body',
-		);
-		if ( isset( $legacy_keys[ $key ] ) ) {
-			$legacy = get_option( 'prayer_pop_email_template', array() );
-			if ( is_array( $legacy ) && ! empty( $legacy[ $legacy_keys[ $key ] ] ) ) {
-				return (string) $legacy[ $legacy_keys[ $key ] ];
-			}
-		}
 		return self::get_text( $key, $default );
 	}
 

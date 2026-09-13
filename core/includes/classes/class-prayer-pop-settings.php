@@ -14,7 +14,6 @@ class Prayer_Pop_Settings {
 	// Declare properties for settings classes.
 	private $general_settings;
 	private $notification_settings;
-	private $email_template_settings;
 	private $style_settings;
 	private $text_settings;
 	private $menu_icon_data_uri = null;
@@ -39,7 +38,6 @@ class Prayer_Pop_Settings {
 	private function includes() {
 		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/settings/class-prayer-pop-settings-general.php';
 		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/settings/class-prayer-pop-settings-notifications.php';
-		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/settings/class-prayer-pop-settings-email-template.php';
 		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/settings/class-prayer-pop-settings-style.php';
 		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/settings/class-prayer-pop-settings-text.php';
 		require_once PRAYERPOP_PLUGIN_DIR . 'core/includes/classes/class-prayer-pop-setup-wizard.php';
@@ -51,7 +49,6 @@ class Prayer_Pop_Settings {
 	private function initialize_settings() {
 		$this->general_settings        = new Prayer_Pop_Settings_General();
 		$this->notification_settings   = new Prayer_Pop_Settings_Notifications();
-		$this->email_template_settings = new Prayer_Pop_Settings_Email_Template();
 		$this->style_settings          = new Prayer_Pop_Settings_Style();
 		$this->text_settings           = new Prayer_Pop_Settings_Text();
 	}
@@ -279,12 +276,6 @@ class Prayer_Pop_Settings {
 
 		// Pass the current active tab to JavaScript
 		$active_tab = $this->sanitize_active_tab( get_option( 'prayer_pop_active_tab', 'popup' ) );
-		$layout_defaults = method_exists( $this->style_settings, 'get_layout_defaults' )
-			? $this->style_settings->get_layout_defaults()
-			: array();
-		$style_customization_defaults = method_exists( $this->style_settings, 'get_style_customization_defaults' )
-			? $this->style_settings->get_style_customization_defaults()
-			: array();
 		wp_localize_script(
 			'prayer-pop-admin',
 			'prayerPopAdmin',
@@ -318,11 +309,6 @@ class Prayer_Pop_Settings {
 					'questionTitlePlaceholder' => __( 'What is your question about?', 'prayerpop' ),
 					'questionDescription'   => __( 'How can we help?', 'prayerpop' ),
 					'questionDescriptionPlaceholder' => __( 'Write your question and include any helpful details.', 'prayerpop' ),
-				),
-				'resetDefaults' => array(
-					'layout' => $layout_defaults,
-					'styleCustomization' => $style_customization_defaults,
-					'translations' => Prayer_Pop_Defaults::get_default_texts_raw(),
 				),
 				'emailTemplate' => array(
 					'sendLabel'     => __( 'Send Test Email', 'prayerpop' ),
@@ -639,6 +625,11 @@ class Prayer_Pop_Settings {
 					<p class="prayer-pop-subsection-description"><?php esc_html_e( 'Translate email text. PrayerPop keeps email layout and links safe.', 'prayerpop' ); ?></p>
 					<?php $this->text_settings->render_export_import_section( 'email' ); ?>
 					<?php $this->text_settings->render_email_tab_content(); ?>
+					<p>
+						<button type="button" class="button button-secondary" id="prayer-pop-send-test-email"><?php esc_html_e( 'Send Test Email', 'prayerpop' ); ?></button>
+						<span class="description"><?php esc_html_e( 'Sends a sample submission alert to the recipient above so you can confirm WordPress mail delivery works.', 'prayerpop' ); ?></span>
+					</p>
+					<p class="description" id="prayer-pop-test-email-result" aria-live="polite"></p>
 				</section>
 				<details class="prayer-pop-advanced-panel"><summary><?php esc_html_e( 'Advanced diagnostics', 'prayerpop' ); ?></summary><div class="prayer-pop-advanced-panel__content"><table class="form-table" role="presentation"><?php $this->render_settings_field_rows( 'prayer-pop-settings-notifications', 'prayer_pop_notification_debug_section', array( 'show_debug_info' ) ); ?></table></div></details>
 				<?php

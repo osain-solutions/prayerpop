@@ -236,24 +236,6 @@ class Prayer_Pop_Settings_Style {
 	}
 
 	/**
-	 * Helper function to add a size field.
-	 */
-	private function add_size_field( $id, $label, $default, $section = 'prayer_pop_style_section' ) {
-		add_settings_field(
-			$id,
-			$label,
-			array( $this, 'size_field_callback' ),
-			'prayer-pop-settings-style',
-			$section,
-			array(
-				'id' => $id,
-				'default' => $default,
-				'label_for' => $id
-			)
-		);
-	}
-
-	/**
 	 * Callback for rendering a color field.
 	 */
 	public function color_field_callback( $args ) {
@@ -268,29 +250,6 @@ class Prayer_Pop_Settings_Style {
 				   class="prayer-pop-color-input"
 				   title="<?php esc_attr_e( 'Choose a color', 'prayerpop' ); ?>" />
 			<span class="color-value"><?php echo esc_html( $value ); ?></span>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Callback for rendering a size field.
-	 */
-	public function size_field_callback( $args ) {
-		$options = get_option( 'prayer_pop_styles', array() );
-		$value = isset( $options[ $args['id'] ] ) ? $options[ $args['id'] ] : $args['default'];
-		
-		// Extract numeric value and unit
-		preg_match('/([0-9.]+)([a-z%]+)?/', $value, $matches);
-		$numeric_value = isset($matches[1]) ? $matches[1] : '0';
-		?>
-		<div class="prayer-pop-size-field-wrapper">
-			<input type="text" 
-				   id="<?php echo esc_attr( $args['id'] ); ?>"
-				   name="prayer_pop_styles[<?php echo esc_attr( $args['id'] ); ?>]"
-				   value="<?php echo esc_attr( $value ); ?>"
-				   class="regular-text"
-				   placeholder="e.g., 15px, 1.2em, 80%">
-			<p class="description"><?php esc_html_e('Enter value with unit (use: px, em, rem, or %)', 'prayerpop' ); ?></p>
 		</div>
 		<?php
 	}
@@ -368,35 +327,6 @@ class Prayer_Pop_Settings_Style {
 	}
 
 	/**
-	 * Callback for rendering the bubble layout field.
-	 */
-	public function bubble_layout_callback() {
-		$options = get_option( 'prayer_pop_styles', array() );
-		$layouts = array(
-			'icon_text' => esc_html__( 'Icon + Text', 'prayerpop' ),
-			'text_icon' => esc_html__( 'Text + Icon', 'prayerpop' ),
-			'icon'      => esc_html__( 'Icon Only', 'prayerpop' ),
-			'text'      => esc_html__( 'Text Only', 'prayerpop' ),
-		);
-		$current = isset( $options['bubble_layout'] ) ? sanitize_key( $options['bubble_layout'] ) : 'icon_text';
-		if ( ! isset( $layouts[ $current ] ) ) {
-			$current = 'icon_text';
-		}
-		?>
-		<select name="prayer_pop_styles[bubble_layout]" id="bubble_layout">
-			<?php foreach ( $layouts as $value => $label ) : ?>
-				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $current, $value ); ?>>
-					<?php echo esc_html( $label ); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
-		<p class="description">
-			<?php esc_html_e( 'Choose whether the bubble shows icon only, text only, or both (and in which order).', 'prayerpop' ); ?>
-		</p>
-		<?php
-	}
-
-	/**
 	 * Callback for rendering the bubble position field.
 	 */
 	public function bubble_position_callback() {
@@ -431,105 +361,6 @@ class Prayer_Pop_Settings_Style {
 	}
 
 	/**
-	 * Callback for rendering the bubble design mode field.
-	 */
-	public function bubble_design_mode_callback() {
-		$options = get_option( 'prayer_pop_styles', array() );
-		$modes   = array(
-			'adaptive'     => esc_html__( 'Adaptive Rectangle', 'prayerpop' ),
-			'fixed_square' => esc_html__( 'Fixed Square', 'prayerpop' ),
-			'fixed_circle' => esc_html__( 'Fixed Circle', 'prayerpop' ),
-		);
-		$current = isset( $options['bubble_design_mode'] ) ? sanitize_key( $options['bubble_design_mode'] ) : 'fixed_circle';
-		if ( ! isset( $modes[ $current ] ) ) {
-			$current = 'fixed_circle';
-		}
-		?>
-		<select name="prayer_pop_styles[bubble_design_mode]" id="bubble_design_mode">
-			<?php foreach ( $modes as $value => $label ) : ?>
-				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $current, $value ); ?>>
-					<?php echo esc_html( $label ); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
-		<p class="description">
-			<?php esc_html_e( 'Adaptive rectangle grows with content. Fixed square/circle keep a constant bubble size and center content inside.', 'prayerpop' ); ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Callback for rendering the font weight field.
-	 */
-	public function font_weight_callback() {
-		$options = get_option( 'prayer_pop_styles', array() );
-		$current = isset( $options['heading_font_weight'] ) ? $options['heading_font_weight'] : '600';
-		$weights = array(
-			'300' => esc_html__( 'Light (300)', 'prayerpop' ),
-			'400' => esc_html__( 'Regular (400)', 'prayerpop' ),
-			'500' => esc_html__( 'Medium (500)', 'prayerpop' ),
-			'600' => esc_html__( 'Semi-Bold (600)', 'prayerpop' ),
-			'700' => esc_html__( 'Bold (700)', 'prayerpop' ),
-			'800' => esc_html__( 'Extra Bold (800)', 'prayerpop' ),
-		);
-		?>
-		<select name="prayer_pop_styles[heading_font_weight]" id="heading_font_weight">
-			<?php foreach ( $weights as $value => $label ): ?>
-				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $current, $value ); ?>>
-					<?php echo esc_html( $label ); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
-		<p class="description"><?php esc_html_e('Select the font weight for headings.', 'prayerpop' ); ?></p>
-		<?php
-	}
-
-	/**
-	 * Render layout section with two-column card layout
-	 */
-	public function render_layout_section() {
-		$options = get_option( 'prayer_pop_styles', array() );
-		
-		// Define layout fields with their labels and defaults
-		$layout_fields = $this->get_layout_field_definitions();
-		
-		?>
-		<div class="prayer-pop-layout-card">
-			<div class="layout-card-header">
-				<p><?php esc_html_e( 'Configure padding, margins, and dimensions for your PrayerPop elements.', 'prayerpop' ); ?></p>
-			</div>
-			<div class="layout-fields-grid">
-				<?php foreach ( $layout_fields as $field_id => $field_data ) : ?>
-					<div class="layout-field">
-						<label for="<?php echo esc_attr( $field_id ); ?>"><?php echo esc_html( $field_data['label'] ); ?></label>
-						<input type="text" 
-							   id="<?php echo esc_attr( $field_id ); ?>"
-							   name="prayer_pop_styles[<?php echo esc_attr( $field_id ); ?>]"
-							   value="<?php echo esc_attr( isset( $options[ $field_id ] ) ? $options[ $field_id ] : $field_data['default'] ); ?>"
-							   class="regular-text"
-							   placeholder="<?php echo esc_attr( $field_data['default'] ); ?>">
-						<p class="description"><?php echo esc_html( $field_data['description'] ); ?></p>
-					</div>
-					<?php endforeach; ?>
-				</div>
-				<div class="prayer-pop-layout-reset-row">
-					<button
-						type="submit"
-						class="button prayer-pop-reset-submit prayer-pop-layout-reset-button"
-						id="prayer-pop-reset-layout-settings"
-						name="prayer_pop_reset_action"
-						value="layout"
-						formnovalidate
-						data-confirm="<?php echo esc_attr__( 'Reset layout settings to defaults?', 'prayerpop' ); ?>"
-					>
-						<?php esc_html_e( 'Reset Layout Defaults', 'prayerpop' ); ?>
-					</button>
-				</div>
-			</div>
-		<?php
-	}
-
-	/**
 	 * Return style customization defaults for targeted reset.
 	 *
 	 * @return array<string, string>
@@ -555,72 +386,6 @@ class Prayer_Pop_Settings_Style {
 			'bubble_icon_type'        => 'dashicon',
 			'bubble_dashicon'         => 'prayerpop',
 			'bubble_icon_color'       => '#ffffff',
-		);
-	}
-
-	/**
-	 * Return layout defaults for targeted reset.
-	 *
-	 * @return array<string, string>
-	 */
-	public function get_layout_defaults() {
-		$definitions = $this->get_layout_field_definitions();
-		$defaults    = array();
-
-		foreach ( $definitions as $field_id => $field_data ) {
-			$defaults[ $field_id ] = isset( $field_data['default'] ) ? $field_data['default'] : '';
-		}
-
-		return $defaults;
-	}
-
-	/**
-	 * Shared layout field definitions.
-	 *
-	 * @return array<string, array<string, string>>
-	 */
-	private function get_layout_field_definitions() {
-		return array(
-			'global_padding' => array(
-				'label'       => esc_html__( 'Global Padding', 'prayerpop' ),
-				'default'     => '15px',
-				'description' => esc_html__( 'Internal spacing for elements (use: px, em, rem, or %)', 'prayerpop' ),
-			),
-			'global_margin' => array(
-				'label'       => esc_html__( 'Global Margin', 'prayerpop' ),
-				'default'     => '15px',
-				'description' => esc_html__( 'External spacing between elements (use: px, em, rem, or %)', 'prayerpop' ),
-			),
-			'global_border_radius' => array(
-				'label'       => esc_html__( 'Border Radius', 'prayerpop' ),
-				'default'     => '8px',
-				'description' => esc_html__( 'Rounded corners for elements (use: px, em, rem, or %)', 'prayerpop' ),
-			),
-			'bubble_border_radius' => array(
-				'label'       => esc_html__( 'Bubble Border Radius', 'prayerpop' ),
-				'default'     => '8px',
-				'description' => esc_html__( 'Rounded corners for the bubble specifically (use: px, em, rem, or %)', 'prayerpop' ),
-			),
-			'bubble_padding' => array(
-				'label'       => esc_html__( 'Bubble Padding', 'prayerpop' ),
-				'default'     => '15px',
-				'description' => esc_html__( 'Internal padding for the bubble (use: px, em, rem, or %)', 'prayerpop' ),
-			),
-			'bubble_margin' => array(
-				'label'       => esc_html__( 'Bubble Margin', 'prayerpop' ),
-				'default'     => '20px',
-				'description' => esc_html__( 'External margin for the bubble (use: px, em, rem, or %)', 'prayerpop' ),
-			),
-			'bubble_height' => array(
-				'label'       => esc_html__( 'Bubble Height', 'prayerpop' ),
-				'default'     => '60px',
-				'description' => esc_html__( 'Height of the prayer bubble (use: px, em, rem, or %)', 'prayerpop' ),
-			),
-			'checkbox_margin' => array(
-				'label'       => esc_html__( 'Checkbox Margin', 'prayerpop' ),
-				'default'     => '8px',
-				'description' => esc_html__( 'Spacing below checkboxes (use: px, em, rem, or %)', 'prayerpop' ),
-			),
 		);
 	}
 
@@ -1562,58 +1327,6 @@ class Prayer_Pop_Settings_Style {
 	}
 
 	/**
-	 * Bubble icon size callback
-	 */
-	public function bubble_icon_size_callback() {
-		$options = get_option( 'prayer_pop_styles', array() );
-		$size = isset( $options['bubble_icon_size'] ) ? $options['bubble_icon_size'] : '170';
-		?>
-		<div class="prayer-pop-size-control prayer-pop-size-control--icon">
-			<input type="range" 
-				   name="prayer_pop_styles[bubble_icon_size]" 
-				   id="bubble_icon_size_range"
-				   min="25" 
-				   max="250" 
-				   step="5"
-				   value="<?php echo esc_attr( $size ); ?>"
-				   oninput="document.getElementById('bubble_icon_size_value_display').textContent=this.value + '%';"
-				   onchange="document.getElementById('bubble_icon_size_value_display').textContent=this.value + '%';"
-				   class="prayer-pop-range-slider">
-			<div class="size-display">
-				<output id="bubble_icon_size_value_display" for="bubble_icon_size_range" aria-live="polite"><?php echo esc_html( $size ); ?>%</output>
-			</div>
-			<p class="description"><?php esc_html_e('Scales the size of the icon (25% - 250% of default size)', 'prayerpop' ); ?></p>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Bubble size callback
-	 */
-	public function bubble_size_callback() {
-		$options = get_option( 'prayer_pop_styles', array() );
-		$size = isset( $options['bubble_size'] ) ? $options['bubble_size'] : '100';
-		?>
-		<div class="prayer-pop-size-control">
-			<input type="range" 
-				   name="prayer_pop_styles[bubble_size]" 
-				   id="bubble_size_range"
-				   min="50" 
-				   max="150" 
-				   step="5"
-				   value="<?php echo esc_attr( $size ); ?>"
-				   oninput="document.getElementById('bubble_size_value_display').textContent=this.value + '%';"
-				   onchange="document.getElementById('bubble_size_value_display').textContent=this.value + '%';"
-				   class="prayer-pop-range-slider">
-			<div class="size-display">
-				<output id="bubble_size_value_display" for="bubble_size_range" aria-live="polite"><?php echo esc_html( $size ); ?>%</output>
-			</div>
-			<p class="description"><?php esc_html_e('Scales the overall size of the bubble (50% - 150% of default size)', 'prayerpop' ); ?></p>
-		</div>
-		<?php
-	}
-
-	/**
 	 * Sanitize style settings.
 	 */
 	public function sanitize_styles( $input ) {
@@ -1681,11 +1394,7 @@ class Prayer_Pop_Settings_Style {
 		}
 
 		// Apply section-specific reset actions before type-aware icon normalization.
-		if ( 'layout' === $reset_action ) {
-			foreach ( $this->get_layout_defaults() as $field_key => $default_value ) {
-				$sanitized[ $field_key ] = $default_value;
-			}
-		} elseif ( 'style_customization' === $reset_action ) {
+		if ( 'style_customization' === $reset_action ) {
 			foreach ( $this->get_style_customization_defaults() as $field_key => $default_value ) {
 				$sanitized[ $field_key ] = $default_value;
 			}
