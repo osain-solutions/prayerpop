@@ -4,11 +4,22 @@
 
 **Version:** 1.7.0 · **License:** GPL-2.0-or-later · **WordPress:** 5.8+ · **PHP:** 7.2+
 
+[Documentation](#documentation) · [Changelog](CHANGELOG.md) · [WordPress.org listing](https://wordpress.org/plugins/prayerpop/)
+
 ## Overview
 
 PrayerPop gives a church one place to receive prayer requests, testimonies, and visitor messages. Visitors can submit from the website. Church staff review and manage the content inside WordPress.
 
 Prayer requests and testimonies are held for review by default. Chat conversations stay in the church's WordPress database and use a private browser token so a visitor can return to their own conversation.
+
+## Documentation
+
+| Document | Includes |
+| --- | --- |
+| [Changelog](CHANGELOG.md) | Complete release history from 1.0.0 to the current version |
+| [WordPress.org documentation](readme.txt) | Setup guide, FAQ, screenshots, privacy details, and support information |
+
+PrayerPop Pro adds public walls, shortcodes, Divi modules, prayer campaigns, Chat attachments, and optional AI moderation. See the [PrayerPop features page](https://prayerpop.eu/features/) for the edition comparison.
 
 ## Features
 
@@ -92,6 +103,8 @@ These endpoints can change with the Chat user interface. Use WordPress hooks or 
 PrayerPop stores its content in the site's WordPress database. It does not add external analytics or advertising trackers. It does use a secure, HTTP-only cookie to restore a visitor's Chat conversation and local protection data to slow repeated submissions.
 
 Administrators can use **Tools → Export Personal Data** and **Tools → Erase Personal Data** for Chat records that match a visitor email address. Add the supplied privacy-policy guidance to the church's privacy policy where appropriate.
+
+The retention period can archive and later remove old submissions. Chat conversations are permanently removed after the configured Chat retention period. Uninstall removes plugin settings and Chat tables unless PrayerPop Pro is still installed and uses the shared data. Prayer requests and testimonies remain WordPress posts until an administrator deletes them.
 
 Email is sent through the site's configured WordPress mail service. The free plugin has no license validation or AI moderation service.
 
