@@ -2,7 +2,10 @@
 
 > A WordPress plugin for church prayer requests, testimonies, and private visitor Chat.
 
-**Version:** 1.7.0 · **License:** GPL-2.0-or-later · **WordPress:** 5.8+ · **PHP:** 7.2+
+[![Version](https://img.shields.io/badge/version-1.7.0-2f80c0?style=flat-square)](CHANGELOG.md)
+[![License: GPL-2.0-or-later](https://img.shields.io/badge/license-GPL--2.0--or--later-2f80c0?style=flat-square)](https://www.gnu.org/licenses/gpl-2.0.html)
+[![PHP 7.2+](https://img.shields.io/badge/PHP-7.2%2B-777bb4?style=flat-square)](https://www.php.net/)
+[![WordPress 5.8+](https://img.shields.io/badge/WordPress-5.8%2B-21759b?style=flat-square)](https://wordpress.org/)
 
 [Documentation](#documentation) · [Changelog](CHANGELOG.md) · [WordPress.org listing](https://wordpress.org/plugins/prayerpop/)
 
