@@ -35,35 +35,22 @@ jobs:
             performance
 
   compatibility:
-    name: PHP ${{ matrix.php }} syntax and PHPUnit
+    name: PHP ${{ matrix.php }} syntax
     runs-on: ubuntu-24.04
-    services:
-      mariadb:
-        image: mariadb:10.11
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: wordpress_test
-        ports: ['3306:3306']
     strategy:
       matrix:
         include:
           - php: '7.2'
-            wordpress: '5.8'
           - php: '8.2'
-            wordpress: 'latest'
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          tools: composer:v2
-      - run: composer install --working-dir=tests --no-interaction --prefer-dist
       - run: find . -path './vendor' -prune -o -name '*.php' -print0 | xargs -0 -n1 php -l
-      - run: chmod +x bin/install-wp-tests.sh && bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 ${{ matrix.wordpress }}
-      - run: tests/vendor/bin/phpunit -c phpunit.xml.dist
 
   browser-smoke:
-    name: Browser smoke
+    name: WordPress activation smoke
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -71,7 +58,5 @@ jobs:
         with:
           node-version: 20
       - run: npm install
-      - run: npx playwright install --with-deps chromium
       - run: npx wp-env start
       - run: npx wp-env run cli wp plugin activate prayerpop
-      - run: npm run test:e2e

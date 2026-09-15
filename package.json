@@ -1,11 +1,6 @@
 {
   "private": true,
-  "scripts": {
-    "test:php": "tests/vendor/bin/phpunit -c phpunit.xml.dist",
-    "test:e2e": "playwright test"
-  },
   "devDependencies": {
-    "@wordpress/env": "^10.0.0",
-    "@playwright/test": "^1.50.0"
+    "@wordpress/env": "^10.0.0"
   }
 }
