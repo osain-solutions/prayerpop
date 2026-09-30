@@ -263,7 +263,7 @@ class Prayer_Pop_Setup_Wizard {
 					</span>
 				<?php endif; ?>
 			</h3>
-			<div class="prayer-pop-toggle-wrapper">
+			<div class="prayer-pop-toggle-wrapper" data-on-label="<?php echo esc_attr__( 'On', 'prayerpop' ); ?>" data-off-label="<?php echo esc_attr__( 'Off', 'prayerpop' ); ?>">
 				<label class="prayer-pop-toggle-switch">
 					<input type="hidden" name="<?php echo esc_attr( $name ); ?>" value="0">
 					<input type="checkbox" name="<?php echo esc_attr( $name ); ?>" value="1" <?php checked( $checked ); ?>>
@@ -308,7 +308,7 @@ class Prayer_Pop_Setup_Wizard {
 			$general['show_prayer_request_button'] = empty( $values['show_prayer_request_button'] ) ? 0 : 1;
 			$general['show_testimony_button']       = empty( $values['show_testimony_button'] ) ? 0 : 1;
 			$chat['team_name']                      = sanitize_text_field( $values['team_name'] ?? $chat['team_name'] );
-			$chat['profile_image_id']               = absint( $values['profile_image_id'] ?? $chat['profile_image_id'] );
+			$chat['profile_image_id']               = absint( $values['profile_image_id'] ?? ( $chat['profile_image_id'] ?? 0 ) );
 			$chat['enabled']                         = empty( $values['chat_enabled'] ) ? 0 : 1;
 			$chat['initial_opening_message']        = wp_kses( $values['initial_opening_message'] ?? '', array( 'strong' => array(), 'em' => array(), 'br' => array() ) );
 		} elseif ( 'appearance' === $step ) {

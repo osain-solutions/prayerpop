@@ -317,23 +317,56 @@ jQuery(document).ready(function($) {
         $('body').css('overflow', 'hidden');
     }
 
+    var setupClosePending = false;
+
+    function closeWelcomeModalAfterSaving() {
+        var $dialog = $('#prayer-pop-welcome-modal .prayer-pop-welcome-modal__dialog');
+        var step = $dialog.attr('data-welcome-step');
+        var stepsThatSave = ['church', 'appearance', 'notifications'];
+
+        if (setupClosePending || stepsThatSave.indexOf(step) === -1) {
+            if (!setupClosePending) {
+                closeWelcomeModal();
+            }
+            return;
+        }
+
+        setupClosePending = true;
+        saveSetupStep(step)
+            .then(function(payload) {
+                if (payload && payload.success) {
+                    closeWelcomeModal();
+                    window.location.reload();
+                    return;
+                }
+                window.alert('Could not save. Please try again.');
+            })
+            .catch(function() {
+                window.alert('Could not save. Please try again.');
+            })
+            .finally(function() {
+                setupClosePending = false;
+            });
+    }
+
     $(document).on('click', '[data-welcome-close="1"]', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        closeWelcomeModal();
+        closeWelcomeModalAfterSaving();
     });
 
     // Fallback close binding directly on close icon.
     $welcomeModal.on('click', '.prayer-pop-welcome-modal__close', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        closeWelcomeModal();
+        closeWelcomeModalAfterSaving();
     });
 
     $(document).on('keydown', function(e) {
         var isEscape = (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27);
         if (isEscape && $('#prayer-pop-welcome-modal').hasClass('is-open')) {
-            closeWelcomeModal();
+            e.preventDefault();
+            closeWelcomeModalAfterSaving();
         }
     });
 
@@ -390,6 +423,11 @@ jQuery(document).ready(function($) {
             body: new URLSearchParams({ action: 'prayer_pop_setup_wizard_save', nonce: nonce, step: step, values: JSON.stringify(setupValues(step)) }).toString()
         }).then(function(response) { return response.json(); });
     }
+
+    $(document).on('change', '#prayer-pop-welcome-modal .prayer-pop-toggle-wrapper input[type="checkbox"]', function() {
+        var $wrapper = $(this).closest('.prayer-pop-toggle-wrapper');
+        $wrapper.find('.toggle-status').text(this.checked ? $wrapper.attr('data-on-label') : $wrapper.attr('data-off-label'));
+    });
 
     var setupWizardImageFrame = null;
 

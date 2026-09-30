@@ -1178,7 +1178,6 @@ class Prayer_Pop_Settings {
 				<ul>
 					<li><strong><?php esc_html_e( 'Current limit:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Maximum 5 submissions from the same source in 5 minutes.', 'prayerpop' ); ?></li>
 					<li><strong><?php esc_html_e( 'Cooldown:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'If the limit is reached, new submissions are blocked for 3 minutes.', 'prayerpop' ); ?></li>
-					<li><strong><?php esc_html_e( 'Customization:', 'prayerpop' ); ?></strong> <?php esc_html_e( 'Currently fixed. Can be made configurable in a future update if needed.', 'prayerpop' ); ?></li>
 				</ul>
 			</section>
 

@@ -2,6 +2,12 @@
 
 All notable changes to PrayerPop are documented here. This file mirrors the release history in `readme.txt`.
 
+## 1.7.1
+
+- Fixed setup guide saving and toggle behavior.
+- Fixed a setup-guide image warning.
+- Updated Plugin Directory content.
+
 ## 1.7.0
 
 - Added a guided first-time setup flow for church details, appearance, welcome text, notification recipients, and final checks.

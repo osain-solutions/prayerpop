@@ -52,6 +52,7 @@ class Prayer_Pop_Chat {
 		return array(
 			'enabled'            => 0,
 			'team_name'          => __( 'PrayerPop', 'prayerpop' ),
+			'profile_image_id'   => 0,
 			'notification_email' => sanitize_email( get_option( 'admin_email' ) ),
 			'retention_days'     => 365,
 		);
@@ -250,6 +251,7 @@ class Prayer_Pop_Chat {
 
 		$sanitized['enabled']            = empty( $input['enabled'] ) ? 0 : 1;
 		$sanitized['team_name']          = isset( $input['team_name'] ) ? self::truncate( sanitize_text_field( $input['team_name'] ), 100 ) : ( isset( $existing['team_name'] ) ? self::truncate( sanitize_text_field( $existing['team_name'] ), 100 ) : __( 'PrayerPop', 'prayerpop' ) );
+		$sanitized['profile_image_id']   = absint( $input['profile_image_id'] ?? ( $existing['profile_image_id'] ?? 0 ) );
 		$sanitized['notification_email'] = $email;
 		$sanitized['retention_days']     = self::sanitize_retention_days( $input['retention_days'] ?? ( $existing['retention_days'] ?? self::defaults()['retention_days'] ) );
 		if ( array_key_exists( 'initial_opening_message', $input ) ) {

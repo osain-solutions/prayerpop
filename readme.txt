@@ -3,7 +3,7 @@ Contributors: osain
 Tags: prayer, testimony, church, ministry, notifications
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -16,7 +16,7 @@ PrayerPop helps churches collect prayer requests and testimonies, and offer simp
 
 Instead of asking people to find an email address, fill out a long form, or send prayer requests through scattered messages, PrayerPop gives your website one clear place for prayer. Visitors can submit a request from any page, and your team can review, approve, archive, email, and manage everything inside WordPress.
 
-[PrayerPop](https://prayerpop.eu/) is useful when you want to:
+PrayerPop is useful when you want to:
 
 * Receive prayer requests and testimonies through your church website
 * Organize incoming submissions in one admin screen
@@ -32,7 +32,7 @@ Instead of asking people to find an email address, fill out a long form, or send
 
 = What PrayerPop makes simpler =
 
-Prayer requests often arrive through email, social messages, paper cards, and conversations with different team members. [PrayerPop](https://prayerpop.eu/) brings those requests into one clear workflow. Your website becomes the entry point, and WordPress becomes the place where your team can manage what happens next.
+Prayer requests often arrive through email, social messages, paper cards, and conversations with different team members. PrayerPop brings those requests into one clear workflow. Your website becomes the entry point, and WordPress becomes the place where your team can manage what happens next.
 
 The free plugin focuses on collecting and reviewing prayer requests and testimonies, plus a straightforward visitor chat with a shared WordPress inbox.
 
@@ -40,7 +40,7 @@ The free plugin focuses on collecting and reviewing prayer requests and testimon
 
 **Prayer request and testimony collection**
 
-* Floating [PrayerPop](https://prayerpop.eu/) bubble for frontend prayer request and testimony submissions
+* Floating PrayerPop bubble for frontend prayer request and testimony submissions
 * Separate, editable prayer request and testimony wording
 
 **Review and admin workflow**
@@ -72,9 +72,9 @@ The free plugin focuses on collecting and reviewing prayer requests and testimon
 
 = Need a larger prayer workflow? =
 
-[PrayerPop](https://prayerpop.eu/) Pro adds public [prayer and testimony walls](https://prayerpop.eu/demo-wall/), engagement actions, sharing, [Prayer Campaigns](https://prayerpop.eu/prayer-campaigns/), Divi modules, custom popup extras, and optional AI assisted moderation.
+PrayerPop Pro adds public [prayer and testimony walls](https://prayerpop.eu/demo-wall/), engagement actions, sharing, [Prayer Campaigns](https://prayerpop.eu/prayer-campaigns/), Divi modules, custom popup extras, and optional AI assisted moderation.
 
-[Prayer Campaigns](https://prayerpop.eu/prayer-campaigns/) let churches create focused prayer signups with time slots. You can use them for 24h prayer, church camps, Sunday services, outreach events, prayer weeks, or any situation where people need to sign up for a specific prayer time.
+Prayer Campaigns let churches create focused prayer signups with time slots. You can use them for 24h prayer, church camps, Sunday services, outreach events, prayer weeks, or any situation where people need to sign up for a specific prayer time.
 
 See the full [PrayerPop Features](https://prayerpop.eu/features/) page or the [submissions wall](https://prayerpop.eu/demo-wall/) for examples.
 
@@ -126,6 +126,9 @@ Use `PrayerPop -> Settings -> Language & Text` to change the visible wording for
 5. Style settings for customizing the bubble and form.
 6. Language & Text settings for changing visitor-facing wording.
 7. Simple visitor chat, its three-step first-contact flow, and the shared WordPress inbox.
+8. Pro feature: Prayer Campaigns overview with active campaign coverage.
+9. Pro feature: Prayer Campaign slot selection, coverage, and signup flow.
+10. Pro feature: Prayer Lottery Wheel for balanced prayer engagement.
 
 == Frequently Asked Questions ==
 
@@ -135,7 +138,7 @@ Use `PrayerPop -> Settings -> Language & Text` to change the visible wording for
 
 = How do visitors submit prayer requests? =
 
-Visitors click the [PrayerPop](https://prayerpop.eu/) bubble and complete the prayer request form.
+Visitors click the PrayerPop bubble and complete the prayer request form.
 
 = Where do submitted requests go? =
 
@@ -175,11 +178,11 @@ PrayerPop stops showing Chat to visitors and opens the prayer-request form from 
 
 = Where can I contact support? =
 
-For questions, bugs, [feature requests](https://prayerpop.eu/contact/), or [support](https://prayerpop.eu/contact/), use the [PrayerPop contact page](https://prayerpop.eu/contact/).
+For questions, bugs, feature requests, or support, use the [PrayerPop contact page](https://prayerpop.eu/contact/).
 
 = Does the free plugin include public prayer walls, testimony displays, or Prayer Campaigns? =
 
-Free can receive testimonies in its private Submissions inbox, alongside prayer requests. Public [prayer walls](https://prayerpop.eu/demo-wall/), testimony displays, shortcodes, Divi modules, [Prayer Campaigns](https://prayerpop.eu/prayer-campaigns/), and optional AI assisted moderation are part of [PrayerPop](https://prayerpop.eu/) Pro.
+Free can receive testimonies in its private Submissions inbox, alongside prayer requests. Public prayer walls, testimony displays, shortcodes, Divi modules, Prayer Campaigns, and optional AI assisted moderation are part of PrayerPop Pro.
 
 == Privacy & Data Handling ==
 
@@ -222,6 +225,11 @@ PrayerPop uses the direct visitor IP address for rate limits by default. If your
 
 == Changelog ==
 
+= 1.7.1 =
+* Fixed setup guide saving and toggle behavior.
+* Fixed a setup-guide image warning.
+* Updated Plugin Directory content.
+
 = 1.7.0 =
 * Added a guided first-time setup flow for church details, appearance, welcome text, notification recipients, and final checks.
 * Refined the visitor Chat interface with shared headers, consistent message lists, improved popup spacing, and a unified message input.
@@ -237,7 +245,6 @@ PrayerPop uses the direct visitor IP address for rate limits by default. If your
 
 = 1.6.5 =
 * Moved the Chat inbox save notice so it does not push the page heading down.
-* Added release-quality checks for JavaScript, PHP, WordPress Plugin Check, and browser smoke tests.
 
 = 1.6.4 =
 * Simplified the visitor Chat opening screen and removed unused space below its onboarding fields.
@@ -250,7 +257,6 @@ PrayerPop uses the direct visitor IP address for rate limits by default. If your
 * Made the popup open directly to its only enabled form and added an optional welcome-header setting for Simple and Classic Popup layouts.
 * Made Chat polling show a temporary connection warning and retry progressively without losing a visitor's draft.
 * Improved the Classic Popup welcome-card layout so the header image and color treatment remain consistent at different text lengths.
-* Added automated regression and release checks for key popup, submission, and Chat journeys.
 
 = 1.6.2 =
 * Added Chat retention settings and WordPress personal-data export and erasure support for Chat records.

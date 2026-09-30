@@ -4,7 +4,7 @@
  * Plugin URI: https://prayerpop.eu/
  * Update URI: https://wordpress.org/plugins/prayerpop/
  * Description: Receive prayer requests and testimonies, with simple visitor chat, WordPress inboxes, and email notifications.
- * Version: 1.7.0
+ * Version: 1.7.1
  * Author: Ösain OÜ
  * Author URI: https://osain.ee/
  * Text Domain: prayerpop
@@ -61,7 +61,7 @@ if ( $prayerpop_other_active ) {
 
 // Define plugin constants
 if ( ! defined( 'PRAYERPOP_VERSION' ) ) {
-	define( 'PRAYERPOP_VERSION', '1.7.0' );
+	define( 'PRAYERPOP_VERSION', '1.7.1' );
 }
 if ( ! defined( 'PRAYERPOP_PLUGIN_DIR' ) ) {
 	define( 'PRAYERPOP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
